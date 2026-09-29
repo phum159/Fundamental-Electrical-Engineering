@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>EECC0232 ฝึกก่อนสอบ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EDF0F2; --panel:#FFFFFF; --ink:#1B2530; --muted:#5A6672; --line:#C9D0D6;
+  --L1:#7A4426; --L3:#8C9196; --N:#2B78C4; --G:#3E9A3A; --Gy:#E3C800;
+  --ok:#2E8B45; --okbg:#E3F3E6; --bad:#C0392B; --badbg:#FBE7E4; --sel:#2B78C4; --selbg:#E2EEF9;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#141A20; --panel:#1D252D; --ink:#E6EBEF; --muted:#9AA6B1; --line:#34404B;
+    --okbg:#1E3526; --badbg:#3D2320; --selbg:#1C3246;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#141A20; --panel:#1D252D; --ink:#E6EBEF; --muted:#9AA6B1; --line:#34404B;
+  --okbg:#1E3526; --badbg:#3D2320; --selbg:#1C3246;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"IBM Plex Sans Thai","Leelawadee UI","Tahoma",sans-serif;font-size:17px;line-height:1.6}
+.wrap{max-width:1000px;margin:0 auto;padding:0 18px 70px}
+.cable{display:grid;grid-template-rows:repeat(5,7px);gap:3px;margin:22px 0 10px}
+.cable span{border-radius:4px}
+.cable span:nth-child(1){background:var(--L1)}
+.cable span:nth-child(2){background:#1B1B1B}
+.cable span:nth-child(3){background:var(--L3)}
+.cable span:nth-child(4){background:var(--N)}
+.cable span:nth-child(5){background:repeating-linear-gradient(90deg,var(--G) 0 22px,var(--Gy) 22px 30px)}
+header h1{font-size:30px;line-height:1.2;margin:14px 0 4px;font-weight:700}
+header p{margin:0;color:var(--muted);max-width:66ch}
+nav{display:flex;gap:4px;flex-wrap:wrap;margin:22px 0 18px;border-bottom:2px solid var(--line)}
+nav button{font:inherit;font-weight:600;background:none;border:0;color:var(--muted);
+  padding:10px 12px;cursor:pointer;border-bottom:4px solid transparent;margin-bottom:-2px}
+nav button[aria-selected="true"]{color:var(--ink)}
+nav button[data-tab="notes"][aria-selected="true"]{border-color:#1B1B1B}
+nav button[data-tab="match"][aria-selected="true"]{border-color:var(--L1)}
+nav button[data-tab="fill"][aria-selected="true"]{border-color:var(--N)}
+nav button[data-tab="calc"][aria-selected="true"]{border-color:var(--G)}
+button:focus-visible,.chip:focus-visible,.blank:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--sel);outline-offset:2px}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.bar .grow{flex:1}
+select,.btn{font:inherit;font-size:15px;padding:8px 14px;border-radius:8px;border:1.5px solid var(--line);
+  background:var(--panel);color:var(--ink);cursor:pointer}
+.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink);font-weight:600}
+.btn.small{font-size:14px;padding:5px 10px}
+.score{font-weight:600;color:var(--muted)}
+.hint{color:var(--muted);font-size:15px;margin:0 0 14px}
+/* notes */
+.notes details{background:var(--panel);border:1px solid var(--line);border-radius:12px;margin-bottom:12px;padding:0 18px}
+.notes summary{cursor:pointer;font-weight:700;font-size:19px;padding:14px 0}
+.notes h4{margin:16px 0 4px;font-size:16.5px}
+.notes p,.notes li{max-width:75ch}
+.notes ul{padding-left:1.2em;margin:6px 0 10px}
+.notes .tw{overflow-x:auto;margin:8px 0 14px}
+.notes table{border-collapse:collapse;font-size:15px;min-width:420px}
+.notes th,.notes td{border:1px solid var(--line);padding:5px 9px;text-align:left;vertical-align:top}
+.notes th{background:var(--bg)}
+.notes .sym{display:flex;flex-wrap:wrap;gap:18px;margin:10px 0}
+.notes .sym figure{margin:0;text-align:center;font-size:14px;color:var(--muted)}
+.said{border-left:4px solid var(--N);background:var(--selbg);padding:8px 12px;border-radius:4px;margin:8px 0 10px;font-size:15px;max-width:80ch}
+.extra-tag{font-size:13px;font-weight:600;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:0 6px;margin-left:6px;vertical-align:middle}
+.trap{border-left:4px solid var(--bad);background:var(--badbg);padding:8px 12px;border-radius:4px;margin:10px 0;max-width:75ch}
+.sw{display:inline-block;width:34px;height:12px;border-radius:3px;vertical-align:middle;margin-right:6px}
+/* matching */
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.col{display:flex;flex-direction:column;gap:8px}
+.chip{background:var(--panel);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;
+  cursor:pointer;text-align:left;font:inherit;font-size:15.5px;color:var(--ink);min-height:52px;
+  display:flex;align-items:center;gap:10px}
+.chip svg{flex:none}
+.chip.sel{border-color:var(--sel);background:var(--selbg)}
+.chip.done{border-color:var(--ok);background:var(--okbg);cursor:default;opacity:.8}
+.chip.wrong{border-color:var(--bad);background:var(--badbg);animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+@media (prefers-reduced-motion:reduce){.chip.wrong{animation:none}}
+.log{margin-top:16px;display:flex;flex-direction:column;gap:6px}
+.log div{font-size:14.5px;border-left:4px solid var(--ok);padding:4px 10px;background:var(--panel);border-radius:4px}
+.log b{font-weight:600}
+.done-msg{margin-top:14px;padding:12px 14px;border-left:5px solid var(--ok);background:var(--okbg);border-radius:6px}
+/* fill-in */
+.bank{background:var(--panel);border:2px solid var(--ink);border-radius:10px;padding:10px 12px;margin-bottom:16px;
+  position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.bank h3{margin:0 0 6px;font-size:15px}
+.bank .words{display:flex;flex-wrap:wrap;gap:6px;max-height:30vh;overflow:auto}
+.word{font:inherit;font-size:14.5px;padding:4px 10px;border-radius:6px;border:1.5px solid var(--line);
+  background:var(--bg);color:var(--ink);cursor:pointer}
+.qlist{counter-reset:q;display:flex;flex-direction:column;gap:10px;padding:0;margin:0;list-style:none}
+.qlist li{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;gap:12px}
+.qlist li::before{counter-increment:q;content:counter(q) ".";font-weight:700;min-width:1.6em}
+.qbody{flex:1}
+.qbody svg{display:block;margin:4px 0 6px}
+.blank{display:inline-block;min-width:150px;border:0;border-bottom:2px dashed var(--muted);background:none;
+  font:inherit;color:var(--ink);padding:0 6px;cursor:pointer;text-align:left}
+.blank.active{border-bottom-color:var(--sel);background:var(--selbg)}
+.blank.ok{border-bottom:2px solid var(--ok);color:var(--ok);font-weight:600}
+.blank.bad{border-bottom:2px solid var(--bad);color:var(--bad);text-decoration:line-through}
+.why{display:block;font-size:14.5px;color:var(--muted);margin-top:4px}
+.why b{color:var(--ok)}
+/* calc */
+.prob{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:18px}
+.prob h3{margin:0 0 4px;font-size:19px}
+.prob .tag{font-size:13px;font-weight:600;color:var(--muted)}
+.fig{overflow-x:auto;margin:10px 0}
+.fig svg{height:auto;color:var(--ink)}
+.fields{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin:12px 0}
+.field label{display:block;font-size:14.5px;color:var(--muted);margin-bottom:2px}
+.field .row{display:flex;align-items:center;gap:6px}
+.field input,.field select{font:inherit;font-size:15px;width:100%;min-width:0;padding:6px 8px;border-radius:6px;
+  border:1.5px solid var(--line);background:var(--bg);color:var(--ink)}
+.field .ok{border-color:var(--ok)!important;background:var(--okbg)!important}
+.field .bad{border-color:var(--bad)!important;background:var(--badbg)!important}
+.field .u{font-size:14px;color:var(--muted);white-space:nowrap}
+.params{display:none;background:var(--bg);border-radius:8px;padding:10px 12px;margin:10px 0}
+.params.show{display:block}
+.params .fields{margin:6px 0}
+.params .field input{background:var(--panel)}
+.sol{display:none;margin-top:12px;border-top:1px dashed var(--line);padding-top:10px;font-size:15.5px}
+.sol.show{display:block}
+.sol ol{padding-left:1.3em;margin:0}
+.sol li{margin-bottom:7px}
+.sol .key{background:var(--okbg);border-radius:6px;padding:8px 12px;margin-bottom:10px}
+.m{background:var(--bg);padding:1px 5px;border-radius:4px}
+.filter{display:flex;gap:6px;flex-wrap:wrap}
+.filter button{font:inherit;font-size:14.5px;padding:6px 12px;border-radius:20px;border:1.5px solid var(--line);
+  background:var(--panel);color:var(--ink);cursor:pointer}
+.filter button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+[hidden]{display:none!important}
+body.hide-nd .fig .nd, body.hide-cur .fig .cur{display:none}
+@media (max-width:640px){.mgrid{gap:8px}.chip{font-size:14px;padding:8px}header h1{font-size:25px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="cable" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+  <h1>EECC0232 ฝึกก่อนสอบ</h1>
+  <p>ยึดตามที่อาจารย์ใบ้ในคลิปและแนวข้อสอบของภาควิชาเป็นหลัก เนื้อหาจากสไลด์ที่อาจารย์ไม่ได้พูดถึงติดป้าย “เสริม” และไม่ถูกสุ่มถาม เว้นแต่จะเปิดเอง ข้อ 1–4 สุ่มตัวเลขใหม่ได้ ใช้ตัวเลขตัวอย่างของอาจารย์ได้ หรือใส่ตัวเลขเองแล้วให้โปรแกรมทำเฉลย</p>
+</header>
+
+<nav role="tablist">
+  <button role="tab" data-tab="calc" aria-selected="true">ฝึกคำนวณ ข้อ 1–4</button>
+  <button role="tab" data-tab="fill" aria-selected="false">เติมคำ ข้อ 5–6</button>
+  <button role="tab" data-tab="match" aria-selected="false">จับคู่ ข้อ 5–6</button>
+  <button role="tab" data-tab="notes" aria-selected="false">สรุปเนื้อหา ข้อ 5–6</button>
+</nav>
+
+<section id="tab-calc">
+  <div class="bar">
+    <div class="filter" id="cFilter">
+      <button aria-pressed="true" data-f="all">ทั้งหมด</button>
+      <button aria-pressed="false" data-f="1">ข้อ 1 DC</button>
+      <button aria-pressed="false" data-f="2">ข้อ 2 Phasor</button>
+      <button aria-pressed="false" data-f="3">ข้อ 3 Complex Power</button>
+      <button aria-pressed="false" data-f="4">ข้อ 4 สามเฟส</button>
+    </div>
+    <span class="grow"></span>
+    <label class="score" style="font-weight:500"><input type="checkbox" id="tNode" checked> แสดงโหนด</label>
+    <label class="score" style="font-weight:500"><input type="checkbox" id="tCur" checked> แสดงทิศกระแส</label>
+  </div>
+  <div class="said"><b>ข้อ 1–4 เป็นข้อคำนวณ ข้อละ 25 คะแนน</b> อาจารย์ย้ำว่าต้องไปหัดทำเอง โดยเฉพาะหัดกดเครื่องคิดเลขโหมด complex ถ้าตั้งสมการถูกก็ได้คะแนนแม้ผลลัพธ์สุดท้ายผิด และการวาดรูปวงจรพร้อมทิศกระแสจะได้คะแนนเพิ่ม</div>
+<p class="hint">ปุ่ม “ตัวเลขตัวอย่างของอาจารย์” ใช้ค่าจากตัวอย่างที่อาจารย์ชี้ในคลิป กด “สุ่มตัวเลขใหม่” ได้เรื่อย ๆ หรือกด “ใส่ตัวเลขเอง” เพื่อใส่ค่าจากโจทย์จริงแล้วดูเฉลย ตอบเป็นทศนิยม คลาดเคลื่อนได้ประมาณ 1% มุมใส่เป็นองศา (มุม 195° กับ −165° ถือว่าเท่ากัน) กระแสที่ไหลสวนทิศที่กำหนดให้ใส่ค่าติดลบ</p>
+  <div id="cList"></div>
+</section>
+
+<section id="tab-fill" hidden>
+  <div class="bar">
+    <select id="fTopic" aria-label="เลือกหัวข้อ"></select>
+    <select id="fCount" aria-label="จำนวนข้อ"><option value="5">5 ข้อ</option><option value="6">6 ข้อ</option><option value="10">10 ข้อ</option><option value="12" selected>12 ข้อ</option><option value="15">15 ข้อ</option><option value="20">20 ข้อ</option><option value="30">30 ข้อ</option><option value="all">ทั้งหมด</option></select>
+    <button class="btn primary" id="fNew">สุ่มข้อสอบชุดใหม่</button>
+    <button class="btn" id="fCheck">ตรวจคำตอบ</button><label class="score" style="font-weight:500"><input type="checkbox" class="xtoggle"> รวมเนื้อหาเสริมจากสไลด์</label>
+    <span class="grow"></span>
+    <span class="score" id="fScore"></span>
+  </div>
+  <p class="hint">แตะช่องว่างให้เป็นสีฟ้า แล้วแตะคำในกล่อง คำในกล่องใช้ซ้ำได้ และมีคำหลอกปน ถ้าจะล้างช่องให้แตะช่องที่เติมแล้วซ้ำ</p>
+  <div class="bank"><h3>กล่องคำตอบ</h3><div class="words" id="fBank"></div></div>
+  <ol class="qlist" id="fList"></ol>
+  <div class="bar" style="margin-top:14px"><span class="grow"></span><button class="btn" id="fReset">ล้างสถิติข้อที่เคยผิด</button></div>
+</section>
+
+<section id="tab-match" hidden>
+  <div class="bar">
+    <select id="mTopic" aria-label="เลือกหัวข้อ"></select>
+    <select id="mCount" aria-label="จำนวนข้อ"><option value="5">5 ข้อ</option><option value="6" selected>6 ข้อ</option><option value="10">10 ข้อ</option><option value="12">12 ข้อ</option><option value="15">15 ข้อ</option><option value="20">20 ข้อ</option><option value="30">30 ข้อ</option><option value="all">ทั้งหมด</option></select>
+    <button class="btn primary" id="mNew">สุ่มชุดใหม่</button><label class="score" style="font-weight:500"><input type="checkbox" class="xtoggle"> รวมเนื้อหาเสริมจากสไลด์</label>
+    <span class="grow"></span>
+    <span class="score" id="mScore"></span>
+  </div>
+  <p class="hint">แตะคำถามทางซ้าย แล้วแตะคำตอบทางขวาที่คู่กัน จับคู่ถูกแล้วจะมีเหตุผลขึ้นด้านล่าง</p>
+  <div class="mgrid"><div class="col" id="mLeft"></div><div class="col" id="mRight"></div></div>
+  <div id="mDone"></div>
+  <div class="log" id="mLog"></div>
+</section>
+
+<section id="tab-notes" class="notes" hidden>
+<p class="hint">กดหัวข้อเพื่อเปิด/ปิด กรอบสีฟ้าคือสิ่งที่อาจารย์พูดไว้ในคลิป กรอบสีแดงคือจุดที่มักสับสน</p>
+<div class="said"><b>ข้อ 5 และ 6 เป็นแบบเติมคำ ไม่มีคำนวณ รวม 50 คะแนน</b> มีกล่องคำตอบใหญ่ ๆ อยู่ด้านบน ให้เลือกข้อความมาเขียนลงช่อง คำตอบใช้ซ้ำได้ (ป้องกันการเดา) ไม่ใช่ตัวเลือก ก ข ค ต้องเขียนข้อความเต็ม เช่น “แอโนด” หรือ “ทรานซิสเตอร์แบบไบโพลาร์” และเขียนลายมือให้อ่านออก ไม่งั้นไม่ได้คะแนน สัญลักษณ์ที่ใช้ในข้อสอบอาจารย์ปรับให้ตรงกับที่เรียนในห้องแล้ว</div>
+
+<div class="said"><b>แนวข้อสอบข้อ 5:</b> ถามชนิด การระบุขา การทำงาน การใช้งาน และทิศทางการไหลของกระแส ของอุปกรณ์ 3 ชนิด คือ ไดโอด (ซีเนอร์ไดโอด), BJT, MOS<br><b>อาจารย์ถามตัวอย่างในห้อง:</b> ใช้ธาตุอะไรทำ (Si, Ge) อยู่หมู่ไหน · สาร N และสาร P ใช้อะไรเป็นพาหะหลัก · ไดโอดมีกี่ขา ชื่ออะไร (แอโนด แคโทด) · ต้องมีแรงดัน 0.7 V ถึงจะมีกระแสไหล · LED ถือเป็นไดโอดไหม · สัญลักษณ์นี้คืออะไร (ซีเนอร์ไดโอด) · วงจรนี้คืออะไร (half-wave / full-wave rectifier) · อุปกรณ์นี้คือทรานซิสเตอร์ชนิดอะไร มีขาอะไร (E, B, C) · สมการ IC = IS·e<sup>VBE/VT</sup> เป็นของอะไร · FET มีขา D, G, S, B</div>
+<details open><summary>ข้อ 5.1 สารกึ่งตัวนำ</summary>
+<ul>
+<li>สารกึ่งตัวนำที่ใช้ทำไดโอดและทรานซิสเตอร์คือ <b>ซิลิคอน (Si)</b> และ <b>เจอร์เมเนียม (Ge)</b> อยู่ <b>หมู่ 4</b> มีวาเลนซ์อิเล็กตรอน 4 ตัว</li>
+<li>สารบริสุทธิ์เรียก intrinsic สารที่เจือแล้วเรียก extrinsic <span class="extra-tag">เสริม</span></li>
+</ul>
+<div class="tw"><table>
+<tr><th></th><th>N-type</th><th>P-type</th></tr>
+<tr><td>เจือด้วยธาตุ</td><td>หมู่ 5 เช่น P, As, Sb (donor ผู้ให้)</td><td>หมู่ 3 เช่น B, Ga, In (acceptor ผู้รับ)</td></tr>
+<tr><td>พาหะส่วนใหญ่ (majority)</td><td>อิเล็กตรอน</td><td>โฮล</td></tr>
+<tr><td>พาหะส่วนน้อย (minority)</td><td>โฮล</td><td>อิเล็กตรอน</td></tr>
+</table></div>
+<ul>
+<li>เอา P ต่อกับ N เกิด <b>รอยต่อ P-N</b> นี่คือโครงสร้างของไดโอด (ตรงรอยต่อมี depletion region <span class="extra-tag">เสริม</span>)</li>
+<li>VLSI, ห้องสะอาด ISO 14644, HEPA filter <span class="extra-tag">เสริม</span> อยู่ในสไลด์ แต่อาจารย์ไม่ได้พูดถึงตอนบอกแนว</li>
+</ul>
+</details>
+
+<details><summary>ข้อ 5.2 ไดโอด, ซีเนอร์, LED, วงจรเรียงกระแส</summary>
+<div class="sym" id="symDiode"></div>
+<ul>
+<li>ไดโอดมี 2 ขา: <b>แอโนด (A)</b> ฝั่งฐานสามเหลี่ยม ต่อสาร P และ <b>แคโทด (K)</b> ฝั่งขีด ต่อสาร N ตัวจริงมีแถบสีฝั่งแคโทด</li>
+<li>ลูกศรในสัญลักษณ์ชี้ทิศกระแสที่ไหลได้: <b>แอโนด → แคโทด</b></li>
+<li><b>Forward bias</b> คือแอโนดศักย์สูงกว่าแคโทด ไดโอดนำกระแส แรงดันตกคร่อม Si ≈ <b>0.7 V</b>, Ge ≈ 0.3 V</li>
+<li><b>Reverse bias</b> คือแคโทดศักย์สูงกว่า มีกระแสไหลน้อยมาก ถ้าเพิ่มแรงดันย้อนกลับมากจนถึงย่าน <b>reverse breakdown</b> กระแสจะไหลมาก</li>
+<li>ไดโอดอุดมคติ (ideal): นำกระแสเหมือนสวิตช์ปิด (vD = 0) และไม่นำเหมือนสวิตช์เปิด (iD = 0)</li>
+<li><b>ซีเนอร์ไดโอด</b> ตั้งใจใช้งานในย่าน reverse breakdown เพื่อ <b>รักษาแรงดันให้คงที่</b> (voltage regulator)</li>
+<li><b>LED</b> = Light Emitting Diode <b>เป็นไดโอดชนิดหนึ่ง</b> (อาจารย์ถามในห้อง) ต้องต่อ forward bias ถึงจะสว่าง และควรมีตัวต้านทานจำกัดกระแส</li>
+<li><b>วงจรเรียงกระแส</b> (rectifier) แปลง AC เป็น DC: แบบครึ่งคลื่น (half-wave) ใช้ไดโอด 1 ตัว, แบบเต็มคลื่นบริดจ์ (bridge) ใช้ 4 ตัว </li>
+<li>ไดโอดในรถยนต์ให้ไดชาร์จประจุแบตและกันไหลย้อน, ตัวต้านทานจำกัดกระแส, วงจรขยาย v<sub>o</sub> = A<sub>v</sub>v<sub>i</sub> <span class="extra-tag">เสริม</span></li>
+</ul>
+</details>
+
+<details><summary>ข้อ 5.3 BJT (Bipolar Junction Transistor)</summary>
+<div class="sym" id="symBJT"></div>
+<ul>
+<li>3 ขา: <b>Emitter (E), Base (B), Collector (C)</b> โครงสร้าง NPN หรือ PNP ชั้นกลางคือเบส มี 2 รอยต่อ คือ base-emitter และ base-collector</li>
+<li>คำว่า bipolar หมายถึงใช้พาหะทั้งอิเล็กตรอนและโฮล <span class="extra-tag">เสริม</span></li>
+<li><b>ลูกศรอยู่ที่ขาอิมิตเตอร์เสมอ</b> และชี้ทิศกระแส: NPN ลูกศร<b>ชี้ออก</b>, PNP ลูกศร<b>ชี้เข้า</b></li>
+<li>ทิศกระแส NPN: เข้าที่ C และ B แล้วออกที่ E ส่วน PNP: เข้าที่ E แล้วออกที่ C และ B</li>
+<li>สมการ: <b>i<sub>E</sub> = i<sub>C</sub> + i<sub>B</sub></b>, <b>β = i<sub>C</sub>/i<sub>B</sub></b>, <b>α = i<sub>C</sub>/i<sub>E</sub></b>, <b>i<sub>C</sub> ≈ I<sub>S</sub>·exp(v<sub>BE</sub>/V<sub>T</sub>)</b> โดย V<sub>T</sub> ≈ 25–26 mV ที่อุณหภูมิห้อง</li>
+<li>BJT <b>ควบคุมด้วยกระแสเบส</b></li>
+</ul>
+<div class="tw"><table>
+<tr><th>ย่านทำงาน</th><th>เงื่อนไข (NPN)</th><th>ใช้เป็น</th></tr>
+<tr><td>Cutoff (ตัด)</td><td>v<sub>BE</sub> &lt; 0.5 V, i<sub>B</sub> = i<sub>C</sub> = 0</td><td>สวิตช์ OFF</td></tr>
+<tr><td>Active</td><td>v<sub>BE</sub> ≈ 0.7 V, i<sub>C</sub> = βi<sub>B</sub>, v<sub>CE</sub> &gt; 0.2 V</td><td>วงจรขยาย</td></tr>
+<tr><td>Saturation (อิ่มตัว)</td><td>v<sub>BE</sub> ≈ 0.7 V, v<sub>CE</sub> ≈ 0.2 V, i<sub>C</sub> &lt; βi<sub>B</sub></td><td>สวิตช์ ON</td></tr>
+</table></div>
+<div class="trap">BJT ขยายสัญญาณในย่าน <b>active</b> แต่ MOSFET ขยายสัญญาณในย่าน <b>saturation</b> คำว่า saturation ของสองตัวนี้คนละความหมาย</div>
+</details>
+
+<details><summary>ข้อ 5.4 MOSFET (Field Effect Transistor)</summary>
+<div class="sym" id="symMOS"></div>
+<ul>
+<li>FET = Field Effect Transistor, MOSFET = Metal-Oxide-Semiconductor FET</li>
+<li>4 ขา: <b>Drain (D), Gate (G), Source (S), Body/Bulk (B)</b> ปกติ body ต่อกับ source</li>
+<li>ใต้เกตมีฉนวน <b>ซิลิคอนไดออกไซด์ (SiO₂)</b> กระแสเกตจึงเกือบเป็นศูนย์ MOSFET <b>ควบคุมด้วยแรงดัน V<sub>GS</sub></b></li>
+<li>NMOS สร้างบน substrate ชนิด P พาหะในช่องนำคืออิเล็กตรอน กระแสไหล <b>D → S</b> นำเมื่อ V<sub>GS</sub> &gt; V<sub>t</sub> (threshold)</li>
+<li>PMOS พาหะคือโฮล กระแสไหล <b>S → D</b> นำเมื่อ V<sub>GS</sub> &lt; V<sub>t</sub> (ค่าลบ)</li>
+<li>CMOS, power MOSFET, สมการกระแสในตาราง <span class="extra-tag">เสริม</span></li>
+</ul>
+<div class="tw"><table>
+<tr><th>ย่านทำงาน (NMOS)</th><th>เงื่อนไข</th><th>กระแส</th><th>ใช้เป็น</th></tr>
+<tr><td>Cutoff</td><td>v<sub>GS</sub> &lt; V<sub>t</sub></td><td>i<sub>D</sub> = 0</td><td>สวิตช์ OFF</td></tr>
+<tr><td>Triode</td><td>v<sub>DS</sub> &lt; v<sub>GS</sub> − V<sub>t</sub></td><td>K[2(v<sub>GS</sub>−V<sub>t</sub>)v<sub>DS</sub> − v<sub>DS</sub>²]</td><td>สวิตช์ ON</td></tr>
+<tr><td>Saturation</td><td>v<sub>DS</sub> ≥ v<sub>GS</sub> − V<sub>t</sub></td><td>K(v<sub>GS</sub> − V<sub>t</sub>)²</td><td>วงจรขยาย</td></tr>
+</table></div>
+</details>
+
+<div class="said"><b>แนวข้อสอบข้อ 6:</b> การใช้งาน ชนิด ประเภท การเลือกใช้ และมาตรฐานของสายประเภทต่าง ๆ ข้อควรระวังและความปลอดภัยทั้งแรงดันสูงและแรงดันต่ำ<br><b>อาจารย์พูดในคลิป:</b> สายไฟที่ใช้ในอาคารเป็นแบบไหน สายร้อยท่อ สายฝังดิน · สายทองแดงกับสายอะลูมิเนียมใช้ตอนไหน อะลูมิเนียมเดินลอยในอากาศเข้าบ้าน เอาเข้ามาใช้ในบ้านไม่ได้เพราะความต้านทานสูงและดัดงอยาก · บ้านที่ทำโซลาร์เซลล์แล้วใช้สายอะลูมิเนียม จุดที่หักงอสะสมความร้อนจนไหม้ · ต่อไฟเข้าบ้านต้องให้การไฟฟ้ามาตรวจ · สีสายไฟ 3 เฟส และเฟสเดียวเข้าบ้าน สายเฟส 1, 2, 3 สายนิวทรัล สายดิน ตามมาตรฐานปี 2553 · ใช้เครื่องใช้ไฟฟ้ามาก ขนาดสายต้องใหญ่ขึ้น · เน้นความปลอดภัย เพราะสายในบ้านต้องใช้ไปอีก 30 ปี</div>
+<details open><summary>ข้อ 6.1 สายไฟ มาตรฐาน และสี</summary>
+<ul>
+</ul>
+<div class="tw"><table>
+<tr><th>มาตรฐาน / หน่วยงาน</th><th>คุมเรื่อง</th></tr>
+<tr><td>มอก. 11-2553</td><td>สายทองแดงหุ้มฉนวน PVC (สีสายแบบใหม่)</td></tr>
+<tr><td>มอก. 11-2531</td><td>มาตรฐานเก่า (สีสายแบบเก่า)</td></tr>
+<tr><td>มอก. 293-2541</td><td>สายอะลูมิเนียมหุ้มฉนวน PVC</td></tr>
+<tr><td>มอก. 982-2556</td><td>ท่อร้อยสายไฟ HDPE</td></tr>
+<tr><td>วสท. 2556</td><td>มาตรฐานสายไฟฟ้าและการติดตั้งทางไฟฟ้า</td></tr>
+<tr><td>กฟน.</td><td>ห้ามใช้สายอะลูมิเนียมเดินภายในระบบไฟฟ้าแรงต่ำ</td></tr>
+<tr><td>กฟภ.</td><td>ยอมให้อะลูมิเนียมเป็นสายเมน เฉพาะเดินลอยในอากาศนอกอาคาร</td></tr>
+</table></div>
+<ul>
+<li>สร้างบ้านหรือต่อไฟเข้าบ้าน ต้องให้<b>การไฟฟ้าเข้ามาตรวจสอบ</b>การติดตั้งก่อนจ่ายไฟ</li>
+</ul>
+<h4>สีสายไฟ</h4>
+<div class="said">ตารางสีสายไฟ อาจารย์ย้ำสองรอบว่า “ออกข้อสอบแน่นอน” ต้องแยกมาตรฐานเก่ากับใหม่ให้ออก เพราะต่างกันเกือบทุกเส้น</div>
+<div class="tw"><table>
+<tr><th>สาย</th><th>ใหม่ มอก. 11-2553</th><th>เก่า มอก. 11-2531</th></tr>
+<tr><td>เฟส L1</td><td><span class="sw" style="background:var(--L1)"></span>น้ำตาล</td><td>ดำ</td></tr>
+<tr><td>เฟส L2</td><td><span class="sw" style="background:#1B1B1B"></span>ดำ</td><td>แดง</td></tr>
+<tr><td>เฟส L3</td><td><span class="sw" style="background:var(--L3)"></span>เทา</td><td>น้ำเงิน</td></tr>
+<tr><td>นิวทรัล N</td><td><span class="sw" style="background:var(--N)"></span>ฟ้า</td><td>เทา <b>(ระวัง: ใหม่เทาคือ L3)</b></td></tr>
+<tr><td>สายดิน G (PE)</td><td><span class="sw" style="background:repeating-linear-gradient(90deg,var(--G) 0 8px,var(--Gy) 8px 12px)"></span>เขียวแถบเหลือง</td><td>เขียวแถบเหลือง</td></tr>
+</table></div>
+<p>ตัว <b>-G</b> ท้ายชื่อ (VAF-G, VCT-G, NYY-G) คือมีสายดินอยู่ในสายเส้นนั้น</p>
+<p>บ้านที่ใช้ไฟเฟสเดียวจะมีสายเฟส (น้ำตาล) + นิวทรัล (ฟ้า) + สายดิน (เขียวแถบเหลือง)</p>
+<h4>ชนิดสายที่ใช้ในบ้านและอาคาร</h4>
+<div class="tw"><table>
+<tr><th>สาย</th><th>ลักษณะ</th><th>ใช้งาน</th><th>ห้าม / ข้อจำกัด</th></tr>
+<tr><td>THW</td><td>สายแข็ง 450/750 V</td><td><b>ร้อยท่อ</b> ใต้ฝ้าและในผนัง ใช้มากที่สุดในอาคาร</td><td>ไม่ควรฝังดิน</td></tr>
+<tr><td>VAF / VAF-G</td><td>สายแข็งแบน 300/500 V</td><td><b>เกาะผนังตีกิ๊บ</b></td><td>ห้ามร้อยท่อ ห้ามฝังดิน</td></tr>
+<tr><td>VCT / VCT-G</td><td>สายอ่อน ฉนวน 2 ชั้น</td><td>อุปกรณ์ที่ต้อง<b>เคลื่อนย้าย</b> ทำปลั๊กพ่วง</td><td></td></tr>
+<tr><td>NYY / NYY-G</td><td>เปลือกหนา</td><td><b>ฝังดินโดยตรง</b>หรือร้อยท่อ ภายนอกอาคาร เดินบนราง</td><td></td></tr>
+<tr><td>VFF</td><td>สายอ่อนคู่ 300 V</td><td>เครื่องใช้ไฟฟ้าตามบ้าน ปลั๊กพ่วงทำเองในบ้าน</td><td></td></tr>
+<tr><td>VSF</td><td>สายอ่อนเดี่ยว 300 V</td><td>เดินลอย หรือใช้ในตู้คอนโทรล</td><td></td></tr>
+</table></div>
+<h4>ทองแดง vs อะลูมิเนียม</h4>
+<ul>
+<li>อะลูมิเนียม: เบากว่า (≈ 1/3 ของทองแดงที่ปริมาตรเท่ากัน) ราคาถูก แต่นำไฟฟ้าได้แค่ ≈ 62% ของทองแดง และ<b>เปราะ หักง่าย</b> ดัดโค้งไม่ได้ดี</li>
+<li>จึงเหมาะกับ<b>สายส่งแรงสูงแขวนลอยในอากาศระยะไกล</b> เพราะลดน้ำหนักเสาและโครงสร้าง</li>
+<li><b>กฟน.</b> ห้ามใช้สายอะลูมิเนียมเดินภายในระบบแรงต่ำ, <b>กฟภ.</b> อนุญาตเฉพาะเป็นสายเมนเดินลอยในอากาศบนวัสดุฉนวน ภายนอกอาคาร ถ้าเดินผิดเงื่อนไข การไฟฟ้าอาจไม่จ่ายไฟให้</li>
+<li>ต่อเติมเองด้วยสายอะลูมิเนียมในบ้าน (เช่น งานโซลาร์เซลล์) จุดหักงอจะร้อนสะสมเรื่อย ๆ จนไหม้ได้</li>
+</ul>
+<h4>ขนาดสายและเบรกเกอร์ (ร้อยท่อ)</h4>
+<div class="tw"><table>
+<tr><th>วงจร</th><th>สาย</th><th>เบรกเกอร์</th></tr>
+<tr><td>แสงสว่าง</td><td>THW 1.5 ตร.มม. (L + N)</td><td>MCB 10 A</td></tr>
+<tr><td>ปลั๊กไฟ</td><td>THW 2.5 ตร.มม. + ดิน 2.5</td><td>MCB 16 A</td></tr>
+<tr><td>เครื่องทำน้ำอุ่น 3,500–6,000 W</td><td>THW 6 ตร.มม. + ดิน 4</td><td>MCB 25 A (สไลด์ออกแบบ: 20 A สำหรับ 3,500 W)</td></tr>
+<tr><td>เครื่องทำน้ำร้อน 8,000–10,000 W</td><td>THW 10 ตร.มม. + ดิน 4</td><td>MCB 32–50 A</td></tr>
+<tr><td>แอร์ 18,000 BTU</td><td>THW 4 ตร.มม. + ดิน 4</td><td>MCB 16 A</td></tr>
+<tr><td>แอร์ 20,000–24,000 BTU</td><td>THW 6 ตร.มม. + ดิน 4</td><td>MCB 25 A</td></tr>
+<tr><td>แอร์ 30,000–36,000 BTU</td><td>THW 6 ตร.มม. + ดิน 4</td><td>MCB 32 A</td></tr>
+</table></div>
+<ul>
+<li>ขนาดสายบอกเป็น<b>ตารางมิลลิเมตร (sq.mm.)</b> ของพื้นที่หน้าตัด ขนาดท่อบอกเป็น<b>นิ้ว หรือ หุน</b>: <b>4 หุน = 1/2 นิ้ว (≈ 13 มม.)</b>, <b>8 หุน = 1 นิ้ว (≈ 25 มม.)</b></li>
+<li>กระแสไหลผ่านตัวนำทำให้เกิด<b>ความร้อน</b>และ<b>สนามแม่เหล็ก</b> จึงต้องเลือกขนาดสายให้พอ และต้องแยกสายสัญญาณ RG6/CAT6 ออกจากสายไฟ (ถูกรบกวนจากสนาม 50 Hz)</li>
+<li>ต้องจำกัดจำนวนสายในท่อเดียวกัน เพราะท่อปิดระบายความร้อนไม่ได้ ฉนวนอาจละลายจนทองแดงแตะกัน</li>
+<li>เครื่องใช้กินไฟมาก กระแสมาก ต้องใช้สายใหญ่ขึ้น ถ้าสายเล็กเกิน สายจะร้อน ฉนวนเสื่อม และเกิดไฟไหม้ได้</li>
+</ul>
+</details>
+
+<details><summary>ข้อ 6.2 ท่อร้อยสาย และแนวคิดการเดินระบบสายไฟ</summary>
+<div class="tw"><table>
+<tr><th>ท่อ</th><th>ลักษณะ</th></tr>
+<tr><td>EMT</td><td>ท่อโลหะบาง (Electrical Metallic Tubing)</td></tr>
+<tr><td>IMC</td><td>ท่อโลหะหนาปานกลาง (Intermediate Metallic Conduit)</td></tr>
+<tr><td>RSC</td><td>ท่อโลหะหนาพิเศษ (Rigid Steel Conduit)</td></tr>
+<tr><td>Flexible Metal Conduit</td><td>ท่อโลหะอ่อน มีแบบกันน้ำ</td></tr>
+<tr><td>PVC สีเหลือง</td><td>ท่อพีวีซีสำหรับร้อยสายไฟ</td></tr>
+<tr><td>HDPE</td><td>ท่อพลาสติกความหนาแน่นสูง <b>สีดำ ใช้ฝังดิน</b> มอก. 982-2556 (เกรด PE80/PE100 และค่า PN <span class="extra-tag">เสริม</span>)</td></tr>
+<tr><td>Wireway (วายเวย์)</td><td>รางเดินสาย</td></tr>
+</table></div>
+<ul>
+<li>ต่อสายด้วย<b>วายนัท</b> แล้วพันเทป</li>
+<li>สายสัญญาณ เช่น RG6 (ทีวี), CAT6 (LAN) ต้อง<b>เดินแยกท่อหรือแยกวายเวย์</b>จากสายไฟ</li>
+<li>สายดินของเครื่องทำน้ำอุ่น น้ำร้อน และแอร์ ให้<b>เดินตรงจากตู้</b> ห้ามพ่วงระหว่างตัวเครื่องกับตู้ควบคุม</li>
+<li>แยกวงจรนอกบ้านออกจากในบ้าน เพราะนอกบ้านไฟรั่วได้ง่าย แยกวงจรปลั๊ก แสงสว่าง แอร์ น้ำอุ่น ปั๊มน้ำ</li>
+<li><b>แยกชั้น 1 กับชั้น 2</b>: น้ำท่วมชั้นล่างก็ตัดเฉพาะชั้นล่างได้ และหาจุดที่ช็อตได้ง่ายขึ้น</li>
+<li>ตู้เย็นแยกวงจรเป็น option ไว้ เผื่อปิดไฟทั้งบ้านเวลาไม่อยู่หลายวันแต่ตู้เย็นยังทำงาน</li>
+<li>แบ่งวงจรเป็น<b>โซน</b>: ประหยัดค่าใช้จ่าย แต่ไฟเสียทีเดียวดับทั้งโซน / แบ่ง<b>ตามห้อง</b>: แพงกว่า แต่ไฟเสียเฉพาะห้องนั้น</li>
+<li>แอร์ควรมี safety breaker ใกล้โหลด เช่นที่ประตูห้องนอน</li>
+<li><b>หลักดิน</b>: ตอกในจุดที่ดินค่อนข้างชื้น เชื่อมหัวหลักดินกับสายดินด้วยการหลอมโลหะ ค่าความต้านทานไม่ควรเกิน <b>5 โอห์ม</b></li>
+</ul>
+</details>
+
+<details><summary>ข้อ 6.3 อุปกรณ์ป้องกัน</summary>
+<div class="tw"><table>
+<tr><th>อุปกรณ์</th><th>ป้องกันอะไร</th><th>จุดที่ต้องจำ</th></tr>
+<tr><td>Circuit Breaker (CB)</td><td>กระแสเกินพิกัด</td><td><b>ไม่ได้กันไฟดูด</b> ถ้าเลือก CB ใหญ่กว่าสาย สายอาจไหม้ก่อน CB ตัด</td></tr>
+<tr><td>MCB</td><td>กระแสเกิน</td><td>เบรกเกอร์ลูกย่อยขนาดเล็ก ใช้ในตู้ตามบ้านและคอนโด</td></tr>
+<tr><td>MCCB</td><td>กระแสเกิน</td><td>แบบโมลด์เคส ทนกระแสสูง ตัวใหญ่ ราคาแพง</td></tr>
+<tr><td>ACB</td><td>กระแสเกิน</td><td>เบรกเกอร์แรงดันต่ำประเภทที่สาม ใช้กับระบบขนาดใหญ่ (MCB, MCCB, ACB คือ CB แรงต่ำ &lt; 1,000 V)</td></tr>
+<tr><td>Safe-T-Cut</td><td>ไฟดูด</td><td>ใช้วงจรอิเล็กทรอนิกส์ ราคาสูง ใช้นานแล้วเสื่อม</td></tr>
+<tr><td>ELCB / ELB</td><td>ไฟรั่ว ไฟดูด</td><td>เปรียบเทียบกระแสสายไปกับสายกลับ ถ้าไม่เท่ากันแปลว่ามีไฟรั่ว ตัดทันที ส่วนใหญ่อยู่ใน<b>เครื่องทำน้ำอุ่น</b> (ใช้กับตู้น้ำเย็น ปั๊ม เครื่องซักผ้าด้วย)</td></tr>
+<tr><td>RCCB / RCD</td><td>ไฟรั่วเท่านั้น</td><td>ต้องใช้คู่กับเบรกเกอร์ พิกัดตัดไม่เกิน <b>30 mA</b> ภายใน <b>0.04 วินาที</b></td></tr>
+<tr><td>RCBO</td><td>ไฟรั่ว + ไฟเกิน + ลัดวงจร</td><td>ใช้ตัวเดียวจบ แต่ราคาสูง</td></tr>
+<tr><td>GFCI <span class="extra-tag">เสริม</span></td><td>ไฟรั่วลงดิน</td><td>Ground Fault Circuit Interrupter</td></tr>
+<tr><td>Double Insulation <span class="extra-tag">เสริม</span></td><td>ไฟดูดจากตัวเครื่อง</td><td>ฉนวนสองชั้น เรียกว่า <b>Class 2</b> ไม่ต้องใช้สายดิน</td></tr>
+</table></div>
+<h4>ตารางไฟรั่ว ไฟเกิน ไฟลัดวงจร</h4>
+<div class="said">จุดที่ออกจับคู่ได้ง่ายที่สุดในเรื่องอุปกรณ์ป้องกัน</div>
+<div class="tw"><table>
+<tr><th>อุปกรณ์</th><th>ไฟรั่ว</th><th>ไฟเกิน</th><th>ไฟลัดวงจร</th><th>หมายเหตุ</th></tr>
+<tr><td>RCCB</td><td>ตัด</td><td>ไม่ตัด</td><td>ไม่ตัด</td><td>ต้องใช้คู่กับเบรกเกอร์</td></tr>
+<tr><td>ELCB</td><td>ตัด</td><td>ไม่ตัด</td><td>ตัด</td><td>ส่วนใหญ่อยู่ในเครื่องทำน้ำอุ่น</td></tr>
+<tr><td>RCBO</td><td>ตัด</td><td>ตัด</td><td>ตัด</td><td>ตัวเดียวจบ ราคาสูง</td></tr>
+<tr><td>MCB / CB</td><td>ไม่ตัด</td><td>ตัด</td><td>ตัด</td><td>ไม่ได้กันไฟดูด</td></tr>
+</table></div>
+<ul>
+<li>ถ้าเลือก CB ใหญ่กว่าขนาดสายไฟ สายไฟอาจไหม้ก่อน CB ตัด</li>
+<li>ค่าความต้านทานระบบกราวด์ที่บ้านไม่ควรเกิน <b>5 โอห์ม</b> พิกัดกระแสรั่วของอุปกรณ์กันดูดในบ้าน <b>30 mA</b></li>
+</ul>
+</details>
+
+<details><summary>ข้อ 6.4 อันตรายจากไฟฟ้าและความปลอดภัย</summary>
+<ul>
+<li>อันตรายหลัก 3 อย่าง: <b>ไฟดูด (electric shock), แผลไหม้ (burns), ไฟไหม้และระเบิด</b> ไฟดูดยังทำให้บาดเจ็บทางอ้อมได้ เช่นตกจากที่สูง</li>
+<li>สาเหตุการตายหลักจากไฟดูดคือ <b>หัวใจเต้นผิดจังหวะ (ventricular fibrillation)</b></li>
+<li>สาเหตุของอุบัติเหตุ: ใช้ไฟเกินพิกัด (overload), ฉนวนเสื่อมหรือลัดวงจร, จุดต่อหลวม, ไม่บำรุงรักษาเครื่องใช้, เดินสายผิดวิธี, ระบายอากาศไม่ดีจนความร้อนสะสม, และร่างกายเป็นทางไหลของกระแสลงดิน</li>
+<li><b>Let-go threshold</b> คือกระแสระดับต่ำสุดที่กล้ามเนื้อหดตัวจนปล่อยตัวเองออกจากแหล่งไฟไม่ได้</li>
+</ul>
+<div class="tw"><table>
+<tr><th>กระแส AC</th><th>ผลต่อร่างกาย</th></tr>
+<tr><td>≈ 1 mA</td><td>รู้สึกเสียวซ่าเล็กน้อย</td></tr>
+<tr><td>2–9 mA</td><td>ช็อกเล็กน้อย</td></tr>
+<tr><td>3–5 mA</td><td>let-go threshold ของเด็ก</td></tr>
+<tr><td>6–10 mA</td><td>let-go threshold ต่ำสุดของผู้ใหญ่</td></tr>
+<tr><td>10–24 mA</td><td>กล้ามเนื้อหดเกร็ง ปล่อยมือไม่ได้ (22 mA: ผู้ใหญ่ 90% ปล่อยตัวเองไม่ได้)</td></tr>
+<tr><td>25–74 mA</td><td>กล้ามเนื้อการหายใจเป็นอัมพาต เจ็บ มีแผลไหม้ที่ทางออก</td></tr>
+<tr><td>75–300 mA</td><td>หัวใจเต้นผิดจังหวะ มักเสียชีวิต</td></tr>
+<tr><td>&gt; 300 mA</td><td>เกือบแน่นอนว่าเสียชีวิต</td></tr>
+</table></div>
+<ul>
+<li>การไฟฟ้าส่งไฟด้วย<b>แรงดันสูง</b>เพื่อให้มีประสิทธิภาพ (กระแสน้อย สูญเสียในสายน้อย) แล้วใช้<b>หม้อแปลงลดแรงดัน</b>ก่อนเข้าอาคาร</li>
+<li>การต่อ<b>สายนิวทรัลลงดิน</b>ที่หม้อแปลง ช่วยให้กระแสจากฟ้าผ่าไหลลงดิน</li>
+<li>การต่อ<b>สายดินที่โครงโลหะ</b>ของเครื่องใช้ ช่วยให้กระแสรั่วไหลลงดินแทนที่จะผ่านตัวคน (สายดินทั้งสองเส้นลงดินเหมือนกัน แต่ต่อคนละจุด)</li>
+<li>ยืนบนพื้นเปียก ความต้านทานระหว่างเท้ากับดินลดลง กระแสไหลมากขึ้น ส่วนรองเท้านิรภัยที่เป็นฉนวนช่วยเพิ่มความต้านทาน</li>
+<li>PPE = Personal Protective Equipment (อุปกรณ์ป้องกันส่วนบุคคล)</li>
+</ul>
+</details>
+</section>
+</div>
+<script>
+/* ================= device symbols ================= */
+const tx=(x,y,s)=>`<text x="${x}" y="${y}" font-size="13" fill="currentColor" stroke="none">${s}</text>`;
+const S = {
+ diode:`<svg width="170" height="54" viewBox="0 0 170 54" fill="none" stroke="currentColor" stroke-width="2"><line x1="10" y1="27" x2="65" y2="27"/><polygon points="65,12 65,42 95,27" fill="currentColor"/><line x1="95" y1="12" x2="95" y2="42"/><line x1="95" y1="27" x2="160" y2="27"/>${tx(8,16,"a")}${tx(152,16,"b")}</svg>`,
+ diodeAK:`<svg width="170" height="54" viewBox="0 0 170 54" fill="none" stroke="currentColor" stroke-width="2"><line x1="10" y1="27" x2="65" y2="27"/><polygon points="65,12 65,42 95,27" fill="currentColor"/><line x1="95" y1="12" x2="95" y2="42"/><line x1="95" y1="27" x2="160" y2="27"/>${tx(4,16,"Anode")}${tx(112,16,"Cathode")}</svg>`,
+ zener:`<svg width="150" height="54" viewBox="0 0 150 54" fill="none" stroke="currentColor" stroke-width="2"><line x1="10" y1="27" x2="60" y2="27"/><polygon points="60,12 60,42 90,27" fill="currentColor"/><polyline points="82,8 90,12 90,42 98,46"/><line x1="90" y1="27" x2="140" y2="27"/></svg>`,
+ led:`<svg width="150" height="60" viewBox="0 0 150 60" fill="none" stroke="currentColor" stroke-width="2"><line x1="10" y1="34" x2="60" y2="34"/><polygon points="60,19 60,49 90,34" fill="currentColor"/><line x1="90" y1="19" x2="90" y2="49"/><line x1="90" y1="34" x2="140" y2="34"/><line x1="78" y1="14" x2="92" y2="2"/><polyline points="85,3 92,2 91,9"/><line x1="90" y1="18" x2="104" y2="6"/><polyline points="97,7 104,6 103,13"/></svg>`,
+ npn:`<svg width="110" height="100" viewBox="0 0 110 100" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="50" x2="42" y2="50"/><line x1="42" y1="28" x2="42" y2="72"/><line x1="42" y1="40" x2="78" y2="16"/><line x1="78" y1="16" x2="78" y2="4"/><line x1="42" y1="60" x2="78" y2="84"/><line x1="78" y1="84" x2="78" y2="96"/><polygon points="78,84 64,82 70,73" fill="currentColor"/>${tx(84,14,"x")}${tx(0,44,"y")}${tx(84,96,"z")}</svg>`,
+ npnL:`<svg width="110" height="100" viewBox="0 0 110 100" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="50" x2="42" y2="50"/><line x1="42" y1="28" x2="42" y2="72"/><line x1="42" y1="40" x2="78" y2="16"/><line x1="78" y1="16" x2="78" y2="4"/><line x1="42" y1="60" x2="78" y2="84"/><line x1="78" y1="84" x2="78" y2="96"/><polygon points="78,84 64,82 70,73" fill="currentColor"/>${tx(84,14,"C")}${tx(0,44,"B")}${tx(84,96,"E")}</svg>`,
+ pnp:`<svg width="110" height="100" viewBox="0 0 110 100" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="50" x2="42" y2="50"/><line x1="42" y1="28" x2="42" y2="72"/><line x1="42" y1="40" x2="78" y2="16"/><line x1="78" y1="16" x2="78" y2="4"/><line x1="42" y1="60" x2="78" y2="84"/><line x1="78" y1="84" x2="78" y2="96"/><polygon points="44,61 58,63 52,72" fill="currentColor"/>${tx(84,14,"C")}${tx(0,44,"B")}${tx(84,96,"E")}</svg>`,
+ nmos:`<svg width="110" height="100" viewBox="0 0 110 100" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="70" x2="36" y2="70"/><line x1="36" y1="30" x2="36" y2="70"/><line x1="46" y1="26" x2="46" y2="74"/><line x1="46" y1="32" x2="76" y2="32"/><line x1="76" y1="32" x2="76" y2="4"/><line x1="46" y1="68" x2="76" y2="68"/><line x1="76" y1="68" x2="76" y2="96"/><polygon points="76,68 66,63 66,73" fill="currentColor"/>${tx(82,14,"p")}${tx(4,62,"q")}${tx(82,96,"r")}</svg>`,
+ nmosL:`<svg width="110" height="100" viewBox="0 0 110 100" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="70" x2="36" y2="70"/><line x1="36" y1="30" x2="36" y2="70"/><line x1="46" y1="26" x2="46" y2="74"/><line x1="46" y1="32" x2="76" y2="32"/><line x1="76" y1="32" x2="76" y2="4"/><line x1="46" y1="68" x2="76" y2="68"/><line x1="76" y1="68" x2="76" y2="96"/><polygon points="76,68 66,63 66,73" fill="currentColor"/>${tx(82,14,"D")}${tx(4,62,"G")}${tx(82,96,"S")}</svg>`,
+ pmos:`<svg width="110" height="100" viewBox="0 0 110 100" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="30" x2="30" y2="30"/><circle cx="33" cy="30" r="3"/><line x1="36" y1="30" x2="36" y2="70"/><line x1="46" y1="26" x2="46" y2="74"/><line x1="46" y1="32" x2="76" y2="32"/><line x1="76" y1="32" x2="76" y2="4"/><line x1="46" y1="68" x2="76" y2="68"/><line x1="76" y1="68" x2="76" y2="96"/><polygon points="46,32 56,27 56,37" fill="currentColor"/>${tx(82,14,"S")}${tx(4,22,"G")}${tx(82,96,"D")}</svg>`,
+ opamp:`<svg width="140" height="100" viewBox="0 0 140 100" fill="none" stroke="currentColor" stroke-width="2"><polygon points="40,10 40,90 110,50"/><line x1="10" y1="32" x2="40" y2="32"/><line x1="10" y1="68" x2="40" y2="68"/><line x1="110" y1="50" x2="136" y2="50"/>${tx(46,37,"−")}${tx(46,73,"+")}</svg>`,
+ halfwave:`<svg width="220" height="100" viewBox="0 0 220 100" fill="none" stroke="currentColor" stroke-width="2"><circle cx="30" cy="50" r="16"/><path d="M20 50 q5 -10 10 0 t10 0"/><line x1="30" y1="34" x2="30" y2="14"/><line x1="30" y1="14" x2="90" y2="14"/><polygon points="90,4 90,24 110,14" fill="currentColor"/><line x1="110" y1="4" x2="110" y2="24"/><line x1="110" y1="14" x2="180" y2="14"/><polyline points="180,14 180,30 172,34 188,42 172,50 188,58 172,66 180,70 180,86"/><line x1="180" y1="86" x2="30" y2="86"/><line x1="30" y1="86" x2="30" y2="66"/>${tx(192,54,"R")}</svg>`,
+ bridge:`<svg width="150" height="120" viewBox="0 0 150 120" fill="none" stroke="currentColor" stroke-width="2"><polygon points="75,10 135,60 75,110 15,60"/><g fill="currentColor"><polygon points="38,29 50,44 32,42"/><polygon points="98,29 116,42 110,24"/><polygon points="38,91 32,78 50,76"/><polygon points="98,91 110,96 116,78"/></g></svg>`,
+ earth:`<svg width="70" height="70" viewBox="0 0 70 70" fill="none" stroke="currentColor" stroke-width="2"><line x1="35" y1="6" x2="35" y2="36"/><line x1="15" y1="36" x2="55" y2="36"/><line x1="22" y1="46" x2="48" y2="46"/><line x1="29" y1="56" x2="41" y2="56"/></svg>`
+};
+
+/* ================= question bank: t = ข้อ, c = หมวด ================= */
+const CAT={ "5d":"ไดโอด","5s":"สารกึ่งตัวนำ / IC","5b":"BJT","5m":"MOSFET", "6w":"สายไฟ มาตรฐาน และท่อ","6i":"การติดตั้ง / ออกแบบวงจร","6p":"อุปกรณ์ป้องกัน","6f":"อันตรายและความปลอดภัย" };
+const RAW = [
+// ---- diode
+["5d","ขา a ของไดโอดในรูปคือ","แอโนด (Anode)","ฝั่งฐานสามเหลี่ยมคือแอโนด ต่อกับสาร P","diode"],
+["5d","ขา b ของไดโอดในรูป (ฝั่งที่มีขีด) คือ","แคโทด (Cathode)","ฝั่งขีดคือแคโทด ต่อกับสาร N ตัวจริงมีแถบสีฝั่งนี้","diode"],
+["5d","แอโนดของไดโอดต่ออยู่กับสารชนิด","สาร P-type","แอโนด = P, แคโทด = N"],
+["5d","แคโทดของไดโอดต่ออยู่กับสารชนิด","สาร N-type","แอโนด = P, แคโทด = N"],
+["5d","ไดโอดมีกี่ขา","2 ขา","แอโนดกับแคโทด"],
+["5d","ทิศกระแสที่ไหลผ่านไดโอดขณะนำกระแส","จากแอโนดไปแคโทด","ลูกศรในสัญลักษณ์ชี้ทิศกระแส"],
+["5d","Forward bias คือการต่อให้","แอโนดมีศักย์สูงกว่าแคโทด","ต่อถูกทาง ไดโอดจึงนำกระแส"],
+["5d","แรงดันตกคร่อมไดโอดซิลิคอนขณะนำกระแส","ประมาณ 0.7 V","Si ≈ 0.7 V ส่วน Ge ≈ 0.3 V"],
+["5d","แรงดันตกคร่อมไดโอดเจอร์เมเนียมขณะนำกระแส","ประมาณ 0.3 V","Ge ต่ำกว่า Si"],
+["5d","ไดโอดได้รับไบอัสย้อนกลับ (reverse bias) จะมีกระแส","ไหลน้อยมาก (เกือบศูนย์)","รอยต่อ P-N กว้างขึ้น พาหะข้ามไม่ได้"],
+["5d","เพิ่มแรงดันย้อนกลับจนกระแสไหลมากทันที เรียกย่านนี้ว่า","ย่านพังทลายย้อนกลับ (Reverse Breakdown)","ไดโอดธรรมดาไม่ควรใช้ย่านนี้ แต่ซีเนอร์ตั้งใจใช้"],
+["5d","ไดโอดอุดมคติเมื่อนำกระแส (on) มีคุณสมบัติ","iD เป็นบวก และ vD = 0","เหมือนสวิตช์ปิด (ลัดวงจร)"],
+["5d","ไดโอดอุดมคติเมื่อไม่นำกระแส (off) มีคุณสมบัติ","iD = 0 และ vD เป็นลบ","เหมือนสวิตช์เปิด (เปิดวงจร)"],
+["5d","สัญลักษณ์นี้คือ","ซีเนอร์ไดโอด (Zener Diode)","ขีดฝั่งแคโทดมีหางงอเป็นรูปตัว Z","zener"],
+["5d","ซีเนอร์ไดโอดทำงานในย่าน","ย่านพังทลายย้อนกลับ (Reverse Breakdown)","ต่อกลับทาง ให้แรงดันคร่อมคงที่"],
+["5d","หน้าที่หลักของซีเนอร์ไดโอด","รักษาแรงดันให้คงที่ (Voltage Regulator)","ในย่าน breakdown แรงดันแทบไม่เปลี่ยนแม้กระแสเปลี่ยน"],
+["5d","สัญลักษณ์นี้คือ","LED (ไดโอดเปล่งแสง)","มีลูกศรชี้ออกแทนแสงที่เปล่งออกมา","led"],
+["5d","LED ย่อมาจาก","Light Emitting Diode","LED เป็นไดโอดชนิดหนึ่ง"],
+["5d","LED จะสว่างเมื่อต่อไบอัสแบบ","ไบอัสตรง (Forward Bias)","ต่อกลับทางจะไม่นำกระแสจึงไม่สว่าง"],
+["5d","LED จัดเป็นอุปกรณ์ประเภท","ไดโอด (Diode)","อาจารย์ถามในห้องว่า LED เป็นไดโอดไหม คำตอบคือเป็น"],
+["5d","วงจรเรียงกระแสที่ใช้ได้ทั้งครึ่งบวกและครึ่งลบ เรียกว่า","วงจรเรียงกระแสเต็มคลื่น (Full-wave Rectifier)","แบบบริดจ์เป็นชนิดหนึ่งของเต็มคลื่น"],
+["5d","วงจรนี้เรียกว่า","วงจรเรียงกระแสครึ่งคลื่น (Half-wave Rectifier)","ไดโอดตัวเดียว ผ่านเฉพาะครึ่งบวก","halfwave"],
+["5d","ไดโอด 4 ตัวต่อแบบนี้เรียกว่า","วงจรเรียงกระแสเต็มคลื่นแบบบริดจ์ (Bridge Rectifier)","ทั้งครึ่งบวกและครึ่งลบถูกกลับให้ออกขั้วเดียวกัน","bridge"],
+["5d","วงจรเรียงกระแส (Rectifier) ทำหน้าที่","แปลงไฟ AC เป็น DC","ไดโอดยอมให้กระแสไหลทางเดียว"],
+["5d","วงจรเรียงกระแสครึ่งคลื่นใช้ไดโอด","1 ตัว","ผ่านเฉพาะครึ่งไซเคิลเดียว"],
+["5d","วงจรเรียงกระแสเต็มคลื่นแบบบริดจ์ใช้ไดโอด","4 ตัว","แต่ละครึ่งไซเคิลกระแสผ่านไดโอด 2 ตัว"],
+["5d","อุปกรณ์ที่ต่อหลังวงจรเรียงกระแสเพื่อทำให้แรงดันเรียบ","ตัวเก็บประจุกรองแรงดัน (C = IL·T / 2Vr)","ตัวเก็บประจุชาร์จที่ยอดคลื่นแล้วจ่ายไฟช่วงที่คลื่นตก"],
+["5d","ตัวต้านทานต่ออนุกรมกับไดโอดในวงจรชาร์จแบตเตอรี่เรียกว่า","ตัวต้านทานจำกัดกระแส (Current-limiting Resistor)","จำกัดไม่ให้กระแสมากเกินจนไดโอดหรือแบตเสีย"],
+["5d","ไดโอดในระบบไฟรถยนต์มีไว้เพื่อ","ให้ไดชาร์จประจุแบต และกันแบตไหลย้อนกลับ","ไดโอดให้กระแสไหลทางเดียว"],
+["5d","วงจรขยายสัญญาณ (amplifier) ให้เอาต์พุต","รูปคลื่นเหมือนอินพุตแต่ขนาดใหญ่ขึ้น (vo = Av·vi)","Av คืออัตราขยายแรงดัน"],
+// ---- semiconductor / IC
+["5s","ธาตุที่ใช้ทำอุปกรณ์สารกึ่งตัวนำ","ซิลิคอน (Si) และเจอร์เมเนียม (Ge)","ใช้ Si มากที่สุด"],
+["5s","Si และ Ge อยู่หมู่ใดในตารางธาตุ","หมู่ 4 (วาเลนซ์อิเล็กตรอน 4 ตัว)","อะตอมสารกึ่งตัวนำที่ดีมีอิเล็กตรอนวงนอก 4 ตัว"],
+["5s","สารกึ่งตัวนำบริสุทธิ์ที่ยังไม่เจือเรียกว่า","Intrinsic","เจือแล้วเรียก extrinsic"],
+["5s","สารกึ่งตัวนำที่เจือสารแล้วเรียกว่า","Extrinsic","มีทั้งชนิด N และ P"],
+["5s","สาร N-type ได้จากการเจือธาตุ","หมู่ 5 เช่น P, As, Sb","มีอิเล็กตรอนเกินมา 1 ตัว"],
+["5s","สาร P-type ได้จากการเจือธาตุ","หมู่ 3 เช่น B, Ga, In","ขาดอิเล็กตรอน 1 ตัว เกิดโฮล"],
+["5s","ธาตุหมู่ 5 ที่เจือลงไปเรียกว่า","Donor (ผู้ให้อิเล็กตรอน)","ให้อิเล็กตรอนอิสระ"],
+["5s","ธาตุหมู่ 3 ที่เจือลงไปเรียกว่า","Acceptor (ผู้รับอิเล็กตรอน)","รับอิเล็กตรอน ทำให้เกิดโฮล"],
+["5s","พาหะส่วนใหญ่ (majority carrier) ในสาร N-type","อิเล็กตรอน","N = negative"],
+["5s","พาหะส่วนใหญ่ (majority carrier) ในสาร P-type","โฮล (Hole)","P = positive"],
+["5s","พาหะส่วนน้อย (minority carrier) ในสาร N-type","โฮล (Hole)","ตรงข้ามกับพาหะส่วนใหญ่"],
+["5s","บริเวณรอยต่อ P-N ที่ไม่มีพาหะอิสระเรียกว่า","Depletion Region (บริเวณปลอดพาหะ)","ถูก reverse bias จะกว้างขึ้น"],
+["5s","VLSI ย่อมาจาก","Very Large-Scale Integration","วงจรรวมที่มีทรานซิสเตอร์จำนวนมหาศาล"],
+["5s","ขั้นตอนหลักของการทำ IC เรียงตามลำดับ","Design → Fabrication → Testing","ออกแบบ ผลิต แล้วทดสอบ"],
+["5s","มาตรฐานห้องสะอาด (cleanroom) ของโรงงานผลิตชิป","ISO 14644","เดิมใช้ US FED STD 209E"],
+["5s","ระดับห้องสะอาดที่โรงงานชิปต้องการ","ISO 4 (Class 10) ถึง ISO 6 (Class 1,000)","ยิ่งเลขน้อยยิ่งสะอาด"],
+["5s","HEPA Filter ย่อมาจาก","High Efficiency Particulate Air Filter","กรองฝุ่นละเอียดในห้องสะอาด"],
+// ---- BJT
+["5b","อุปกรณ์นี้คือ","ทรานซิสเตอร์ BJT ชนิด NPN","ลูกศรที่อิมิตเตอร์ชี้ออก","npn"],
+["5b","อุปกรณ์นี้คือ","ทรานซิสเตอร์ BJT ชนิด PNP","ลูกศรที่อิมิตเตอร์ชี้เข้า","pnp"],
+["5b","ขา x ของ BJT ในรูปคือ","คอลเลกเตอร์ (Collector)","ขาบนที่ไม่มีลูกศร","npn"],
+["5b","ขา y ของ BJT ในรูปคือ","เบส (Base)","ขาที่เข้ามาด้านข้าง","npn"],
+["5b","ขา z (ขาที่มีลูกศร) ของ BJT คือ","อิมิตเตอร์ (Emitter)","ลูกศรอยู่ที่อิมิตเตอร์เสมอ","npn"],
+["5b","BJT ย่อมาจาก","Bipolar Junction Transistor","ทรานซิสเตอร์รอยต่อสองขั้ว"],
+["5b","ขาของ BJT ได้แก่","Emitter, Base, Collector","3 ขา E B C"],
+["5b","คำว่า Bipolar ใน BJT หมายถึง","ใช้พาหะทั้งอิเล็กตรอนและโฮล","ต่างจาก FET ที่ใช้พาหะชนิดเดียว"],
+["5b","ชั้นกลางของโครงสร้าง NPN คือ","เบส (สาร P ชั้นบาง)","N-P-N: E-B-C"],
+["5b","รอยต่อ 2 รอยต่อใน BJT คือ","Base-Emitter และ Base-Collector Junction","ทั้งสองรอยต่ออยู่ติดเบส"],
+["5b","ลูกศรในสัญลักษณ์ NPN ชี้","ชี้ออกจากตัวทรานซิสเตอร์","จำ: NPN = Not Pointing iN"],
+["5b","ลูกศรในสัญลักษณ์ PNP ชี้","ชี้เข้าหาตัวทรานซิสเตอร์","จำ: PNP = Pointing iN Proudly"],
+["5b","ทิศกระแสใน NPN (ย่าน active)","เข้าที่ C และ B ออกที่ E","iE = iC + iB ไหลออกทางอิมิตเตอร์"],
+["5b","ทิศกระแสใน PNP (ย่าน active)","เข้าที่ E ออกที่ C และ B","กลับทิศกับ NPN"],
+["5b","ความสัมพันธ์ของกระแส BJT: iE =","iC + iB","KCL ที่ตัวทรานซิสเตอร์"],
+["5b","อัตราขยายกระแส β ของ BJT =","iC / iB","ย่าน active: iC = β·iB"],
+["5b","α ของ BJT =","iC / iE","α มีค่าน้อยกว่า 1 เล็กน้อย"],
+["5b","สมการ iC = IS·exp(vBE/VT) เป็นสมการของอุปกรณ์","BJT","กระแสคอลเลกเตอร์ขึ้นกับ vBE แบบเอ็กซ์โพเนนเชียล"],
+["5b","ค่า VT (thermal voltage) ที่อุณหภูมิห้อง","ประมาณ 25–26 mV","VT = kT/q"],
+["5b","BJT ถูกควบคุมการทำงานด้วย","กระแสเบส","iC = β·iB"],
+["5b","BJT ทำหน้าที่ขยายสัญญาณในย่าน","ย่าน Active","iC = β·iB และ vCE > 0.2 V"],
+["5b","BJT เป็นสวิตช์ ON อยู่ในย่าน","ย่าน Saturation (vCE ≈ 0.2 V)","กระแสสูงสุด แรงดันตกน้อย"],
+["5b","BJT เป็นสวิตช์ OFF อยู่ในย่าน","ย่าน Cutoff (iB = iC = 0)","vBE < 0.5 V"],
+["5b","เงื่อนไขย่าน cutoff ของ NPN","vBE < 0.5 V","รอยต่อ BE ยังไม่นำกระแส"],
+["5b","ในย่าน saturation แรงดัน vCE ประมาณ","0.2 V","ค่าที่ใช้ใน large-signal model"],
+// ---- MOSFET
+["5m","อุปกรณ์นี้คือ","MOSFET ชนิด N (NMOS)","ไม่มีวงกลมที่เกต","nmos"],
+["5m","ขา p ของ MOSFET ในรูปคือ","เดรน (Drain)","ขาบนของ NMOS","nmos"],
+["5m","ขา q ของ MOSFET ในรูปคือ","เกต (Gate)","ขาควบคุม มีฉนวนกั้น","nmos"],
+["5m","ขา r ของ MOSFET ในรูปคือ","ซอร์ส (Source)","ขาล่างของ NMOS กระแสไหลออก","nmos"],
+["5m","อุปกรณ์นี้ (มีวงกลมที่เกต) คือ","MOSFET ชนิด P (PMOS)","วงกลมที่เกตหมายถึงชนิด P","pmos"],
+["5m","FET ย่อมาจาก","Field Effect Transistor","ควบคุมด้วยสนามไฟฟ้า"],
+["5m","MOSFET ย่อมาจาก","Metal-Oxide-Semiconductor FET","โลหะ-ออกไซด์-สารกึ่งตัวนำ"],
+["5m","ขาของ MOSFET ได้แก่","Drain, Gate, Source, Body","4 ขา D G S B"],
+["5m","MOSFET ถูกควบคุมการทำงานด้วย","แรงดันเกต (VGS)","กระแสเกตเกือบเป็นศูนย์"],
+["5m","ฉนวนใต้ขาเกตของ MOSFET คือ","ซิลิคอนไดออกไซด์ (SiO₂)","ตัว O ใน MOS คือออกไซด์"],
+["5m","กระแสที่ไหลเข้าขาเกตของ MOSFET","เกือบเป็นศูนย์","มีฉนวนกั้น"],
+["5m","NMOS สร้างบนแผ่นฐาน (substrate) ชนิด","P-type","ช่องนำ N เกิดบนฐาน P"],
+["5m","ทิศกระแสใน NMOS","จาก Drain ไป Source","ลูกศรที่ source ชี้ออก"],
+["5m","ทิศกระแสใน PMOS","จาก Source ไป Drain","กลับทิศกับ NMOS"],
+["5m","NMOS เริ่มนำกระแสเมื่อ","VGS > Vt (แรงดันขีดเริ่ม)","ต่ำกว่า Vt อยู่ย่าน cutoff"],
+["5m","MOSFET ทำหน้าที่ขยายสัญญาณในย่าน","ย่าน Saturation ของ MOSFET","vDS ≥ vGS − Vt ระวังสับสนกับ BJT"],
+["5m","MOSFET เป็นสวิตช์ ON อยู่ในย่าน","ย่าน Triode","vDS < vGS − Vt"],
+["5m","กระแสเดรนของ NMOS ในย่าน saturation","iD = K(vGS − Vt)²","ไม่ขึ้นกับ vDS"],
+["5m","การใช้ NMOS คู่กับ PMOS เรียกว่า","CMOS","ใช้มากในวงจรดิจิทัล"],
+["5m","Power MOSFET ใช้งานมากใน","อินเวอร์เตอร์ (Inverter)","ทำหน้าที่สวิตช์กำลัง"],
+// ---- 6 wire
+["6w","สีสายเฟส L1 ตาม มอก. 11-2553","สีน้ำตาล","L1 น้ำตาล L2 ดำ L3 เทา"],
+["6w","สีสายเฟส L2 ตาม มอก. 11-2553","สีดำ","L1 น้ำตาล L2 ดำ L3 เทา"],
+["6w","สีสายเฟส L3 ตาม มอก. 11-2553","สีเทา","L1 น้ำตาล L2 ดำ L3 เทา"],
+["6w","สีสายนิวทรัล (N)","สีฟ้า","นิวทรัลสีฟ้า"],
+["6w","สีสายดิน (G / PE)","สีเขียวแถบเหลือง","สายดินเท่านั้นที่ใช้สีนี้"],
+["6w","มาตรฐานสายทองแดงหุ้มฉนวน PVC","มอก. 11-2553","ปี 2553 เป็นที่มาของสีสายแบบใหม่"],
+["6w","มาตรฐานสายอะลูมิเนียมหุ้มฉนวน PVC","มอก. 293-2541",""],
+["6w","มาตรฐานการติดตั้งทางไฟฟ้าที่ใช้อ้างอิง","วสท. 2556","วิศวกรรมสถานแห่งประเทศไทย"],
+["6w","บ้านที่ใช้ไฟเฟสเดียวตามมาตรฐานใหม่ มีสาย","เฟสสีน้ำตาล นิวทรัลสีฟ้า ดินสีเขียวแถบเหลือง","อาจารย์ถามทั้งไฟ 3 เฟสและเฟสเดียวเข้าบ้าน"],
+["6w","สายอะลูมิเนียมที่เห็นทั่วไปใช้ในงาน","เดินลอยในอากาศเข้าบ้าน (สายเมนนอกอาคาร)","อาจารย์: เห็นตอนเดินลอยในอากาศเข้าบ้านเรา"],
+["6w","ต่อเติมโซลาร์เซลล์โดยเดินสายอะลูมิเนียมในบ้าน อันตรายเพราะ","จุดหักงอสะสมความร้อนจนไหม้ได้","ใช้ไปเรื่อย ๆ ความร้อนสะสมที่จุดที่หักงอ"],
+["6w","สร้างบ้านใหม่แล้วจะต่อไฟเข้าบ้าน ต้อง","ให้การไฟฟ้าเข้ามาตรวจสอบการติดตั้งก่อน","ถ้าติดตั้งผิดมาตรฐาน การไฟฟ้าไม่จ่ายไฟให้"],
+["6w","สายแข็งที่เดินร้อยท่อ ใต้ฝ้าและในผนัง","THW","ใช้มากที่สุดในอาคาร ไม่ควรฝังดิน"],
+["6w","สายแข็งแบนที่เดินเกาะผนัง (ตีกิ๊บ)","VAF","ห้ามร้อยท่อ ห้ามฝังดิน"],
+["6w","สายอ่อน ฉนวน 2 ชั้น ใช้กับอุปกรณ์ที่ต้องเคลื่อนย้าย ทำปลั๊กพ่วง","VCT","มีรุ่น VCT-G ที่มีสายดินในตัว"],
+["6w","สายที่ฝังดินโดยตรงได้ นิยมใช้ภายนอกอาคาร","NYY","ร้อยท่อหรือเดินบนรางก็ได้"],
+["6w","การไฟฟ้านครหลวง (กฟน.) กำหนดเรื่องสายอะลูมิเนียมว่า","ห้ามใช้เดินภายในระบบแรงต่ำ","ถ้าใช้ การไฟฟ้าอาจไม่จ่ายไฟ"],
+["6w","การไฟฟ้าส่วนภูมิภาค (กฟภ.) อนุญาตให้ใช้สายอะลูมิเนียมเฉพาะ","สายเมนเดินลอยในอากาศบนฉนวน นอกอาคาร","ห้ามเดินในอาคาร"],
+["6w","ข้อเสียของอะลูมิเนียมด้านการนำไฟฟ้า","นำไฟฟ้าได้ประมาณ 62% ของทองแดง","ความต้านทานสูงกว่า ร้อนกว่า"],
+["6w","ข้อเสียของอะลูมิเนียมด้านกลไก","เปราะ หักง่าย ดัดโค้งไม่ดี","งานในอาคารต้องดัดสายมาก"],
+["6w","ข้อดีของอะลูมิเนียมเมื่อเทียบกับทองแดง","น้ำหนักเบา (~1/3) และราคาถูก","เหมาะกับสายระยะไกล"],
+["6w","สายอะลูมิเนียมเหมาะกับงาน","สายส่งแรงสูงแขวนลอยในอากาศระยะไกล","ลดน้ำหนักเสาและโครงสร้าง"],
+["6w","วงจรแสงสว่าง ใช้สาย / เบรกเกอร์","THW 1.5 ตร.มม. / MCB 10 A",""],
+["6w","วงจรปลั๊กไฟ ใช้สาย / เบรกเกอร์","THW 2.5 ตร.มม. / MCB 16 A","สายดิน 2.5 ตร.มม."],
+["6w","เครื่องทำน้ำอุ่น 3,500–6,000 W ใช้สาย / เบรกเกอร์","THW 6 ตร.มม. / MCB 25 A","สายดิน 4 ตร.มม."],
+["6w","เครื่องทำน้ำร้อน 8,000–10,000 W ใช้สาย / เบรกเกอร์","THW 10 ตร.มม. / MCB 32–50 A","สายดิน 4 ตร.มม."],
+["6w","แอร์ 18,000 BTU ใช้สาย / เบรกเกอร์","THW 4 ตร.มม. / MCB 16 A",""],
+["6w","แอร์ 20,000–24,000 BTU ใช้สาย / เบรกเกอร์","THW 6 ตร.มม. / MCB 25 A",""],
+["6w","แอร์ 30,000–36,000 BTU ใช้สาย / เบรกเกอร์","THW 6 ตร.มม. / MCB 32 A","สายเท่ากับ 24,000 BTU แต่เบรกเกอร์ใหญ่ขึ้น"],
+["6w","หน่วยบอกขนาดสายไฟ","ตารางมิลลิเมตร (sq.mm.)","พื้นที่หน้าตัดตัวนำ"],
+["6w","หน่วยบอกขนาดท่อร้อยสายไฟ","นิ้ว หรือ หุน","8 หุน = 1 นิ้ว"],
+["6w","ถ้าใช้เครื่องใช้ไฟฟ้ากำลังสูงขึ้น ขนาดสายต้อง","ใหญ่ขึ้น","กระแสมากขึ้น"],
+["6w","ถ้าใช้สายเล็กเกินกว่าโหลด จะเกิด","สายร้อน ฉนวนเสื่อม เสี่ยงไฟไหม้","ความร้อน I²R สะสม"],
+["6w","สีสายเฟส L1 ตามมาตรฐานเก่า มอก. 11-2531","สีดำ","มาตรฐานเก่า L1 ดำ L2 แดง L3 น้ำเงิน N เทา"],
+["6w","สีสายเฟส L2 ตามมาตรฐานเก่า มอก. 11-2531","สีแดง","มาตรฐานเก่า L1 ดำ L2 แดง L3 น้ำเงิน N เทา"],
+["6w","สีสายเฟส L3 ตามมาตรฐานเก่า มอก. 11-2531","สีน้ำเงิน","มาตรฐานเก่า L1 ดำ L2 แดง L3 น้ำเงิน N เทา"],
+["6w","สีสายนิวทรัล N ตามมาตรฐานเก่า มอก. 11-2531","สีเทา","ระวัง: มาตรฐานใหม่ สีเทาคือ L3"],
+["6w","สีสายดิน G ตามมาตรฐานเก่า มอก. 11-2531","สีเขียวแถบเหลือง","สายดินสีเดียวกันทั้งเก่าและใหม่"],
+["6w","มาตรฐานสีสายไฟแบบเก่า","มอก. 11-2531","ถูกแทนด้วย มอก. 11-2553"],
+["6w","สาย THW มีพิกัดแรงดัน","450/750 V","VAF เป็น 300/500 V"],
+["6w","สาย VAF มีพิกัดแรงดัน","300/500 V","THW เป็น 450/750 V"],
+["6w","ข้อห้ามของสาย VAF","ห้ามร้อยท่อ ห้ามฝังดิน","ใช้เกาะผนังตีกิ๊บเท่านั้น"],
+["6w","สายอ่อนคู่ 300 V ใช้กับเครื่องใช้ไฟฟ้าในบ้าน ทำปลั๊กพ่วงในบ้าน","VFF",""],
+["6w","สายอ่อนเดี่ยว 300 V เดินลอย หรือใช้ในตู้คอนโทรล","VSF",""],
+["6w","ตัว G ท้ายชื่อสาย เช่น VAF-G, VCT-G, NYY-G หมายถึง","มีสายดินอยู่ในสายเส้นนั้น",""],
+["6w","ขนาดท่อ 4 หุน เท่ากับ","1/2 นิ้ว (ประมาณ 13 มม.)","8 หุน = 1 นิ้ว"],
+["6w","ขนาดท่อ 8 หุน เท่ากับ","1 นิ้ว (ประมาณ 25 มม.)","8 หุน = 1 นิ้ว"],
+["6w","มอก. 11-2553 เป็นมาตรฐานของ","สายทองแดงหุ้มฉนวน PVC",""],
+["6w","มอก. 293-2541 เป็นมาตรฐานของ","สายอะลูมิเนียมหุ้มฉนวน PVC",""],
+["6w","มอก. 982-2556 เป็นมาตรฐานของ","ท่อร้อยสายไฟ HDPE",""],
+["6w","วสท. 2556 เป็นมาตรฐานของ","สายไฟฟ้าและการติดตั้งทางไฟฟ้า",""],
+["6w","หน่วยงานที่ห้ามใช้สายอะลูมิเนียมเดินภายในระบบไฟฟ้าแรงต่ำ","กฟน. (การไฟฟ้านครหลวง)",""],
+["6w","หน่วยงานที่ยอมให้อะลูมิเนียมเป็นสายเมน เฉพาะเดินลอยนอกอาคาร","กฟภ. (การไฟฟ้าส่วนภูมิภาค)",""],
+["6w","ทำไมต้องจำกัดจำนวนสายที่ร้อยในท่อเดียวกัน","ความร้อนระบายไม่ได้ ฉนวนอาจละลายจนทองแดงแตะกัน","กระแสทำให้เกิดความร้อน ท่อปิดระบายไม่ได้"],
+["6w","ทำไมต้องแยกวงจรชั้น 1 กับชั้น 2","น้ำท่วมชั้นล่างตัดเฉพาะชั้นล่างได้ และหาจุดช็อตง่าย",""],
+["6w","ทำไมต้องแยกสาย RG6 และ CAT6 ออกจากสายไฟ","ถูกรบกวนจากสนามความถี่ 50 Hz ของระบบไฟฟ้า",""],
+["6w","กระแสไฟฟ้าไหลผ่านตัวนำ ทำให้เกิด","ความร้อน และสนามแม่เหล็ก","ความร้อนทำให้ต้องเลือกขนาดสาย สนามแม่เหล็กทำให้รบกวนสายสัญญาณ"],
+// ---- 6 install
+["6w","ท่อ EMT คือ","ท่อโลหะบาง","Electrical Metallic Tubing"],
+["6w","ท่อ IMC คือ","ท่อโลหะขนาดกลาง","Intermediate Metallic Conduit"],
+["6w","ท่อ RSC คือ","ท่อโลหะหนาพิเศษ","Rigid Steel Conduit"],
+["6w","ท่อโลหะที่ดัดงอได้เรียกว่า","Flexible Metal Conduit (ท่อโลหะอ่อน)","มีแบบกันน้ำด้วย"],
+["6i","ท่อพีวีซีสำหรับร้อยสายไฟฟ้ามีสี","สีเหลือง","ท่อ PVC สีฟ้าใช้กับน้ำประปา"],
+["6w","ท่อ HDPE คือ","ท่อพลาสติกความหนาแน่นสูง สีดำ ใช้ฝังดิน","มาตรฐาน มอก. 982-2556"],
+["6w","มาตรฐานท่อ HDPE","มอก. 982-2556","เกรด PE80, PE100"],
+["6i","ค่า PN ของท่อ HDPE บอก","ระดับความหนา/การทนแรงดันของท่อ","PN ยิ่งสูงยิ่งหนา"],
+["6i","รางเดินสายไฟเรียกว่า","วายเวย์ (Wireway)","ขนาดบอกเป็นนิ้ว"],
+["6i","อุปกรณ์ต่อสายไฟ แล้วพันเทปทับ","วายนัท (Wire Nut)","ต่อแน่น ไม่หลวม"],
+["6w","สายสัญญาณ LAN (CAT6) และทีวี (RG6) ต้อง","เดินแยกท่อหรือแยกวายเวย์จากสายไฟ","กันการรบกวนจากสนามความถี่ 50 Hz"],
+["6i","สายดินของเครื่องทำน้ำอุ่นและแอร์ ต้อง","เดินตรงจากตู้ ห้ามพ่วงระหว่างเครื่องกับตู้","ถ้าจุดพ่วงหลุด เครื่องจะไม่มีสายดิน"],
+["6i","เหตุที่แยกวงจรไฟนอกบ้านออกจากในบ้าน","นอกบ้านไฟรั่วได้ง่าย","โดนฝนและความชื้น"],
+["6w","ทำไมตู้เย็นจึงแยกวงจรเป็น option","ดับไฟทั้งบ้านตอนไม่อยู่หลายวันได้ แต่ตู้เย็นยังทำงาน",""],
+["6i","ข้อดีของการแบ่งวงจรเป็นโซน","ประหยัดทรัพยากรและค่าใช้จ่าย","ข้อเสียคือไฟเสียทั้งโซน"],
+["6i","ข้อดีของการแบ่งวงจรตามห้อง","ไฟเสียเฉพาะห้องนั้น","แต่ใช้วงจรและค่าใช้จ่ายมากกว่า"],
+["6i","ตำแหน่งตอกหลักดินที่เหมาะสม","พื้นที่ดินค่อนข้างชื้น","ความต้านทานดินต่ำ"],
+["6i","การเชื่อมหัวหลักดินกับสายดิน ใช้วิธี","การหลอมโลหะ (Exothermic Welding)","ต่อแน่นถาวร"],
+["6p","ค่าความต้านทานของระบบกราวด์ที่บ้าน (หลักดิน) ไม่ควรเกิน","5 โอห์ม","ยิ่งต่ำ กระแสรั่วยิ่งไหลลงดินได้ดี"],
+["6i","แอร์ควรมี safety breaker ติดตั้งที่","ใกล้โหลด เช่นประตูห้องนอน","ตัดไฟได้สะดวกตอนซ่อม"],
+// ---- 6 protect
+["6p","เซอร์กิตเบรกเกอร์ (CB) ป้องกัน","กระแสเกินพิกัด (ไม่ได้กันไฟดูด)","ไฟดูดใช้กระแสแค่หลักสิบ mA CB ไม่ตัด"],
+["6p","ถ้าเลือก CB ขนาดใหญ่กว่าขนาดสายไฟ จะเกิด","สายไฟไหม้ก่อน CB ตัด","CB ต้องเลือกตามขนาดสาย"],
+["6p","เซอร์กิตเบรกเกอร์แรงต่ำ (< 1,000 V) แบ่งเป็น","MCB, MCCB, ACB","ขนาดเล็ก กลาง ใหญ่"],
+["6p","MCB ย่อมาจาก","Miniature Circuit Breaker","ใช้ในตู้บ้าน"],
+["6p","MCCB ย่อมาจาก","Molded Case Circuit Breaker","เมนใหญ่ขึ้น"],
+["6p","ACB ย่อมาจาก","Air Circuit Breaker","ขนาดใหญ่มาก"],
+["6p","ข้อเสียของ Safe-T-Cut","ราคาสูง และอิเล็กทรอนิกส์เสื่อมเมื่อใช้นาน","ทำงานด้วยวงจรอิเล็กทรอนิกส์"],
+["6p","หลักการทำงานของ ELCB","เปรียบเทียบกระแสสายไปกับสายกลับ","ต่างกันเมื่อไรแปลว่ามีไฟรั่ว"],
+["6p","เครื่องใช้ที่ควรใช้ ELCB","เครื่องทำน้ำอุ่น ตู้น้ำเย็น ปั๊มน้ำ เครื่องซักผ้า","เกี่ยวกับน้ำ เสี่ยงไฟรั่ว"],
+["6p","RCD / ELCB ตัดไฟเมื่อไฟรั่วไม่เกิน","30 mA ภายใน 0.04 วินาที","ก่อนหัวใจเต้นผิดจังหวะ"],
+["6p","RCBO ตัดวงจรเมื่อ","ไฟรั่ว ไฟเกิน และไฟลัดวงจร","ใช้ตัวเดียวจบ แต่ราคาสูง"],
+["6p","MCB ใช้ที่","ตู้ไฟตามบ้านและคอนโด (เบรกเกอร์ลูกย่อย)",""],
+["6p","เบรกเกอร์แบบโมลด์เคส ทนกระแสสูง ตัวใหญ่ ราคาแพง","MCCB",""],
+["6p","เบรกเกอร์แรงดันต่ำประเภทที่สาม ใช้กับระบบขนาดใหญ่","ACB",""],
+["6p","RCCB ตัดวงจรเมื่อ","ไฟรั่วเท่านั้น (ไฟเกินและลัดวงจรไม่ตัด)","ต้องใช้คู่กับเบรกเกอร์"],
+["6p","ELCB ตัดวงจรเมื่อ","ไฟรั่ว และไฟลัดวงจร (ไฟเกินไม่ตัด)","ส่วนใหญ่อยู่ในเครื่องทำน้ำอุ่น"],
+["6p","อุปกรณ์กันไฟรั่วที่ต้องใช้คู่กับเบรกเกอร์","RCCB","เพราะไฟเกินและลัดวงจรไม่ตัด"],
+["6p","อุปกรณ์ที่ตัดทั้งไฟรั่ว ไฟเกิน และลัดวงจร ในตัวเดียว","RCBO","ราคาสูง"],
+["6p","อุปกรณ์กันไฟดูดที่ส่วนใหญ่อยู่ในเครื่องทำน้ำอุ่น","ELCB",""],
+["6p","กันไฟดูดด้วยวงจรอิเล็กทรอนิกส์ ราคาสูง ใช้นานแล้วเสื่อม","Safe-T-Cut",""],
+["6p","GFCI ย่อมาจาก","Ground Fault Circuit Interrupter","ตัดเมื่อมีกระแสรั่วลงดิน"],
+["6p","เครื่องใช้ที่มีฉนวนสองชั้น (Double Insulation) จัดเป็น","Class 2","ไม่ต้องต่อสายดิน"],
+["6p","สัญลักษณ์นี้คือ","สายดิน / การต่อลงดิน (Earth)","เส้นขนานยาวไปสั้น","earth"],
+// ---- 6 safety
+["6f","อันตรายจากไฟฟ้า 3 อย่างหลัก","ไฟดูด แผลไหม้ และไฟไหม้/ระเบิด","Electric shock, Burns, Fire & Explosion"],
+["6f","สาเหตุหลักที่ทำให้ตายจากไฟดูด","หัวใจเต้นผิดจังหวะ (Ventricular Fibrillation)","หัวใจสั่นพลิ้ว สูบเลือดไม่ได้"],
+["6f","Let-go threshold คือ","กระแสต่ำสุดที่กล้ามเนื้อหดจนปล่อยตัวเองไม่ได้","ต้องมีคนอื่นช่วยพาออก"],
+["6f","let-go threshold ของเด็ก","3–5 mA","ต่ำกว่าผู้ใหญ่"],
+["6f","let-go threshold ต่ำสุดของผู้ใหญ่","6–10 mA",""],
+["6f","กระแสที่ทำให้ผู้ใหญ่ 90% ปล่อยตัวเองไม่ได้","22 mA",""],
+["6f","กระแสประมาณ 1 mA ผ่านร่างกาย","รู้สึกเสียวซ่าเล็กน้อย","ระดับรับรู้"],
+["6f","กระแส 10–24 mA ผ่านร่างกาย","กล้ามเนื้อหดเกร็ง ปล่อยมือไม่ได้","เกิน let-go threshold"],
+["6f","กระแส 25–74 mA ผ่านร่างกาย","กล้ามเนื้อการหายใจเป็นอัมพาต","มีแผลไหม้ที่ทางออก"],
+["6f","กระแส 75–300 mA ผ่านร่างกาย","หัวใจเต้นผิดจังหวะ มักเสียชีวิต",""],
+["6f","กระแสเกิน 300 mA ผ่านร่างกาย","เกือบแน่นอนว่าเสียชีวิต","ถ้ารอด อวัยวะไหม้รุนแรง"],
+["6f","ไฟดูดทำให้บาดเจ็บทางอ้อมได้ เช่น","ตกจากที่สูง","สะดุ้งเสียหลัก"],
+["6f","การต่อสายนิวทรัลลงดินที่หม้อแปลง มีไว้เพื่อ","ให้กระแสฟ้าผ่าไหลลงดิน","ระบบสายส่งอยู่กลางแจ้ง"],
+["6f","การต่อสายดินที่โครงโลหะเครื่องใช้ มีไว้เพื่อ","ให้กระแสรั่วไหลลงดินแทนผ่านตัวคน","ทางที่ความต้านทานต่ำกว่า"],
+["6f","ยืนบนพื้นเปียกตอนโดนไฟดูดจะอันตรายขึ้น เพราะ","ความต้านทานลดลง กระแสไหลมากขึ้น","I = V/R"],
+["6f","สวมรองเท้านิรภัยที่เป็นฉนวนช่วย","เพิ่มความต้านทานระหว่างตัวกับดิน","กระแสไหลน้อยลง"],
+["6f","PPE ย่อมาจาก","Personal Protective Equipment","อุปกรณ์ป้องกันส่วนบุคคล"],
+["6f","การไฟฟ้าส่งไฟด้วยแรงดันสูง เพราะ","กระแสน้อยลง สูญเสียในสายส่งน้อย","P = VI ส่วนการสูญเสีย = I²R"],
+["6f","อุปกรณ์ที่ลดแรงดันก่อนเข้าอาคาร","หม้อแปลงไฟฟ้า (Step-down Transformer)",""],
+["6f","จุดต่อสายหลวม ทำให้","เกิดความร้อนสะสมที่จุดต่อ จนไหม้ได้","ความต้านทานที่จุดต่อสูง"],
+["6f","ฉนวนเสื่อมหรือชำรุด ทำให้","ไฟรั่วหรือลัดวงจร",""],
+["6f","ใช้ไฟฟ้าเกินพิกัดสาย (overload) ทำให้","สายร้อนเกิน เสี่ยงไฟไหม้",""],
+["6f","ติดตั้งอุปกรณ์ไฟฟ้าในที่อับ ไม่มีการระบายอากาศ ทำให้","ความร้อนสะสม","Poor ventilation"]
+];
+const EXTRA=new Set(["ตัวต้านทานต่ออนุกรมกับไดโอดในวงจรชาร์จแบตเตอรี่เรียกว่า", "ไดโอดในระบบไฟรถยนต์มีไว้เพื่อ", "วงจรขยายสัญญาณ (amplifier) ให้เอาต์พุต", "อุปกรณ์ที่ต่อหลังวงจรเรียงกระแสเพื่อทำให้แรงดันเรียบ", "สารกึ่งตัวนำบริสุทธิ์ที่ยังไม่เจือเรียกว่า", "สารกึ่งตัวนำที่เจือสารแล้วเรียกว่า", "ธาตุหมู่ 5 ที่เจือลงไปเรียกว่า", "ธาตุหมู่ 3 ที่เจือลงไปเรียกว่า", "พาหะส่วนน้อย (minority carrier) ในสาร N-type", "บริเวณรอยต่อ P-N ที่ไม่มีพาหะอิสระเรียกว่า", "VLSI ย่อมาจาก", "ขั้นตอนหลักของการทำ IC เรียงตามลำดับ", "มาตรฐานห้องสะอาด (cleanroom) ของโรงงานผลิตชิป", "ระดับห้องสะอาดที่โรงงานชิปต้องการ", "HEPA Filter ย่อมาจาก", "คำว่า Bipolar ใน BJT หมายถึง", "ชั้นกลางของโครงสร้าง NPN คือ", "รอยต่อ 2 รอยต่อใน BJT คือ", "α ของ BJT =", "ค่า VT (thermal voltage) ที่อุณหภูมิห้อง", "เงื่อนไขย่าน cutoff ของ NPN", "ในย่าน saturation แรงดัน vCE ประมาณ", "ฉนวนใต้ขาเกตของ MOSFET คือ", "กระแสที่ไหลเข้าขาเกตของ MOSFET", "NMOS สร้างบนแผ่นฐาน (substrate) ชนิด", "กระแสเดรนของ NMOS ในย่าน saturation", "การใช้ NMOS คู่กับ PMOS เรียกว่า", "Power MOSFET ใช้งานมากใน", "ท่อพีวีซีสำหรับร้อยสายไฟฟ้ามีสี", "ค่า PN ของท่อ HDPE บอก", "รางเดินสายไฟเรียกว่า", "อุปกรณ์ต่อสายไฟ แล้วพันเทปทับ", "เหตุที่แยกวงจรไฟนอกบ้านออกจากในบ้าน", "ข้อดีของการแบ่งวงจรเป็นโซน", "ข้อดีของการแบ่งวงจรตามห้อง", "ตำแหน่งตอกหลักดินที่เหมาะสม", "การเชื่อมหัวหลักดินกับสายดิน ใช้วิธี", "แอร์ควรมี safety breaker ติดตั้งที่", "GFCI ย่อมาจาก", "เครื่องใช้ที่มีฉนวนสองชั้น (Double Insulation) จัดเป็น"]);
+const BANK = RAW.map(([c,q,a,e,s],i)=>({id:q+"|"+a,t:+c[0],c,q,a,e,s,x:EXTRA.has(q)}));
+
+/* ================= helpers ================= */
+const $=s=>document.querySelector(s);
+const pick=a=>a[Math.random()*a.length|0];
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const KEY="eecc0232-miss-v3";
+let MISS={}; try{MISS=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){MISS={}}
+const saveMiss=()=>{try{localStorage.setItem(KEY,JSON.stringify(MISS))}catch(e){}};
+const bumpMiss=(x,d)=>{MISS[x.id]=Math.max(0,(MISS[x.id]||0)+d); if(!MISS[x.id])delete MISS[x.id]; saveMiss()};
+let WITH_EXTRA=false;
+function pool(t){
+  const B=BANK.filter(x=>WITH_EXTRA||!x.x);
+  if(t==="miss") return B.filter(x=>MISS[x.id]);
+  if(t==="all") return B;
+  if(t.length===1) return B.filter(x=>String(x.t)===t);
+  return B.filter(x=>x.c===t);
+}
+function topicOptions(sel,def){
+  const n=Object.keys(MISS).length;
+  sel.innerHTML=`<option value="all">ข้อ 5 + ข้อ 6 ทั้งหมด</option><option value="5">ข้อ 5 ทั้งหมด</option>`+
+   Object.entries(CAT).filter(([k])=>k[0]==="5").map(([k,v])=>`<option value="${k}">— 5: ${v}</option>`).join("")+
+   `<option value="6">ข้อ 6 ทั้งหมด</option>`+
+   Object.entries(CAT).filter(([k])=>k[0]==="6").map(([k,v])=>`<option value="${k}">— 6: ${v}</option>`).join("")+
+   `<option value="miss">ข้อที่เคยตอบผิด (${n})</option>`;
+  sel.value=def;
+  [...sel.options].forEach(o=>{const n=new Set(pool(o.value).map(x=>x.a)).size;o.textContent=o.textContent.replace(/ \[\d+\]$/,"")+` [${n}]`});
+}
+/* weighted pick: items missed more often come first; answers unique within a set */
+function pickSet(list,n){
+  const keyed=list.map(x=>({x,k:Math.random()/(1+2*(MISS[x.id]||0))})).sort((a,b)=>a.k-b.k).map(o=>o.x);
+  const out=[],seenA=new Set(),seenQ=new Set();
+  for(const x of keyed){const qk=x.q+(x.s||""); if(seenA.has(x.a)||seenQ.has(qk))continue; seenA.add(x.a);seenQ.add(qk);out.push(x); if(out.length===n)break;}
+  return shuffle(out);
+}
+
+const getN=sel=>{const v=$(sel).value;return v==="all"?Infinity:+v};
+/* ================= tabs ================= */
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("nav button").forEach(x=>x.setAttribute("aria-selected",x===b));
+  ["notes","match","fill","calc"].forEach(t=>$("#tab-"+t).hidden=t!==b.dataset.tab);
+});
+$("#symDiode").innerHTML=[["diodeAK","ไดโอด"],["zener","ซีเนอร์ไดโอด"],["led","LED"],["halfwave","เรียงกระแสครึ่งคลื่น"],["bridge","บริดจ์"]].map(([k,n])=>`<figure>${S[k]}<figcaption>${n}</figcaption></figure>`).join("");
+$("#symBJT").innerHTML=[["npnL","NPN (ลูกศรชี้ออก)"],["pnp","PNP (ลูกศรชี้เข้า)"]].map(([k,n])=>`<figure>${S[k]}<figcaption>${n}</figcaption></figure>`).join("");
+$("#symMOS").innerHTML=[["nmosL","NMOS"],["pmos","PMOS (วงกลมที่เกต)"]].map(([k,n])=>`<figure>${S[k]}<figcaption>${n}</figcaption></figure>`).join("");
+
+/* ================= matching ================= */
+let M={};
+function newMatch(){
+  const list=pool($("#mTopic").value);
+  M={pairs:pickSet(list,getN("#mCount")),sel:null,ok:0,miss:0};
+  const L=$("#mLeft"),R=$("#mRight"); L.innerHTML="";R.innerHTML="";$("#mDone").innerHTML="";$("#mLog").innerHTML="";
+  if(!M.pairs.length){L.innerHTML=`<p class="hint">ยังไม่มีข้อที่เคยตอบผิด เลือกหัวข้ออื่นก่อน</p>`;$("#mScore").textContent="";return}
+  M.pairs.forEach((p,i)=>{
+    const b=document.createElement("button");b.className="chip";b.dataset.i=i;
+    b.innerHTML=(p.s?S[p.s].replace(/width="\d+" height="\d+"/,'width="96" height="66"'):"")+`<span>${esc(p.q)}</span>`;
+    b.onclick=()=>{if(b.classList.contains("done"))return;L.querySelectorAll(".chip").forEach(c=>c.classList.remove("sel"));b.classList.add("sel");M.sel=i};
+    L.appendChild(b);
+  });
+  shuffle(M.pairs.map((_,i)=>i)).forEach(i=>{
+    const b=document.createElement("button");b.className="chip";b.textContent=M.pairs[i].a;
+    b.onclick=()=>{
+      if(b.classList.contains("done")||M.sel===null)return;
+      const lb=L.querySelector(`[data-i="${M.sel}"]`), p=M.pairs[M.sel];
+      if(M.sel===i){
+        b.classList.add("done");lb.classList.remove("sel");lb.classList.add("done");M.ok++;M.sel=null;bumpMiss(p,-1);
+        $("#mLog").insertAdjacentHTML("afterbegin",`<div><b>${esc(p.q)}</b> → ${esc(p.a)}${p.e?`<br>${esc(p.e)}`:""}</div>`);
+        if(M.ok===M.pairs.length)$("#mDone").innerHTML=`<div class="done-msg">ครบชุดแล้ว พลาด ${M.miss} ครั้ง กด “สุ่มชุดใหม่” เพื่อเล่นต่อ</div>`;
+      }else{
+        M.miss++;bumpMiss(p,1);b.classList.remove("wrong");void b.offsetWidth;b.classList.add("wrong");setTimeout(()=>b.classList.remove("wrong"),500);
+      }
+      $("#mScore").textContent=`ถูก ${M.ok}/${M.pairs.length} · พลาด ${M.miss}`;
+    };
+    R.appendChild(b);
+  });
+  $("#mScore").textContent=`ถูก 0/${M.pairs.length} · พลาด 0`;
+}
+$("#mCount").onchange=()=>newMatch();
+$("#mNew").onclick=()=>{topicOptions($("#mTopic"),$("#mTopic").value);newMatch()}; $("#mTopic").onchange=newMatch;
+
+/* ================= fill-in ================= */
+let F={items:[],active:null};
+function newFill(){
+  const t=$("#fTopic").value, list=pool(t);
+  F={items:pickSet(list,getN("#fCount")),active:null};
+  const ol=$("#fList"); ol.innerHTML=""; $("#fBank").innerHTML=""; $("#fScore").textContent="";
+  if(!F.items.length){ol.innerHTML=`<li><div class="qbody">ยังไม่มีข้อที่เคยตอบผิด เลือกหัวข้ออื่นก่อน</div></li>`;return}
+  const answers=new Set(F.items.map(x=>x.a));
+  const cats=new Set(F.items.map(x=>x.c));
+  const near=shuffle(pool("all").filter(x=>cats.has(x.c)&&!answers.has(x.a)));
+  const extra=[...new Set(near.map(x=>x.a))].slice(0,6);
+  shuffle([...answers,...extra]).forEach(w=>{const b=document.createElement("button");b.className="word";b.textContent=w;b.onclick=()=>putWord(w);$("#fBank").appendChild(b)});
+  F.items.forEach((x,i)=>{
+    const li=document.createElement("li");
+    li.innerHTML=`<div class="qbody">${x.s?S[x.s]:""}${esc(x.q)} <button class="blank" data-i="${i}">&nbsp;</button><span class="why"></span></div>`;
+    ol.appendChild(li);
+  });
+  ol.querySelectorAll(".blank").forEach(b=>b.onclick=()=>{
+    if(b.dataset.v&&F.active===+b.dataset.i){b.dataset.v="";b.innerHTML="&nbsp;"}
+    ol.querySelectorAll(".blank").forEach(x=>x.classList.remove("active","ok","bad"));
+    ol.querySelectorAll(".why").forEach(x=>x.innerHTML="");
+    b.classList.add("active");F.active=+b.dataset.i;$("#fScore").textContent="";
+  });
+  const first=ol.querySelector(".blank"); first.classList.add("active"); F.active=0;
+}
+function putWord(w){
+  if(F.active===null)return;
+  const b=document.querySelector(`.blank[data-i="${F.active}"]`);b.dataset.v=w;b.textContent=w;b.classList.remove("active");
+  const next=[...document.querySelectorAll(".blank")].find(x=>!x.dataset.v);
+  if(next){next.classList.add("active");F.active=+next.dataset.i}else F.active=null;
+}
+$("#fCheck").onclick=()=>{
+  let ok=0;
+  document.querySelectorAll(".blank").forEach(b=>{
+    const x=F.items[+b.dataset.i];b.classList.remove("active");
+    const why=b.nextElementSibling;
+    if(b.dataset.v===x.a){b.classList.add("ok");ok++;bumpMiss(x,-1);why.innerHTML=x.e?esc(x.e):""}
+    else{b.classList.add("bad");bumpMiss(x,1);why.innerHTML=`<b>เฉลย: ${esc(x.a)}</b>${x.e?" — "+esc(x.e):""}`}
+  });
+  F.active=null;
+  $("#fScore").textContent=`ได้ ${ok}/${F.items.length}`;
+  topicOptions($("#mTopic"),$("#mTopic").value); topicOptions($("#fTopic"),$("#fTopic").value);
+};
+$("#fNew").onclick=newFill; $("#fCount").onchange=newFill; $("#fTopic").onchange=newFill;
+$("#fReset").onclick=()=>{if(confirm("ล้างสถิติข้อที่เคยตอบผิดทั้งหมด?")){MISS={};saveMiss();topicOptions($("#mTopic"),"all");topicOptions($("#fTopic"),"5");newFill()}};
+topicOptions($("#mTopic"),"all"); topicOptions($("#fTopic"),"5");
+document.querySelectorAll(".xtoggle").forEach(cb=>cb.onchange=()=>{WITH_EXTRA=cb.checked;document.querySelectorAll(".xtoggle").forEach(o=>o.checked=cb.checked);topicOptions($("#mTopic"),$("#mTopic").value);topicOptions($("#fTopic"),$("#fTopic").value);newMatch();newFill()});
+newMatch(); newFill();
+
+/* ================= complex math & formatting ================= */
+const Cx=(re,im=0)=>({re,im});
+const cadd=(a,b)=>Cx(a.re+b.re,a.im+b.im), csub=(a,b)=>Cx(a.re-b.re,a.im-b.im);
+const cmul=(a,b)=>Cx(a.re*b.re-a.im*b.im,a.re*b.im+a.im*b.re);
+const cdiv=(a,b)=>{const d=b.re*b.re+b.im*b.im;return Cx((a.re*b.re+a.im*b.im)/d,(a.im*b.re-a.re*b.im)/d)};
+const cmag=a=>Math.hypot(a.re,a.im), cang=a=>Math.atan2(a.im,a.re)*180/Math.PI;
+const cpol=(m,d)=>Cx(m*Math.cos(d*Math.PI/180),m*Math.sin(d*Math.PI/180));
+const cconj=a=>Cx(a.re,-a.im), cscl=(a,k)=>Cx(a.re*k,a.im*k);
+const cpar=(a,b)=>cdiv(cmul(a,b),cadd(a,b));
+const DEG=Math.PI/180;
+const nf=(x,p=4)=>{if(!isFinite(x))return"∞";if(Math.abs(x)<1e-9)return"0";let s=String(Number(x.toPrecision(p)));return s.replace("-","−")};
+const na=x=>{let v=Math.round(x*100)/100; if(Math.abs(v)<0.005)v=0; return String(v).replace("-","−")};
+const fr=z=>{const r0=Math.abs(z.re)<1e-9,i0=Math.abs(z.im)<1e-9;if(i0)return nf(z.re);if(r0)return`${z.im<0?"−":""}j${nf(Math.abs(z.im))}`;return`${nf(z.re)} ${z.im<0?"−":"+"} j${nf(Math.abs(z.im))}`};
+const frp=z=>`(${fr(z)})`;
+const fp=z=>`${nf(cmag(z))}∠${na(cang(z))}°`;
+const M_=s=>`<span class="m">${s}</span>`;
+
+/* ================= circuit drawing ================= */
+const W=(x1,y1,x2,y2)=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;
+const T=(x,y,s,a="middle")=>`<text x="${x}" y="${y}" text-anchor="${a}" font-size="13" fill="currentColor" stroke="none">${s}</text>`;
+const dot=(x,y)=>`<circle class="nd" cx="${x}" cy="${y}" r="3.5" fill="currentColor"/>`;
+const NT=(x,y,s,a="middle")=>`<text class="nd" x="${x}" y="${y}" text-anchor="${a}" font-size="13" font-weight="600" fill="currentColor" stroke="none">${s}</text>`;
+const CT=(x,y,s,a="middle")=>`<text class="cur" x="${x}" y="${y}" text-anchor="${a}" font-size="13" fill="currentColor" stroke="none">${s}</text>`;
+function Rh(x1,x2,y,lab){const m=(x1+x2)/2,a=m-22,b=m+22;let p=`M${a} ${y}`;for(let k=0;k<6;k++)p+=` L${a+(k+.5)*44/6} ${y+(k%2?7:-7)}`;p+=` L${b} ${y}`;return W(x1,y,a,y)+`<path d="${p}"/>`+W(b,y,x2,y)+T(m,y-12,lab)}
+function Rv(x,y1,y2,lab){const m=(y1+y2)/2,a=m-22,b=m+22;let p=`M${x} ${a}`;for(let k=0;k<6;k++)p+=` L${x+(k%2?7:-7)} ${a+(k+.5)*44/6}`;p+=` L${x} ${b}`;return W(x,y1,x,a)+`<path d="${p}"/>`+W(x,b,x,y2)+T(x+12,m+4,lab,"start")}
+function Cv(x,y1,y2,lab){const m=(y1+y2)/2;return W(x,y1,x,m-5)+W(x-14,m-5,x+14,m-5)+W(x-14,m+5,x+14,m+5)+W(x,m+5,x,y2)+T(x+18,m+4,lab,"start")}
+function Ch(x1,x2,y,lab){const m=(x1+x2)/2;return W(x1,y,m-5,y)+W(m-5,y-14,m-5,y+14)+W(m+5,y-14,m+5,y+14)+W(m+5,y,x2,y)+T(m,y-18,lab)}
+function Lv(x,y1,y2,lab){const m=(y1+y2)/2,a=m-22;let p=`M${x} ${a}`;for(let k=0;k<4;k++)p+=` a6 5.5 0 0 1 0 11`;return W(x,y1,x,a)+`<path d="${p}"/>`+W(x,a+44,x,y2)+T(x+14,m+4,lab,"start")}
+function Lh(x1,x2,y,lab){const m=(x1+x2)/2,a=m-22;let p=`M${a} ${y}`;for(let k=0;k<4;k++)p+=` a5.5 6 0 0 1 11 0`;return W(x1,y,a,y)+`<path d="${p}"/>`+W(a+44,y,x2,y)+T(m,y-12,lab)}
+function Vsrc(x,y1,y2,lab,ac){const m=(y1+y2)/2;return W(x,y1,x,m-17)+`<circle cx="${x}" cy="${m}" r="17"/>`+W(x,m+17,x,y2)+(ac?`<path d="M${x-9} ${m} q4.5 -9 9 0 t9 0"/>`:T(x,m-3,"+")+T(x,m+12,"−"))+T(x-24,m+4,lab,"end")}
+function Isrc(x,y1,y2,lab,up=1){const m=(y1+y2)/2,tip=up?m-11:m+11,base=up?m-3:m+3;return W(x,y1,x,m-17)+`<circle cx="${x}" cy="${m}" r="17"/>`+W(x,m+17,x,y2)+W(x,m+9,x,m-9)+`<polygon points="${x},${tip} ${x-5},${base} ${x+5},${base}" fill="currentColor"/>`+T(x+24,m+4,lab,"start")}
+const svg=(w,h,body,pad=0)=>`<svg viewBox="0 0 ${w+pad} ${h}" width="${w+pad}" fill="none" stroke="currentColor" stroke-width="2"><g transform="translate(${pad},0)">${body}</g></svg>`;
+function yyFig(za,zb,zc,Vp=220,legend=""){
+  const f='font-family="Times New Roman, Times, serif" fill="currentColor" stroke="none"';
+  const lab=(x,y,m,sub,a="start",cls="")=>`<text ${cls?`class="${cls}"`:""} x="${x}" y="${y}" text-anchor="${a}" font-size="19" ${f}><tspan font-weight="bold">${m}</tspan><tspan font-style="italic" font-size="13" dy="5">${sub}</tspan></text>`;
+  const it=(x,y,s,a="middle",cls="nd")=>`<text class="${cls}" x="${x}" y="${y}" text-anchor="${a}" font-size="18" font-style="italic" ${f}>${s}</text>`;
+  const tx=(x,y,s,a="start",sz=17)=>`<text x="${x}" y="${y}" text-anchor="${a}" font-size="${sz}" ${f}>${s}</text>`;
+  const term=(x,y)=>`<circle cx="${x}" cy="${y}" r="3.2" fill="var(--panel)"/>`;
+  const arr=(x,y)=>`<polygon class="cur" points="${x+8},${y} ${x-6},${y-5} ${x-6},${y+5}" fill="currentColor" stroke="none"/>`;
+  const darr=(x1,y1,x2,y2)=>{const a=Math.atan2(y2-y1,x2-x1),h=9;return `<g class="cur"><line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/><polygon points="${x2},${y2} ${x2-h*Math.cos(a-0.4)},${y2-h*Math.sin(a-0.4)} ${x2-h*Math.cos(a+0.4)},${y2-h*Math.sin(a+0.4)}" fill="currentColor" stroke="none"/></g>`};
+  const src=(cx,cy,topPlus=true)=>`<circle cx="${cx}" cy="${cy}" r="15" fill="var(--panel)"/>`+tx(cx,cy-3,topPlus?"+":"−","middle",15)+tx(cx,cy+12,topPlus?"−":"+","middle",15);
+  const box=(cx,cy,rot)=>`<rect x="${cx-20}" y="${cy-8}" width="40" height="16" transform="rotate(${rot} ${cx} ${cy})" fill="var(--panel)"/>`;
+  const vp=Math.round(Vp*100)/100;
+  let b="";
+  // wires
+  b+=`<polyline points="285,257 160,132 160,58 918,58 918,135 797,257" fill="none"/>`;
+  b+=`<polyline points="285,257 429,113 655,113 797,257" fill="none"/>`;
+  b+=`<line x1="285" y1="257" x2="797" y2="257"/>`;
+  b+=`<polyline points="285,257 285,378 797,378 797,257" fill="none"/>`;
+  b+=`<circle class="nd" cx="285" cy="257" r="3" fill="currentColor"/><circle class="nd" cx="797" cy="257" r="3" fill="currentColor"/>`;
+  // sources
+  b+=src(215,187)+src(345,197)+src(285,318,false);
+  b+=lab(197,193,"V","an","end").replace("</text>",`<tspan dy="-5" font-size="18"> = ${vp}∠0° V</tspan></text>`);
+  b+=lab(368,203,"V","bn").replace("</text>",`<tspan dy="-5" font-size="18"> = ${vp}∠−120° V</tspan></text>`);
+  b+=lab(266,324,"V","cn","end").replace("</text>",`<tspan dy="-5" font-size="18"> = ${vp}∠+120° V</tspan></text>`);
+  // terminals + labels
+  [[58,"a","A"],[113,"b","B"],[257,"n","N"],[378,"c","C"]].forEach(([y,s,S])=>{b+=term(440,y)+term(600,y)+it(440,y-10,s)+it(600,y-10,S)});
+  // line currents
+  b+=arr(522,58)+lab(510,42,"I","aA","start","cur")+arr(522,113)+lab(510,97,"I","bB","start","cur")+arr(522,257)+lab(510,241,"I","nN","start","cur")+arr(522,378)+lab(510,362,"I","cC","start","cur");
+  // loads
+  b+=box(858,196,-45)+box(726,185,45)+box(797,318,90);
+  b+=lab(836,184,"Z",za[0],"end")+tx(890,188,"+","middle",15)+tx(872,236,"−","middle",15)+lab(898,222,"V","AN")+darr(952,168,928,186)+lab(944,160,"I","AN","start","cur");
+  b+=lab(700,218,"Z",zb[0],"end")+tx(741,165,"+","middle",15)+tx(772,214,"−","middle",15)+lab(750,194,"V","BN")+darr(700,128,722,146)+lab(688,120,"I","BN","start","cur");
+  b+=lab(783,322,"Z",zc[0],"end")+tx(826,296,"−","middle",15)+tx(826,348,"+","middle",15)+lab(816,326,"V","CN")+darr(807,400,807,368)+lab(815,398,"I","CN","start","cur");
+  if(legend) b+=tx(285,432,legend,"start",17);
+  return `<svg viewBox="0 0 1024 ${legend?448:415}" width="100%" style="max-width:920px;min-width:640px" fill="none" stroke="currentColor" stroke-width="1.6">${b}</svg>`;
+}
+
+/* ================= helpers for templates ================= */
+const R_=(a,b)=>a+Math.random()*(b-a);
+const getP=(o,k)=>k.split(".").reduce((a,x)=>a[x],o);
+const setP=(o,k,v)=>{const ks=k.split(".");const last=ks.pop();ks.reduce((a,x)=>a[x],o)[last]=v};
+const clone=o=>JSON.parse(JSON.stringify(o));
+const F_=(l,v,u="",t="n",o)=>({l,v,u,t,o});
+
+/* ---------------- branch-current helpers (random directions) ---------------- */
+const RD=()=>pick([1,-1]);
+const brFrom=b=>b.d>0?b.a:b.b, brTo=b=>b.d>0?b.b:b.a;
+const brVal=b=>b.d*(b.src!==undefined?b.src:(b.va-b.vb)/b.R);
+const nmN=x=>x==="0"?"กราวด์":x;
+const subN=(b,x)=>x===b.a?b.sa:x===b.b?b.sb:x;
+function ohmSym(b){if(b.src!==undefined)return`${b.n} = ${b.d>0?"":"−"}(กระแสของแหล่งจ่าย ในทิศ ${nmN(b.a)} → ${nmN(b.b)})`;
+  const f=brFrom(b),t=brTo(b);return`${b.n} = ${t==="0"?f:f==="0"?"−"+t:`(${f} − ${t})`}/R`}
+function ohmSub(b){if(b.src!==undefined)return`${b.n} = ${nf(b.d*b.src)} A`;
+  const f=subN(b,brFrom(b)),t=subN(b,brTo(b));return`${b.n} = ${t==="0"?f:f==="0"?"−"+t:`(${f} − ${t})`}/${b.R}`}
+function kclSym(node,brs){const i=brs.filter(b=>brTo(b)===node).map(b=>b.n),o=brs.filter(b=>brFrom(b)===node).map(b=>b.n);return`${i.join(" + ")||"0"} = ${o.join(" + ")||"0"}`}
+function kclNum(node,brs){const i=brs.filter(b=>brTo(b)===node),o=brs.filter(b=>brFrom(b)===node);
+  const si=i.reduce((a,b)=>a+brVal(b),0),so=o.reduce((a,b)=>a+brVal(b),0);
+  return`เข้า ${i.map(b=>`(${nf(brVal(b))})`).join(" + ")||"0"} = ${nf(si)}, ออก ${o.map(b=>`(${nf(brVal(b))})`).join(" + ")||"0"} = ${nf(so)}`}
+const dirTxt=b=>`${b.n} ไหลจาก ${nmN(brFrom(b))} ไป ${nmN(brTo(b))}`;
+/* label: horizontal (aLeft tells if node a is on the left) or vertical (a on top) */
+function brLab(b){const L=b.lab;if(L.h){const right=(b.d>0)===L.aLeft;return CT(L.x,L.y,right?`${b.n} →`:`← ${b.n}`)}return CT(L.x,L.y,`${b.n} ${(b.d>0)===L.aTop?"↓":"↑"}`,"start")}
+const dirEdit=(n,list)=>list.map((s,i)=>[`dr.${i}`,`ทิศ ${s}`,""]);
+function curLines(brs){return brs.map(b=>`${M_(`${ohmSub(b)} = ${nf(brVal(b))} A`)}`).join(", ")+(brs.some(b=>brVal(b)<0)?" (ค่าติดลบแปลว่ากระแสไหลจริงสวนทิศที่กำหนด)":"")}
+
+/* ---------------- ข้อ 1A ---------------- */
+const T1A={g:1,name:"แหล่งจ่ายแรงดัน 2 ตัว ตัวต้านทาน 3 ตัว (แบบ Ex1)",
+ note:"แบบ Ex1: VS1 – R1 – VB – R3 – VS2 และ R2 ลงกราวด์ ทิศกระแสที่โจทย์กำหนดสุ่มใหม่ทุกข้อ วิธีทำได้ทั้ง nodal (KCL) และ mesh (KVL) ตามตัวอย่าง EX2",
+ gen(){const r=[10,20,25,40,50,80,100,120,150,200];return{Vs1:pick([2,3,4,5,6,9,10,12,15,20,24]),Vs2:pick([2,3,4,5,6,9,10,12,15,20,24]),R1:pick(r),R2:pick(r),R3:pick(r),dr:[RD(),RD(),RD()]}},
+ preset:{Vs1:4,Vs2:5,R1:100,R2:100,R3:100,dr:[1,1,1]},
+ edit:p=>[["Vs1","VS1 (ซ้าย)","V"],["Vs2","VS2 (ขวา)","V"],["R1","R1","Ω"],["R2","R2","Ω"],["R3","R3","Ω"],...dirEdit(0,["I1 (1 = →, −1 = ←)","I2 (1 = ↓, −1 = ↑)","I3 (1 = ←, −1 = →)"])],
+ build(p){
+  const{Vs1,Vs2,R1,R2,R3}=p, dr=p.dr||[1,1,1], G=1/R1+1/R2+1/R3, rhs=Vs1/R1+Vs2/R3, VB=rhs/G;
+  const brs=[{n:"I1",R:R1,a:"VA",b:"VB",sa:`${Vs1}`,sb:"VB",va:Vs1,vb:VB,d:dr[0],lab:{h:1,aLeft:true,x:155,y:64}},
+             {n:"I2",R:R2,a:"VB",b:"0",sa:"VB",sb:"0",va:VB,vb:0,d:dr[1],lab:{h:0,aTop:true,x:252,y:140}},
+             {n:"I3",R:R3,a:"VC",b:"VB",sa:`${Vs2}`,sb:"VB",va:Vs2,vb:VB,d:dr[2],lab:{h:1,aLeft:false,x:325,y:64}}];
+  const [I1,I2,I3]=brs.map(brVal), i1=(Vs1-VB)/R1, i3=(Vs2-VB)/R3, P1=Vs1*i1, P2=Vs2*i3, PR=[i1*i1*R1,VB*VB/R2,i3*i3*R3];
+  const a11=R1+R2,a22=R2+R3,det=a11*a22-R2*R2, ia=(Vs1*a22-R2*Vs2)/det, ib=(a11*Vs2-R2*Vs1)/det;
+  const sg=d=>d>0?"":"−";
+  const body=Vsrc(70,40,190,`VS1 = ${Vs1} V`)+Rh(70,240,40,`R1 = ${R1} Ω`)+dot(240,40)+NT(240,28,"VB")+NT(70,28,"VA")+NT(410,28,"VC")
+   +Rv(240,40,190,`R2 = ${R2} Ω`)+Rh(240,410,40,`R3 = ${R3} Ω`)+W(70,190,410,190)+dot(240,190)+brs.map(brLab).join("")
+   +W(410,40,410,98)+`<circle cx="410" cy="115" r="17"/>`+W(410,132,410,190)+T(410,112,"+")+T(410,127,"−")+T(436,120,`VS2 = ${Vs2} V`,"start");
+  return{fig:svg(540,215,body,90),
+  text:`จากวงจร กำหนดทิศกระแสดังนี้: ${brs.map(dirTxt).join(", ")} (VA คือขั้วบวกของ VS1, VC คือขั้วบวกของ VS2) จงหาแรงดัน VB กระแส I1 I2 I3 ตามทิศที่กำหนด และกำลังที่แหล่งจ่ายแต่ละตัวจ่ายออก`,
+  f:[F_("VB",VB,"V"),F_("I1",I1,"A"),F_("I2",I2,"A"),F_("I3",I3,"A"),F_("P ที่ VS1 จ่ายออก",P1,"W"),F_("P ที่ VS2 จ่ายออก",P2,"W"),F_("P ที่ R2 ใช้",PR[1],"W")],
+  sol:`<p><b>วิธีที่ 1: Nodal (KCL ที่โหนด VB)</b></p><ol>
+  <li>KCL ตามทิศที่โจทย์กำหนด (กระแสเข้าโหนด = กระแสออก): ${M_(kclSym("VB",brs))}</li>
+  <li>กฎของโอห์มแต่ละกิ่ง (ไหลจากไหน เอาศักย์ต้นทางลบปลายทาง): ${brs.map(b=>M_(ohmSub(b))).join(", ")}</li>
+  <li>แทนค่าแล้วจัดรูป (ตั้งทิศแบบไหนก็ได้สมการเดียวกัน): ${M_(`VB(1/${R1} + 1/${R2} + 1/${R3}) = ${Vs1}/${R1} + ${Vs2}/${R3}`)} → ${M_(`${nf(G)}·VB = ${nf(rhs)}`)} → <b>${M_(`VB = ${nf(VB)} V`)}</b></li>
+  <li>${curLines(brs)}</li>
+  <li>เช็ค KCL: ${M_(kclNum("VB",brs))} เท่ากัน ✓</li></ol>
+  <p><b>วิธีที่ 2: Mesh (KVL)</b> ให้ ia วนลูปซ้าย (ไหลผ่าน R1 ไปทางขวาแล้วลง R2) และ ib วนลูปขวา (ไหลผ่าน R3 ไปทางซ้ายแล้วลง R2) เหมือน EX2</p><ol>
+  <li>ลูปซ้าย: ${M_(`−${Vs1} + ${R1}ia + ${R2}(ia + ib) = 0`)} → ${M_(`${a11}ia + ${R2}ib = ${Vs1}`)}</li>
+  <li>ลูปขวา: ${M_(`−${Vs2} + ${R3}ib + ${R2}(ia + ib) = 0`)} → ${M_(`${R2}ia + ${a22}ib = ${Vs2}`)}</li>
+  <li>Cramer: ${M_(`Δ = ${a11}×${a22} − ${R2}² = ${nf(det)}`)} → <b>${M_(`ia = ${nf(ia)} A, ib = ${nf(ib)} A`)}</b></li>
+  <li>แปลงเป็นทิศที่โจทย์กำหนด: ${M_(`I1 = ${sg(dr[0])}ia = ${nf(I1)}`)}, ${M_(`I2 = ${sg(dr[1])}(ia + ib) = ${nf(I2)}`)}, ${M_(`I3 = ${sg(dr[2])}ib = ${nf(I3)}`)} ตรงกับวิธีที่ 1 ✓</li></ol>
+  <p><b>กำลัง</b> (ใช้กระแสที่ไหลออกจากขั้วบวกของแหล่งจ่าย ไม่ขึ้นกับทิศที่ตั้ง)</p><ol>
+  <li>${M_(`P(VS1) = ${Vs1} × ${nf(i1)} = ${nf(P1)} W`)}, ${M_(`P(VS2) = ${Vs2} × ${nf(i3)} = ${nf(P2)} W`)} (ค่าลบแปลว่าแหล่งจ่ายนั้นดูดกลืนกำลัง)</li>
+  <li>${M_(`P(R1) = ${nf(PR[0])} W, P(R2) = ${nf(PR[1])} W, P(R3) = ${nf(PR[2])} W`)} รวม ${nf(PR[0]+PR[1]+PR[2])} W = จ่ายรวม ${nf(P1+P2)} W ✓</li></ol>`}}};
+
+/* ---------------- ข้อ 1C (one side is a current source) ---------------- */
+const T1C={g:1,name:"ฝึกเพิ่ม: เปลี่ยนแหล่งจ่ายข้างหนึ่งเป็นแหล่งจ่ายกระแส",
+ note:"วงจรเดียวกับ Ex1 แต่แหล่งจ่ายข้างหนึ่งเป็นแหล่งจ่ายกระแส (แบบที่อาจารย์ลองแก้ให้ดูในห้อง) ทิศกระแสที่กำหนดสุ่มใหม่ทุกข้อ",
+ gen(){const r=[10,20,25,40,50,80,100,120];return{Vs:pick([5,6,9,10,12,15,20,24,30]),R1:pick(r),R2:pick(r),R3:pick(r),Is:pick([0.2,0.5,1,1.5,2]),d:pick([1,1,-1]),side:pick([1,2]),dr:[RD(),RD(),RD()]}},
+ preset:{Vs:10,R1:100,R2:100,R3:100,Is:1,d:1,side:1,dr:[1,1,1]},
+ edit:p=>[["Vs","Vs","V"],["R1","R1 (ซ้าย)","Ω"],["R2","R2 (กลาง)","Ω"],["R3","R3 (ขวา)","Ω"],["Is","Is","A"],["d","ทิศแหล่งจ่ายกระแส (1 = ดันเข้าหาโหนด VB, −1 = ดึงออก)",""],["side","แหล่งจ่ายกระแสอยู่ฝั่ง (1 = ซ้าย, 2 = ขวา)",""],...dirEdit(0,["I1 (1 = →, −1 = ←)","I2 (1 = ↓, −1 = ↑)","I3 (1 = ←, −1 = →)"])],
+ build(p){
+  const{Vs,R1,R2,R3,Is,d,side}=p, dr=p.dr||[1,1,1], L=side===1, Rvs=L?R3:R1, Rc=L?R1:R3;
+  const G=1/Rvs+1/R2, rhs=Vs/Rvs+d*Is, VB=rhs/G, iv=(Vs-VB)/Rvs, ic=d*Is, Vterm=VB+ic*Rc, vn=L?"VA":"VC";
+  const b1={n:"I1",R:R1,a:"VA",b:"VB",sa:L?"VA":`${Vs}`,sb:"VB",va:L?Vterm:Vs,vb:VB,d:dr[0],lab:{h:1,aLeft:true,x:155,y:64}};
+  const b3={n:"I3",R:R3,a:"VC",b:"VB",sa:L?`${Vs}`:"VC",sb:"VB",va:L?Vs:Vterm,vb:VB,d:dr[2],lab:{h:1,aLeft:false,x:325,y:64}};
+  if(L)b1.src=ic; else b3.src=ic;
+  const brs=[b1,{n:"I2",R:R2,a:"VB",b:"0",sa:"VB",sb:"0",va:VB,vb:0,d:dr[1],lab:{h:0,aTop:true,x:252,y:140}},b3];
+  const [I1,I2,I3]=brs.map(brVal), PVs=Vs*iv, PIs=Vterm*ic, PR=[((L?ic:iv))**2*R1,VB*VB/R2,((L?iv:ic))**2*R3];
+  let body=Rh(70,240,40,`R1 = ${R1} Ω`)+dot(240,40)+NT(240,28,"VB")+Rv(240,40,190,`R2 = ${R2} Ω`)+Rh(240,410,40,`R3 = ${R3} Ω`)+W(70,190,410,190)+NT(70,28,"VA")+NT(410,28,"VC")+brs.map(brLab).join("");
+  body+=L?Isrc(70,40,190,"",d>0)+T(46,120,`${Is} A`,"end")+Vsrc(410,40,190,"",0)+T(436,120,`${Vs} V`,"start"):Vsrc(70,40,190,`${Vs} V`)+Isrc(410,40,190,`${Is} A`,d>0);
+  return{fig:svg(480,215,body,50),
+  text:`จากวงจร กำหนดทิศกระแสดังนี้: ${brs.map(dirTxt).join(", ")} จงหาแรงดัน VB กระแส I1 I2 I3 ตามทิศที่กำหนด แรงดันคร่อมแหล่งจ่ายกระแส (${vn}) และกำลังที่แหล่งจ่ายแต่ละตัวจ่ายออก`,
+  f:[F_("VB",VB,"V"),F_("I1",I1,"A"),F_("I2",I2,"A"),F_("I3",I3,"A"),F_(`แรงดันคร่อมแหล่งจ่ายกระแส ${vn}`,Vterm,"V"),F_(`P ที่แหล่งจ่าย ${Vs} V จ่ายออก`,PVs,"W"),F_(`P ที่แหล่งจ่าย ${Is} A จ่ายออก`,PIs,"W"),F_("P ที่ R2 ใช้",PR[1],"W")],
+  sol:`<ol>
+  <li>KCL ที่โหนด VB ตามทิศที่กำหนด (เข้า = ออก): ${M_(kclSym("VB",brs))}</li>
+  <li>กิ่งแหล่งจ่ายกระแสรู้ค่าเลย (ไม่ต้องใช้ R${L?1:3}): แหล่งจ่าย${d>0?"ดัน":"ดึง"}กระแส ${Is} A ${d>0?"เข้าหา":"ออกจาก"}โหนด VB → ${M_(ohmSub(L?b1:b3))}</li>
+  <li>กิ่งอื่นใช้กฎของโอห์ม: ${brs.filter(b=>b.src===undefined).map(b=>M_(ohmSub(b))).join(", ")}</li>
+  <li>แทนค่าแล้วจัดรูป: ${M_(`VB(1/${Rvs} + 1/${R2}) = ${Vs}/${Rvs} ${d>0?"+":"−"} ${Is}`)} → ${M_(`${nf(G)}·VB = ${nf(rhs)}`)} → <b>${M_(`VB = ${nf(VB)} V`)}</b></li>
+  <li>${brs.filter(b=>b.src===undefined).map(b=>M_(`${ohmSub(b)} = ${nf(brVal(b))} A`)).join(", ")}, ${M_(`${(L?b1:b3).n} = ${nf(brVal(L?b1:b3))} A`)}${brs.some(b=>brVal(b)<0)?" (ค่าติดลบแปลว่ากระแสไหลจริงสวนทิศที่กำหนด)":""}</li>
+  <li>เช็ค KCL: ${M_(kclNum("VB",brs))} เท่ากัน ✓</li>
+  <li>แรงดันคร่อมแหล่งจ่ายกระแส: กระแส ${nf(ic)} A ไหลผ่าน R${L?1:3} เข้าหา VB → ${M_(`${vn} = VB + (${nf(ic)})(${Rc}) = ${nf(Vterm)} V`)}</li>
+  <li>กำลังที่จ่ายออก: ${M_(`P(Vs) = ${Vs} × ${nf(iv)} = ${nf(PVs)} W`)}, ${M_(`P(Is) = ${vn} × ${nf(ic)} = ${nf(PIs)} W`)} (ค่าลบแปลว่าดูดกลืนกำลัง)</li>
+  <li>${M_(`P(R1) = ${nf(PR[0])} W, P(R2) = ${nf(PR[1])} W, P(R3) = ${nf(PR[2])} W`)} รวม ${nf(PR[0]+PR[1]+PR[2])} W = จ่ายรวม ${nf(PVs+PIs)} W ✓</li></ol>`}}};
+
+/* ---------------- ข้อ 1B ---------------- */
+const T1B={g:1,name:"ฝึกเพิ่ม: สองโหนด ตัวต้านทาน 4 ตัว (แบบการบ้าน Assignment)",
+ note:"แนวข้อสอบบอกว่าตัวต้านทาน 3–5 ตัว แบบนี้ใช้ KCL เหมือนกันแต่มี 2 สมการ ทิศกระแสที่กำหนดสุ่มใหม่ทุกข้อ",
+ gen(){const r=[5,10,15,20,25,30,40,50];return{Vs:pick([10,12,15,20,24,30,40]),R1:pick(r),R2:pick(r),R3:pick(r),R4:pick(r),Is:pick([0.5,1,1.5,2,3]),d:pick([1,1,-1]),pos:pick([1,2]),dr:[RD(),RD(),RD(),RD()]}},
+ edit:p=>[["Vs","Vs","V"],["R1","R1","Ω"],["R2","R2","Ω"],["R3","R3","Ω"],["R4","R4","Ω"],["Is","Is","A"],["d","ทิศแหล่งจ่ายกระแส (1 = ดันเข้าโหนด, −1 = ดึงออก)",""],["pos","Is ต่อที่โหนด (1 = A, 2 = B)",""],...dirEdit(0,["I1 (1 = →, −1 = ←)","I2 (1 = ↓, −1 = ↑)","I3 (1 = →, −1 = ←)","I4 (1 = ↓, −1 = ↑)"])],
+ build(p){
+  const{Vs,R1,R2,R3,R4,Is,d,pos}=p, dr=p.dr||[1,1,1,1];
+  const g11=1/R1+1/R2+1/R3,g12=1/R3,g22=1/R3+1/R4;
+  const b1=Vs/R1+(pos===1?d*Is:0), b2=(pos===2?d*Is:0);
+  const det=g11*g22-g12*g12, VA=(b1*g22+g12*b2)/det, VB=(g11*b2+g12*b1)/det;
+  const xa2=pos===1?260:180, xb=xa2+130, xend=pos===2?xb+100:xb, node=pos===1?"VA":"VB";
+  const brs=[{n:"I1",R:R1,a:"VS",b:"VA",sa:`${Vs}`,sb:"VA",va:Vs,vb:VA,d:dr[0],lab:{h:1,aLeft:true,x:115,y:64}},
+   {n:"I2",R:R2,a:"VA",b:"0",sa:"VA",sb:"0",va:VA,vb:0,d:dr[1],lab:{h:0,aTop:true,x:192,y:135}},
+   {n:"I3",R:R3,a:"VA",b:"VB",sa:"VA",sb:"VB",va:VA,vb:VB,d:dr[2],lab:{h:1,aLeft:true,x:(xa2+xb)/2,y:64}},
+   {n:"I4",R:R4,a:"VB",b:"0",sa:"VB",sb:"0",va:VB,vb:0,d:dr[3],lab:{h:0,aTop:true,x:xb+12,y:135}}];
+  const src={n:"Is",a:"0",b:node,src:d*Is,d:d};
+  const all=[...brs,src], I=brs.map(brVal), i1=(Vs-VA)/R1, PVs=Vs*i1, PIs=d*Is*(pos===1?VA:VB);
+  const PR=[i1*i1*R1,VA*VA/R2,(VA-VB)**2/R3,VB*VB/R4];
+  let body=Vsrc(50,40,180,`${Vs} V`)+Rh(50,180,40,`R1 = ${R1} Ω`)+dot(180,40)+NT(180,28,"A")+Rv(180,40,180,`R2 = ${R2} Ω`);
+  if(pos===1) body+=W(180,40,260,40)+Isrc(260,40,180,`${Is} A`,d>0);
+  body+=Rh(xa2,xb,40,`R3 = ${R3} Ω`)+dot(xb,40)+NT(xb,28,"B")+Rv(xb,40,180,`R4 = ${R4} Ω`);
+  if(pos===2) body+=W(xb,40,xb+100,40)+Isrc(xb+100,40,180,`${Is} A`,d>0);
+  body+=W(50,180,xend,180)+brs.map(brLab).join("");
+  return{fig:svg(xend+80,210,body,40),
+  text:`กำหนดทิศกระแสดังนี้: ${brs.map(dirTxt).join(", ")} (VS คือขั้วบวกของแหล่งจ่าย ${Vs} V, VA และ VB คือแรงดันที่โหนด A และ B เทียบกับกราวด์) จงหา VA, VB, กระแส I1–I4 ตามทิศที่กำหนด, กำลังที่แหล่งจ่ายแต่ละตัวจ่ายออก และกำลังที่ R4 ใช้`,
+  f:[F_("VA",VA,"V"),F_("VB",VB,"V"),...I.map((x,i)=>F_(`I${i+1}`,x,"A")),F_(`P ที่แหล่งจ่าย ${Vs} V จ่ายออก`,PVs,"W"),F_(`P ที่แหล่งจ่าย ${Is} A จ่ายออก`,PIs,"W"),F_("P ที่ R4 ใช้",PR[3],"W")],
+  sol:`<ol>
+  <li>KCL ตามทิศที่กำหนด (เข้า = ออก) โดย Is คือกระแส ${Is} A ของแหล่งจ่ายที่${d>0?"ดันเข้า":"ดึงออกจาก"}โหนด ${pos===1?"A":"B"}:<br>โหนด A: ${M_(kclSym("VA",all))}<br>โหนด B: ${M_(kclSym("VB",all))}</li>
+  <li>กฎของโอห์ม: ${brs.map(b=>M_(ohmSub(b))).join(", ")}</li>
+  <li>แทนค่าแล้วจัดรูป (ตั้งทิศแบบไหนก็ได้สมการเดียวกัน):<br>${M_(`(1/${R1} + 1/${R2} + 1/${R3})VA − (1/${R3})VB = ${Vs}/${R1}${pos===1?` ${d>0?"+":"−"} ${Is}`:""}`)} → ${M_(`${nf(g11)}·VA − ${nf(g12)}·VB = ${nf(b1)}`)}<br>${M_(`−(1/${R3})VA + (1/${R3} + 1/${R4})VB = ${pos===2?`${d>0?"":"−"}${Is}`:"0"}`)} → ${M_(`−${nf(g12)}·VA + ${nf(g22)}·VB = ${nf(b2)}`)}</li>
+  <li>Cramer: ${M_(`Δ = ${nf(g11)}×${nf(g22)} − ${nf(g12)}² = ${nf(det)}`)} → <b>${M_(`VA = ${nf(VA)} V`)}</b>, <b>${M_(`VB = ${nf(VB)} V`)}</b></li>
+  <li>${curLines(brs)}</li>
+  <li>เช็ค KCL: โหนด A ${M_(kclNum("VA",all))} ✓, โหนด B ${M_(kclNum("VB",all))} ✓</li>
+  <li>${M_(`P(Vs) = ${Vs} × ${nf(i1)} = ${nf(PVs)} W`)}, ${M_(`P(Is) = ${d>0?"":"−"}${node}·${Is} = ${nf(PIs)} W`)} (ค่าลบแปลว่าดูดกลืนกำลัง)</li>
+  <li>${M_(`P(R1..R4) = ${PR.map(x=>nf(x)).join(", ")} W`)} รวม ${nf(PR.reduce((a,b)=>a+b))} W = จ่ายรวม ${nf(PVs+PIs)} W ✓</li></ol>`}}};
+
+/* ---------------- ข้อ 1D: two nodes, two V sources ---------------- */
+const T1D={g:1,name:"ฝึกเพิ่ม: สองโหนด แหล่งจ่ายแรงดัน 2 ตัว ตัวต้านทาน 5 ตัว",
+ note:"เหมือนแบบการบ้าน 2 โหนด แต่แหล่งจ่ายทางขวาเป็นแหล่งจ่ายแรงดัน (ต่อผ่าน R5 เข้าโหนด B) ใช้ KCL 2 สมการ ทิศกระแสที่กำหนดสุ่มใหม่ทุกข้อ",
+ gen(){const r=[5,10,15,20,25,30,40,50];return{Vs1:pick([6,10,12,15,20,24,30,40]),Vs2:pick([5,6,9,10,12,15,20,24]),R1:pick(r),R2:pick(r),R3:pick(r),R4:pick(r),R5:pick(r),dr:[RD(),RD(),RD(),RD(),RD()]}},
+ edit:p=>[["Vs1","VS1 (ซ้าย)","V"],["Vs2","VS2 (ขวา)","V"],["R1","R1","Ω"],["R2","R2","Ω"],["R3","R3","Ω"],["R4","R4","Ω"],["R5","R5","Ω"],...dirEdit(0,["I1 (1 = →, −1 = ←)","I2 (1 = ↓, −1 = ↑)","I3 (1 = →, −1 = ←)","I4 (1 = ↓, −1 = ↑)","I5 (1 = ←, −1 = →)"])],
+ build(p){
+  const{Vs1,Vs2,R1,R2,R3,R4,R5}=p, dr=p.dr||[1,1,1,1,1];
+  const g11=1/R1+1/R2+1/R3, g12=1/R3, g22=1/R3+1/R4+1/R5, b1=Vs1/R1, b2=Vs2/R5;
+  const det=g11*g22-g12*g12, VA=(b1*g22+g12*b2)/det, VB=(g11*b2+g12*b1)/det;
+  const brs=[{n:"I1",R:R1,a:"VS1",b:"VA",sa:`${Vs1}`,sb:"VA",va:Vs1,vb:VA,d:dr[0],lab:{h:1,aLeft:true,x:115,y:64}},
+   {n:"I2",R:R2,a:"VA",b:"0",sa:"VA",sb:"0",va:VA,vb:0,d:dr[1],lab:{h:0,aTop:true,x:192,y:140}},
+   {n:"I3",R:R3,a:"VA",b:"VB",sa:"VA",sb:"VB",va:VA,vb:VB,d:dr[2],lab:{h:1,aLeft:true,x:245,y:64}},
+   {n:"I4",R:R4,a:"VB",b:"0",sa:"VB",sb:"0",va:VB,vb:0,d:dr[3],lab:{h:0,aTop:true,x:322,y:140}},
+   {n:"I5",R:R5,a:"VS2",b:"VB",sa:`${Vs2}`,sb:"VB",va:Vs2,vb:VB,d:dr[4],lab:{h:1,aLeft:false,x:375,y:64}}];
+  const I=brs.map(brVal), i1=(Vs1-VA)/R1, i5=(Vs2-VB)/R5, P1=Vs1*i1, P2=Vs2*i5;
+  const PR=[i1*i1*R1,VA*VA/R2,(VA-VB)**2/R3,VB*VB/R4,i5*i5*R5];
+  const body=Vsrc(50,40,190,`VS1 = ${Vs1} V`)+Rh(50,180,40,`R1 = ${R1} Ω`)+dot(180,40)+NT(180,28,"A")
+   +Rv(180,40,190,`R2 = ${R2} Ω`)+Rh(180,310,40,`R3 = ${R3} Ω`)+dot(310,40)+NT(310,28,"B")
+   +Rv(310,40,190,`R4 = ${R4} Ω`)+Rh(310,440,40,`R5 = ${R5} Ω`)
+   +W(440,40,440,98)+`<circle cx="440" cy="115" r="17"/>`+W(440,132,440,190)+T(440,112,"+")+T(440,127,"−")+T(466,120,`VS2 = ${Vs2} V`,"start")
+   +W(50,190,440,190)+dot(180,190)+dot(310,190)+brs.map(brLab).join("");
+  return{fig:svg(550,215,body,90),
+  text:`กำหนดทิศกระแสดังนี้: ${brs.map(dirTxt).join(", ")} (VS1, VS2 คือขั้วบวกของแหล่งจ่าย, VA และ VB คือแรงดันที่โหนด A และ B เทียบกับกราวด์) จงหา VA, VB, กระแส I1–I5 ตามทิศที่กำหนด, กำลังที่แหล่งจ่ายแต่ละตัวจ่ายออก และกำลังที่ R4 ใช้`,
+  f:[F_("VA",VA,"V"),F_("VB",VB,"V"),...I.map((x,i)=>F_(`I${i+1}`,x,"A")),F_("P ที่ VS1 จ่ายออก",P1,"W"),F_("P ที่ VS2 จ่ายออก",P2,"W"),F_("P ที่ R4 ใช้",PR[3],"W")],
+  sol:`<ol>
+  <li>KCL ตามทิศที่กำหนด (เข้า = ออก):<br>โหนด A: ${M_(kclSym("VA",brs))}<br>โหนด B: ${M_(kclSym("VB",brs))}</li>
+  <li>กฎของโอห์ม: ${brs.map(b=>M_(ohmSub(b))).join(", ")}</li>
+  <li>แทนค่าแล้วจัดรูป (ตั้งทิศแบบไหนก็ได้สมการเดียวกัน):<br>${M_(`(1/${R1} + 1/${R2} + 1/${R3})VA − (1/${R3})VB = ${Vs1}/${R1}`)} → ${M_(`${nf(g11)}·VA − ${nf(g12)}·VB = ${nf(b1)}`)}<br>${M_(`−(1/${R3})VA + (1/${R3} + 1/${R4} + 1/${R5})VB = ${Vs2}/${R5}`)} → ${M_(`−${nf(g12)}·VA + ${nf(g22)}·VB = ${nf(b2)}`)}</li>
+  <li>Cramer: ${M_(`Δ = ${nf(g11)}×${nf(g22)} − ${nf(g12)}² = ${nf(det)}`)}<br><b>${M_(`VA = (${nf(b1)}×${nf(g22)} + ${nf(g12)}×${nf(b2)})/Δ = ${nf(VA)} V`)}</b><br><b>${M_(`VB = (${nf(g11)}×${nf(b2)} + ${nf(g12)}×${nf(b1)})/Δ = ${nf(VB)} V`)}</b></li>
+  <li>${curLines(brs)}</li>
+  <li>เช็ค KCL: โหนด A ${M_(kclNum("VA",brs))} ✓, โหนด B ${M_(kclNum("VB",brs))} ✓</li>
+  <li>${M_(`P(VS1) = ${Vs1} × ${nf(i1)} = ${nf(P1)} W`)}, ${M_(`P(VS2) = ${Vs2} × ${nf(i5)} = ${nf(P2)} W`)} (ค่าลบแปลว่าดูดกลืนกำลัง)</li>
+  <li>${M_(`P(R1..R5) = ${PR.map(x=>nf(x)).join(", ")} W`)} รวม ${nf(PR.reduce((a,b)=>a+b))} W = จ่ายรวม ${nf(P1+P2)} W ✓</li></ol>`}}};
+
+/* ---------------- ข้อ 2 (phasor ladder) ---------------- */
+const Rvals=[2,4,5,6,8,10,12,15,16,20,25,30,40,50,60], Lvals=[0.2,0.5,1,1.5,2,2.5,3,4,5], Cvals=[1,2,2.5,4,5,10,12.5,20,25,50];
+function zEl(e,w){return e.t==="R"?Cx(e.v):e.t==="L"?Cx(0,w*e.v):Cx(0,-1/(w*e.v*1e-3))}
+const unit={R:"Ω",L:"H",C:"mF"};
+function solveLadder(p){
+  const w=p.w, Vs=cpol(p.Vm,p.ph), st=p.st;
+  const Zs=st.map(s=>s.els.reduce((a,e)=>cadd(a,zEl(e,w)),Cx(0)));
+  const n=st.length, Zeq=new Array(n);
+  for(let i=n-1;i>=0;i--){ if(st[i].k==="s") Zeq[i]=i+1<n?cadd(Zs[i],Zeq[i+1]):Zs[i]; else Zeq[i]=i+1<n?cpar(Zs[i],Zeq[i+1]):Zs[i]; }
+  let V=Vs, I=cdiv(Vs,Zeq[0]); const Iin=I, Ist=[], Vst=[];
+  for(let i=0;i<n;i++){ if(st[i].k==="s"){Ist[i]=I;Vst[i]=cmul(I,Zs[i]);V=csub(V,Vst[i]);} else {Ist[i]=cdiv(V,Zs[i]);Vst[i]=V;I=csub(I,Ist[i]);} }
+  return{Vs,Zs,Zeq,Iin,Ist,Vst,Vo:Vst[n-1]};
+}
+function genLadder(topo){
+  const kinds=topo==="A"?["s","p","p"]:["s","p","s","p"];
+  for(let tries=0;tries<2000;tries++){
+    const w=pick([2,4,5,10]), total=pick([5,6]);
+    const counts=kinds.map(()=>1); let extra=total-kinds.length;
+    while(extra>0){const i=Math.random()*kinds.length|0;if(counts[i]<2){counts[i]++;extra--}}
+    const st=kinds.map((k,i)=>({k,els:Array.from({length:counts[i]},()=>({t:pick(["R","L","C"])}))}));
+    const types=st.flatMap(s=>s.els.map(e=>e.t));
+    if(!["R","L","C"].every(t=>types.includes(t)))continue;
+    if(st.some(s=>s.els.length===2&&s.els[0].t===s.els[1].t))continue;
+    let bad=false;
+    st.forEach(s=>s.els.forEach(e=>{
+      if(e.t==="R")e.v=pick(Rvals);
+      else if(e.t==="L"){const ok=Lvals.filter(v=>w*v>=2&&w*v<=60);if(!ok.length)bad=true;else e.v=pick(ok)}
+      else{const ok=Cvals.filter(v=>1/(w*v*1e-3)>=2&&1/(w*v*1e-3)<=60);if(!ok.length)bad=true;else e.v=pick(ok)}
+    }));
+    if(bad)continue;
+    const cnt={R:0,L:0,C:0}; st.forEach(s=>s.els.forEach(e=>e.n=e.t+(++cnt[e.t])));
+    const p={topo,w,Vm:pick([10,12,20,30,50,60,100,120]),ph:pick([0,0,-15,15,30,-30,45,60,-45]),jf:pick([0,0,1]),st};
+    const Rs=st.flatMap(s=>s.els).filter(e=>e.t==="R"); p.pr=pick(Rs).n;
+    const r=solveLadder(p);
+    const fin=z=>isFinite(z.re)&&isFinite(z.im);
+    if(![...r.Zs,...r.Zeq,r.Iin,r.Vo].every(fin))continue;
+    if(st.some((s,i)=>s.k==="p"&&i+1<st.length&&cmag(cadd(r.Zs[i],r.Zeq[i+1]))<2))continue;
+    if(r.Zs.some(z=>cmag(z)<2)||r.Zeq.some(z=>cmag(z)<3||cmag(z)>2000)||cmag(r.Vo)<0.05*p.Vm)continue;
+    return p;
+  }
+}
+function ladderFig(p){
+  const st=p.st, yT=40, yB=220; let x=70, body="", nodeCh="ab", ni=0, prevK=null;
+  const lab=e=>p.jf&&e.t!=="R"?`${e.n}: ${fr(zEl(e,p.w))} Ω`:`${e.n} = ${e.v} ${unit[e.t]}`;
+  st.forEach((s,i)=>{
+    if(s.k==="s"){ s.els.forEach(e=>{ body+=(e.t==="R"?Rh:e.t==="L"?Lh:Ch)(x,x+100,yT,lab(e)); x+=100; }); body+=dot(x,yT)+NT(x,yT-26,nodeCh[ni++]||""); }
+    else{ if(prevK==="p"){body+=W(x,yT,x+130,yT);x+=130;}
+      const n=s.els.length, h=(yB-yT)/n;
+      s.els.forEach((e,j)=>{const y1=yT+j*h,y2=y1+h; body+=(e.t==="R"?Rv:e.t==="L"?Lv:Cv)(x,y1,y2,lab(e));});
+      if(i===st.length-1) body+=T(x+70,yT+14,"+ Vo","start")+T(x+70,yB-4,"−","start");
+    }
+    prevK=s.k;
+  });
+  body=Vsrc(70,yT,yB,`${p.Vm}cos(${p.w}t${p.ph?(p.ph>0?" + ":" − ")+Math.abs(p.ph)+"°":""}) V`,1)+body+W(70,yB,x,yB);
+  return svg(x+150,250,body,150);
+}
+function buildLadder(p){
+  const r=solveLadder(p), w=p.w, els=p.st.flatMap((s,i)=>s.els.map(e=>({...e,si:i})));
+  const Pr=els.filter(e=>e.t==="R").map(e=>({n:e.n,P:0.5*cmag(r.Ist[e.si])**2*e.v}));
+  const Psrc=0.5*p.Vm*cmag(r.Iin)*Math.cos((p.ph-cang(r.Iin))*DEG), Ptar=Pr.find(x=>x.n===p.pr).P;
+  const vs=`${p.Vm}cos(${w}t${p.ph?(p.ph>0?" + ":" − ")+Math.abs(p.ph)+"°":""})`;
+  const conv=els.map(e=>e.t==="R"?`${e.n} = ${e.v} Ω`:e.t==="L"?`${e.n}: jωL = j(${w})(${e.v}) = j${nf(w*e.v)} Ω`:`${e.n}: 1/(jωC) = 1/(j·${w}·${e.v}×10⁻³) = −j${nf(1/(w*e.v*1e-3))} Ω`);
+  const brName=i=>p.st[i].els.map(e=>e.n).join(" + ");
+  let red=[]; const n=p.st.length;
+  for(let i=n-1;i>=0;i--){
+    const zi=`Z(${brName(i)}) = ${fr(r.Zs[i])}`;
+    if(i===n-1) red.push(`${zi}`);
+    else if(p.st[i].k==="p") red.push(`${zi} ขนานกับส่วนที่เหลือ: ${frp(r.Zs[i])} ∥ ${frp(r.Zeq[i+1])} = ${fr(r.Zeq[i])}`);
+    else red.push(`${zi} อนุกรมกับส่วนที่เหลือ: ${frp(r.Zs[i])} + ${frp(r.Zeq[i+1])} = ${fr(r.Zeq[i])}`);
+  }
+  let fw=[]; let node=0;
+  p.st.forEach((s,i)=>{
+    if(s.k==="s") fw.push(`กระแสผ่าน ${brName(i)} = ${fp(r.Ist[i])} A, แรงดันตก = ${fp(r.Vst[i])} V`);
+    else fw.push(`แรงดันคร่อมกิ่ง ${brName(i)} = ${fp(r.Vst[i])} V → กระแสกิ่ง = ${fp(r.Vst[i])} / ${fp(r.Zs[i])} = ${fp(r.Ist[i])} A`);
+  });
+  return{fig:ladderFig(p),
+  text:`vs = ${vs} V จงหา impedance รวมที่แหล่งจ่ายมองเห็น (Zin), กระแส I จากแหล่งจ่าย, แรงดัน Vo คร่อมกิ่งขวาสุด, กำลังเฉลี่ยที่แหล่งจ่ายจ่ายออก และกำลังเฉลี่ยที่ ${p.pr} ใช้`,
+  f:[F_("|Zin|",cmag(r.Zeq[0]),"Ω"),F_("มุม Zin",cang(r.Zeq[0]),"°","a"),F_("|I|",cmag(r.Iin),"A"),F_("มุม I",cang(r.Iin),"°","a"),F_("|Vo|",cmag(r.Vo),"V"),F_("มุม Vo",cang(r.Vo),"°","a"),F_("P เฉลี่ยของแหล่งจ่าย",Psrc,"W"),F_(`P เฉลี่ยของ ${p.pr}`,Ptar,"W")],
+  sol:`<ol>
+  <li>แปลงแหล่งจ่ายเป็นเฟเซอร์: ${M_(`vs = ${vs} → Vs = ${p.Vm}∠${p.ph}° V`)}, ${M_(`ω = ${w} rad/s`)}</li>
+  ${p.jf?`<li>โจทย์ให้ L และ C มาในรูป jX แล้ว ใช้คำนวณได้เลย (ถ้าโจทย์ให้เป็น H หรือ F ต้องแปลงก่อน: jωL และ 1/(jωC))</li>`:`<li>แปลงอุปกรณ์เป็นอิมพีแดนซ์ (ขั้นนี้มีคะแนนแยก):<br>${conv.map(M_).join("<br>")}</li>`}
+  <li>ยุบวงจรจากขวาไปซ้าย:<br>${red.map(M_).join("<br>")}<br>→ <b>${M_(`Zin = ${fr(r.Zeq[0])} = ${fp(r.Zeq[0])} Ω`)}</b></li>
+  <li><b>${M_(`I = Vs/Zin = ${p.Vm}∠${p.ph}° / ${fp(r.Zeq[0])} = ${fp(r.Iin)} A`)}</b></li>
+  <li>ไล่หากระแสและแรงดันทีละกิ่ง (ซ้ายไปขวา):<br>${fw.map(M_).join("<br>")}</li>
+  <li><b>${M_(`Vo = ${fp(r.Vo)} V`)}</b> → ${M_(`vo(t) = ${nf(cmag(r.Vo))}cos(${w}t ${cang(r.Vo)<0?"−":"+"} ${na(Math.abs(cang(r.Vo)))}°) V`)}</li>
+  <li>กำลังเฉลี่ยแหล่งจ่าย: ${M_(`P = ½·Vm·Im·cos(θv − θi) = ½ × ${p.Vm} × ${nf(cmag(r.Iin))} × cos(${p.ph}° − (${na(cang(r.Iin))}°)) = ${nf(Psrc)} W`)}</li>
+  <li>กำลังเฉลี่ยตัวต้านทาน ${M_("P = ½·|I|²·R")}: ${Pr.map(x=>M_(`P(${x.n}) = ${nf(x.P)} W`)).join(", ")} รวม ${nf(Pr.reduce((a,b)=>a+b.P,0))} W = กำลังแหล่งจ่าย ✓ (L และ C ไม่กินกำลังเฉลี่ย)</li></ol>`};
+}
+function ladderEdit(p){const out=[["Vm","Vm (แอมพลิจูด)","V"],["ph","มุมเฟสของแหล่งจ่าย","°"],["w","ω","rad/s"]];p.st.forEach((s,i)=>s.els.forEach((e,j)=>out.push([`st.${i}.els.${j}.v`,e.n,unit[e.t]])));return out}
+const T2A={g:2,name:"Phasor แบบ EX03-04 หน้า 30 (R อนุกรม + กิ่งขนาน 2 กิ่ง)",note:"อาจารย์: “มาแบบนี้เลย คล้ายๆ แบบนี้เลย” มี C มี L อาจวางสลับกัน หรืออาจมี R เพิ่มอีกตัว ถ้าโจทย์ให้ C, L เป็นค่า F, H ต้องแปลงเป็น j ก่อน ขั้นนี้ได้คะแนนแยก แหล่งจ่ายตัวเดียว ไม่ต้องใช้ node/mesh ใช้กฎของโอห์มกับยุบวงจรก็พอ",gen:()=>genLadder("A"),preset:{topo:"A",w:4,Vm:20,ph:-15,jf:0,pr:"R1",st:[{k:"s",els:[{t:"R",v:60,n:"R1"}]},{k:"p",els:[{t:"C",v:10,n:"C1"}]},{k:"p",els:[{t:"L",v:5,n:"L1"}]}]},edit:ladderEdit,build:buildLadder};
+const T2B={g:2,name:"ฝึกเพิ่ม: วงจรแลดเดอร์ อนุกรม-ขนาน-อนุกรม-ขนาน",note:"อาจารย์ไม่ได้ใบ้รูปนี้ แต่อยู่ในขอบเขตแนวข้อสอบ (แหล่งจ่าย 1 ตัว R L C 5–6 ตัว) ใช้ฝึกยุบวงจรให้คล่อง",gen:()=>genLadder("B"),edit:ladderEdit,build:buildLadder};
+
+/* ---------------- ข้อ 3 complex power ---------------- */
+const LT={m:"มอเตอร์",k:"โหลด",h:"ฮีตเตอร์"};
+function genQ3(){
+  const n=pick([2,3,3,4]); const loads=[];
+  for(let i=0;i<n;i++){const t=i===0?"m":pick(["m","m","k","h"]);
+    if(t==="m")loads.push({t,P:pick([1.5,2,3,4,5,6,7,8,10]),pf:pick([0.6,0.7,0.75,0.8,0.85,0.9])});
+    if(t==="k")loads.push({t,S:pick([2,3,4,5,6,8]),pf:pick([0.6,0.7,0.8,0.85,0.9]),lead:pick([0,0,1])});
+    if(t==="h")loads.push({t,P:pick([1,1.5,2,3,5])});}
+  return{V:pick([200,220,220,230,240]),f:50,loads};
+}
+function loadI(l,V){
+  if(l.t==="m")return cpol(l.P*1e3/(V*l.pf),-Math.acos(l.pf)/DEG);
+  if(l.t==="k")return cpol(l.S*1e3/V,(l.lead?1:-1)*Math.acos(l.pf)/DEG);
+  return Cx(l.P*1e3/V,0);
+}
+function descLoad(l){
+  if(l.t==="m")return`มอเตอร์ กินกำลังเฉลี่ย ${l.P} kW ที่ตัวประกอบกำลัง ${l.pf} ล้าหลัง (lagging)`;
+  if(l.t==="k")return`โหลดขนาด ${l.S} kVA ที่ตัวประกอบกำลัง ${l.pf} ${l.lead?"นำหน้า (leading)":"ล้าหลัง (lagging)"}`;
+  return`ฮีตเตอร์ (ตัวต้านทานล้วน) ${l.P} kW`;
+}
+function stepLoad(l,V,I,i){
+  const k=`I${i+1}`;
+  if(l.t==="m")return`${k} = P/(Vrms·pf) ∠−cos⁻¹(pf) = ${l.P*1e3}/(${V}×${l.pf}) ∠−cos⁻¹(${l.pf}) = ${fp(I)} A (มอเตอร์เป็นโหลด L กระแสล้าหลัง มุมติดลบ)`;
+  if(l.t==="k")return`${k} = S/Vrms ∠${l.lead?"+":"−"}cos⁻¹(pf) = ${l.S*1e3}/${V} ∠${l.lead?"+":"−"}cos⁻¹(${l.pf}) = ${fp(I)} A (${l.lead?"นำหน้า มุมบวก":"ล้าหลัง มุมลบ"})`;
+  return`${k} = P/Vrms = ${l.P*1e3}/${V} = ${fp(I)} A (ตัวต้านทานล้วน pf = 1 มุม 0°)`;
+}
+const T3={g:3,name:"โหลดหลายตัวต่อขนาน (มอเตอร์ ฯลฯ) หา I รวมและ pf รวม",
+ note:"อาจารย์: “ไปหัดทำข้อนี้มา” คือตัวอย่าง 2 มอเตอร์ 2 ตัวต่อขนาน อาจเปลี่ยนตัวเลขแต่ขั้นตอนเหมือนเดิม: หา I1, I2 พร้อมมุม → รวมกระแส → pf = cos(θv − θi) ข้อสอบจริงเป็นคำบรรยาย ไม่มีรูป",
+ gen:genQ3,
+ preset:{V:220,f:50,loads:[{t:"m",P:4,pf:0.7},{t:"m",P:7,pf:0.6}]},
+ edit(p){const o=[["V","แรงดัน (rms)","V"]];p.loads.forEach((l,i)=>{const n=`โหลด ${i+1} (${LT[l.t]})`;
+   if(l.t==="m")o.push([`loads.${i}.P`,n+" P","kW"],[`loads.${i}.pf`,n+" pf ล้าหลัง",""]);
+   if(l.t==="k")o.push([`loads.${i}.S`,n+" S","kVA"],[`loads.${i}.pf`,n+" pf",""],[`loads.${i}.lead`,n+" 1 = นำหน้า, 0 = ล้าหลัง",""]);
+   if(l.t==="h")o.push([`loads.${i}.P`,n+" P","kW"]);});return o},
+ build(p){
+  const V=p.V, Is=p.loads.map(l=>loadI(l,V)), It=Is.reduce(cadd,Cx(0)), S=cmul(Cx(V),cconj(It));
+  const Sm=cmag(S), pf=Math.cos(-cang(It)*DEG), lag=S.im>=-1e-9*Sm;
+  const f=[...Is.map((x,i)=>F_(`|I${i+1}| (โหลด ${i+1})`,cmag(x),"A")),F_("|I| รวม",cmag(It),"A"),F_("มุม I รวม",cang(It),"°","a"),
+    F_("P รวม",S.re,"W"),F_("Q รวม (ล้าหลังเป็นบวก)",S.im,"VAR"),F_("|S| รวม",Sm,"VA"),F_("pf รวม",pf,""),F_("pf รวมเป็นแบบ",lag?0:1,"","s",["ล้าหลัง (lagging)","นำหน้า (leading)"])];
+  return{fig:"",text:`แหล่งจ่ายไฟฟ้ารูปไซน์ Vrms = ${V}∠0° V ความถี่ ${p.f} Hz จ่ายให้โหลด ${p.loads.length} ตัวที่ต่อขนานกัน:<br>${p.loads.map((l,i)=>`โหลด ${i+1}: ${descLoad(l)}`).join("<br>")}<br>จงหากระแสของแต่ละโหลด กระแสรวมจากแหล่งจ่าย กำลังรวมทุกแบบ และตัวประกอบกำลังรวม`,
+  f,sol:`<ol>
+  <li>วาดวงจร: แหล่งจ่าย ${V}∠0° V ต่อขนานกับโหลด ${p.loads.length} ตัว ทุกตัวได้แรงดัน ${V} V เท่ากัน</li>
+  ${p.loads.map((l,i)=>`<li>${M_(stepLoad(l,V,Is[i],i))}</li>`).join("")}
+  <li>รวมกระแส (แปลงเป็น a + jb แล้วบวก): ${M_(Is.map(frp).join(" + "))}</li>
+  <li><b>${M_(`I = ${fr(It)} = ${fp(It)} A`)}</b></li>
+  <li><b>${M_(`pf = cos(θv − θi) = cos(0° − (${na(cang(It))}°)) = ${nf(pf)}`)}</b> ${lag?"ล้าหลัง (กระแสตามหลังแรงดัน)":"นำหน้า (กระแสนำแรงดัน)"}</li>
+  <li>กำลังเชิงซ้อน: ${M_(`S = Vrms·I* = ${V} × (${fp(cconj(It))}) = ${fr(S)} VA`)}</li>
+  <li>${M_(`P = ${nf(S.re)} W`)} (= ผลรวม P ของโหลดทุกตัว), ${M_(`Q = ${nf(S.im)} VAR`)}, ${M_(`|S| = Vrms·|I| = ${nf(Sm)} VA`)}, เช็ค ${M_(`pf = P/|S| = ${nf(S.re/Sm)}`)} ✓</li></ol>`};
+ }};
+
+/* ---------------- ข้อ 4 three-phase ---------------- */
+const T4A={g:4,name:"สามเฟส Y–Y สมดุล (ตัวอย่างที่ 1)",
+ note:"อาจารย์: น่าจะออก Y–Y ไม่น่าเกินตัวอย่างที่ 1 โจทย์บรรยายระบบมาแล้วให้วาดวงจรเอง (วาดรูปได้คะแนน) หาแรงดันเฟส แรงดันสาย กระแสเฟส กระแสสาย ต้องซ้อมกดเครื่องคิดเลขโหมด complex",
+ gen(){const vl=pick([0,0,0,1]);return{vl,V:vl?pick([380,400,415]):pick([220,220,230,240]),f:50,R:pick([10,20,30,40,50,100]),xt:pick([1,1,2]),X:0}},
+ preset:{vl:0,V:220,f:50,R:100,xt:1,X:0.5},
+ edit:p=>[["V","แรงดันที่โจทย์ให้","V"],["vl","ค่านี้เป็น (1 = แรงดันสาย, 0 = แรงดันเฟส)",""],["f","ความถี่","Hz"],["R","R ต่อเฟส","Ω"],["xt","ชนิดที่ต่ออนุกรม (1 = L, 2 = C)",""],["X","ค่า L (H) หรือ C (µF)",""]],
+ fix(p){if(!p.X)p.X=p.xt===1?pick([0.05,0.1,0.2,0.3,0.5]):pick([50,100,150,200]);return p},
+ build(p){
+  const w=2*Math.PI*p.f, Vp=p.vl?p.V/Math.sqrt(3):p.V, VL=Vp*Math.sqrt(3);
+  const Z=p.xt===1?Cx(p.R,w*p.X):Cx(p.R,-1/(w*p.X*1e-6));
+  const Ia=cdiv(Cx(Vp),Z), Ib=cdiv(cpol(Vp,-120),Z), Ic=cdiv(cpol(Vp,120),Z);
+  const zs=p.xt===1?`${p.R} Ω + ${p.X} H`:`${p.R} Ω + ${p.X} µF`;
+  return{fig:yyFig(["Y"],["Y"],["Y"],Vp,`ZY = ${p.R} Ω ต่ออนุกรมกับ ${p.xt===1?p.X+" H":p.X+" µF"} (f = ${p.f} Hz)`),
+  text:`แหล่งจ่ายสามเฟสสมดุล ความถี่ ${p.f} Hz ต่อแบบ Y ${p.vl?`แรงดันสาย (line-to-line) ${p.V} V (rms)`:`ขนาดแรงดันแต่ละเฟสเทียบกับนิวทรัลเท่ากับ ${p.V} V (rms)`} ต่อกับภาระสมดุลแบบ Y ภาระแต่ละเฟสเป็น${p.xt===1?`ตัวเหนี่ยวนำ ${p.X} H`:`ตัวเก็บประจุ ${p.X} µF`}ต่ออนุกรมกับตัวต้านทาน ${p.R} Ω ให้ Van เป็นมุมอ้างอิง 0° ลำดับเฟส abc จงวาดวงจร แล้วหาแรงดันเฟส แรงดันไลน์ กระแสเฟส และกระแสไลน์ของภาระ`,
+  f:[F_("|Z| ต่อเฟส",cmag(Z),"Ω"),F_("มุม Z",cang(Z),"°","a"),F_("แรงดันเฟส |VAN|",Vp,"V"),F_("แรงดันไลน์ |VAB|",VL,"V"),F_("มุม VAB",30,"°","a"),F_("มุม VBC",-90,"°","a"),F_("มุม VCA",150,"°","a"),F_("|IaA| (กระแสไลน์ = กระแสเฟส)",cmag(Ia),"A"),F_("มุม IaA",cang(Ia),"°","a"),F_("มุม IbB",cang(Ib),"°","a"),F_("มุม IcC",cang(Ic),"°","a")],
+  sol:`<ol>
+  <li>วาดวงจร Y–Y: ฝั่งแหล่งจ่าย Van, Vbn, Vcn ต่างเฟสกัน 120° ฝั่งภาระ ZY ต่อเป็นดาว จุด n ต่อกับ N</li>
+  <li>${p.xt===1?M_(`XL = 2πfL = 2π·${p.f}·${p.X} = ${nf(w*p.X)} Ω`):M_(`XC = 1/(2πfC) = 1/(2π·${p.f}·${p.X}×10⁻⁶) = ${nf(1/(w*p.X*1e-6))} Ω`)} → <b>${M_(`ZY = ${fr(Z)} = ${fp(Z)} Ω`)}</b></li>
+  ${p.vl?`<li>${M_(`Vp = VL/√3 = ${p.V}/√3 = ${nf(Vp)} V`)}</li>`:""}
+  <li>แรงดันเฟสที่ภาระ (Y: เท่ากับแรงดันเฟสแหล่งจ่าย): ${M_(`VAN = ${nf(Vp)}∠0°, VBN = ${nf(Vp)}∠−120°, VCN = ${nf(Vp)}∠120° V`)}</li>
+  <li>แรงดันไลน์: ${M_(`VAB = VAN − VBN = ${nf(Vp)}√3∠30° = ${nf(VL)}∠30° V`)}, ${M_(`VBC = VBN − VCN = ${nf(VL)}∠−90° V`)}, ${M_(`VCA = VCN − VAN = ${nf(VL)}∠150° V`)} (สไลด์เขียน −210° ซึ่งเป็นมุมเดียวกัน)</li>
+  <li>กระแส (Y: กระแสไลน์ = กระแสเฟส) คิดทีละเฟส: ${M_(`IaA = IAN = VAN/ZY = ${nf(Vp)}∠0° / ${fp(Z)} = ${fp(Ia)} A`)}</li>
+  <li>${M_(`IbB = IBN = ${nf(Vp)}∠−120° / ${fp(Z)} = ${fp(Ib)} A`)}</li>
+  <li>${M_(`IcC = ICN = ${nf(Vp)}∠120° / ${fp(Z)} = ${fp(Ic)} A`)}</li>
+  <li>ระบบสมดุล ${M_("InN = −(IaA + IbB + IcC) = 0")}</li></ol>`};
+ }};
+const T4B={g:4,name:"สามเฟส Y–Y โหลดไม่สมดุล มีสายนิวทรัล (ตัวอย่างที่ 2)",
+ note:"อาจารย์: ถ้าโหดขึ้นคือโหลดไม่เท่ากัน Z1, Z2, Z3 วิธีคิดเหมือนเดิม คือคิดทีละวงจร (ทีละเฟส)",
+ gen(){const r=[4,5,6,8,10,12,15,20],x=[0,5,-5,6,8,-8,10,-10,12,15,-15];const z=()=>({R:pick(r),X:pick(x)});
+   for(;;){const p={Vp:pick([220,220,230]),a:z(),b:z(),c:z()};const V=[0,-120,120].map(a=>cpol(p.Vp,a));
+     const I=["a","b","c"].map((k,i)=>cdiv(V[i],Cx(p[k].R,p[k].X)));const In=I.reduce(cadd,Cx(0));
+     if(cmag(In)>0.1*Math.max(...I.map(cmag)))return p;}},
+ preset:{Vp:220,a:{R:12,X:-5},b:{R:15,X:0},c:{R:8,X:6}},
+ edit:p=>[["Vp","แรงดันเฟส","V"],["a.R","Z1 (เฟส a): R","Ω"],["a.X","Z1 (เฟส a): X","Ω"],["b.R","Z2 (เฟส b): R","Ω"],["b.X","Z2 (เฟส b): X","Ω"],["c.R","Z3 (เฟส c): R","Ω"],["c.X","Z3 (เฟส c): X","Ω"]],
+ build(p){
+  const zs=["a","b","c"].map(k=>Cx(p[k].R,p[k].X)), Vs=[cpol(p.Vp,0),cpol(p.Vp,-120),cpol(p.Vp,120)];
+  const I=zs.map((z,i)=>cdiv(Vs[i],z)), Isum=I.reduce(cadd,Cx(0)), In=cscl(Isum,-1), VL=p.Vp*Math.sqrt(3);
+  const zl=z=>`${fr(z)} Ω`, L=["A","B","C"];
+  return{fig:yyFig(["1"],["2"],["3"],p.Vp,`Z1 = ${zl(zs[0])},  Z2 = ${zl(zs[1])},  Z3 = ${zl(zs[2])}`),
+  text:`แหล่งจ่ายสามเฟส 50 Hz ต่อแบบ Y ขนาดแรงดันแต่ละเฟสเทียบกับนิวทรัล ${p.Vp} V (rms) ลำดับเฟส abc (Van = ${p.Vp}∠0°) ต่อกับภาระแบบ Y ที่ไม่สมดุล มีสายนิวทรัล: Z1 = ${zl(zs[0])} (เฟส a), Z2 = ${zl(zs[1])} (เฟส b), Z3 = ${zl(zs[2])} (เฟส c) จงหาแรงดันเฟส แรงดันไลน์ กระแสไลน์ทั้งสามเส้น และกระแสในสายนิวทรัล`,
+  f:[F_("แรงดันเฟส |VAN|",p.Vp,"V"),F_("แรงดันไลน์ |VAB|",VL,"V"),...I.flatMap((x,i)=>[F_(`|I${"abc"[i]}${L[i]}|`,cmag(x),"A"),F_(`มุม I${"abc"[i]}${L[i]}`,cang(x),"°","a")]),F_("|InN| ในสายนิวทรัล",cmag(In),"A"),F_("มุม InN (ทิศ n → N ตามรูป)",cang(In),"°","a")],
+  sol:`<ol>
+  <li>มีสายนิวทรัล จุด N ของภาระต่อกับ n ของแหล่งจ่าย ภาระแต่ละเฟสจึงได้แรงดันเฟสเต็ม: ${M_(`VAN = ${p.Vp}∠0°, VBN = ${p.Vp}∠−120°, VCN = ${p.Vp}∠120° V`)}</li>
+  <li>แรงดันไลน์ไม่ขึ้นกับภาระ: ${M_(`VAB = ${nf(VL)}∠30°, VBC = ${nf(VL)}∠−90°, VCA = ${nf(VL)}∠150° V`)}</li>
+  ${I.map((x,i)=>`<li>คิดทีละ loop: ${M_(`Z${i+1} = ${fr(zs[i])} = ${fp(zs[i])} Ω`)} → ${M_(`I${"abc"[i]}${L[i]} = ${fp(Vs[i])} / ${fp(zs[i])} = ${fp(x)} = ${fr(x)} A`)}</li>`).join("")}
+  <li>KCL ที่โหนด N (ทิศ InN ตามรูปไหลจาก n เข้า N): ${M_("InN + IaA + IbB + IcC = 0")} → ${M_(`InN = −(IaA + IbB + IcC) = −[${I.map(frp).join(" + ")}]`)}</li>
+  <li>${M_(`= −(${fr(Isum)})`)} → <b>${M_(`InN = ${fr(In)} = ${fp(In)} A`)}</b> ไม่เป็นศูนย์เพราะโหลดไม่สมดุล (มุมอาจเขียนแบบบวก ${na(cang(In)<0?cang(In)+360:cang(In))}° ก็ได้ เป็นมุมเดียวกัน)</li>
+  <li>ทริกเครื่องคิดเลข: หาร complex ในรูปเชิงขั้ว (∠) จะพลาดน้อยกว่า ถ้าพิมพ์แบบ a + bi ต้องใส่วงเล็บที่ตัวหารเสมอ</li></ol>`};
+ }};
+
+/* ================= calc UI ================= */
+const TPL=[T1A,T1C,T1B,T1D,T2A,T2B,T3,T4A,T4B];
+window.__TPL=TPL;
+function card(tp){
+  const d=document.createElement("article"); d.className="prob"; d.dataset.g=tp.g;
+  let p=tp.gen(); if(tp.fix)p=tp.fix(p);
+  const render=()=>{
+    let b; try{b=tp.build(p)}catch(e){d.querySelector(".body").innerHTML=`<p class="hint">ค่าที่ใส่คำนวณไม่ได้ ลองตรวจตัวเลขอีกครั้ง</p>`;return}
+    const uid=Math.random().toString(36).slice(2,8);
+    d.querySelector(".body").innerHTML=`${b.fig?`<div class="fig">${b.fig}</div>`:""}<p>${b.text}</p>
+    <div class="fields">${b.f.map((f,i)=>`<div class="field"><label for="${uid}_${i}">${f.l}</label><div class="row">${f.t==="s"?`<select id="${uid}_${i}"><option value="">เลือก</option>${f.o.map((o,j)=>`<option value="${j}">${o}</option>`).join("")}</select>`:`<input id="${uid}_${i}" inputmode="decimal" autocomplete="off">`}<span class="u">${f.u}</span></div></div>`).join("")}</div>
+    <div class="bar"><button class="btn primary" data-a="check">ตรวจ</button><button class="btn" data-a="sol">ดูวิธีทำ</button><span class="score"></span></div>
+    <div class="sol"><div class="key"><b>คำตอบ:</b> ${b.f.map(f=>`${f.l} = ${f.t==="s"?f.o[f.v]:(f.t==="a"?na(f.v):nf(f.v))} ${f.u}`).join(" · ")}</div>${b.sol}</div>`;
+    d.querySelector('[data-a="check"]').onclick=()=>{
+      let ok=0;
+      b.f.forEach((f,i)=>{
+        const el=d.querySelector(`#${uid}_${i}`); let good=false;
+        if(f.t==="s") good=el.value!==""&&+el.value===f.v;
+        else{const v=parseFloat(el.value.replace(/−/g,"-").replace(/,/g,""));
+          if(!isNaN(v)){ if(f.t==="a"){const dd=((v-f.v)%360+540)%360-180;good=Math.abs(dd)<=0.6}
+            else good=Math.abs(v-f.v)<=Math.max(0.01*Math.abs(f.v),0.002);}}
+        el.classList.toggle("ok",good);el.classList.toggle("bad",!good);if(good)ok++;
+      });
+      d.querySelector(".score").textContent=`ถูก ${ok}/${b.f.length}`;
+    };
+    d.querySelector('[data-a="sol"]').onclick=e=>{const s=d.querySelector(".sol");s.classList.toggle("show");e.target.textContent=s.classList.contains("show")?"ซ่อนวิธีทำ":"ดูวิธีทำ"};
+    fillParams();
+  };
+  const fillParams=()=>{
+    d.querySelector(".params .fields").innerHTML=tp.edit(p).map(([k,l,u])=>`<div class="field"><label>${l}</label><div class="row"><input data-k="${k}" value="${getP(p,k)}" inputmode="decimal"><span class="u">${u}</span></div></div>`).join("");
+  };
+  d.innerHTML=`<span class="tag">ข้อ ${tp.g}</span><h3>${tp.name}</h3>${tp.note?`<p class="said">${tp.note}</p>`:""}
+    <div class="bar"><button class="btn small" data-a="new">สุ่มตัวเลขใหม่</button>${tp.preset?`<button class="btn small" data-a="preset">ตัวเลขตัวอย่างของอาจารย์</button>`:""}<button class="btn small" data-a="edit">ใส่ตัวเลขเอง</button></div>
+    <div class="params"><p class="hint" style="margin:0">แก้ค่าแล้วกด “คำนวณเฉลย” รูปแบบวงจรคงเดิม</p><div class="fields"></div><button class="btn small primary" data-a="apply">คำนวณเฉลย</button></div>
+    <div class="body"></div>`;
+  d.querySelector('[data-a="new"]').onclick=()=>{p=tp.gen();if(tp.fix)p=tp.fix(p);render()};
+  if(tp.preset)d.querySelector('[data-a="preset"]').onclick=()=>{p=clone(tp.preset);render()};
+  d.querySelector('[data-a="edit"]').onclick=()=>d.querySelector(".params").classList.toggle("show");
+  d.querySelector('[data-a="apply"]').onclick=()=>{
+    const np=clone(p); let bad=false;
+    d.querySelectorAll(".params input").forEach(inp=>{const v=parseFloat(inp.value.replace(/−/g,"-"));if(isNaN(v))bad=true;else setP(np,inp.dataset.k,v)});
+    if(bad){alert("มีช่องที่ไม่ใช่ตัวเลข");return}
+    p=np; render(); const s=d.querySelector(".sol"); s.classList.add("show"); d.querySelector('[data-a="sol"]').textContent="ซ่อนวิธีทำ";
+  };
+  render();
+  return d;
+}
+TPL.forEach(tp=>$("#cList").appendChild(card(tp)));
+document.querySelectorAll("#cFilter button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("#cFilter button").forEach(x=>x.setAttribute("aria-pressed",x===b));
+  document.querySelectorAll(".prob").forEach(p=>p.hidden=!(b.dataset.f==="all"||p.dataset.g===b.dataset.f));
+});
+$("#tNode").onchange=e=>document.body.classList.toggle("hide-nd",!e.target.checked);
+$("#tCur").onchange=e=>document.body.classList.toggle("hide-cur",!e.target.checked);
+</script>
+</body>
+</html>
