@@ -810,8 +810,9 @@ const cpol=(m,d)=>Cx(m*Math.cos(d*Math.PI/180),m*Math.sin(d*Math.PI/180));
 const cconj=a=>Cx(a.re,-a.im), cscl=(a,k)=>Cx(a.re*k,a.im*k);
 const cpar=(a,b)=>cdiv(cmul(a,b),cadd(a,b));
 const DEG=Math.PI/180;
-const nf=(x,p=4)=>{if(!isFinite(x))return"∞";if(Math.abs(x)<1e-9)return"0";let s=String(Number(x.toPrecision(p)));return s.replace("-","−")};
-const na=x=>{let v=Math.round(x*100)/100; if(Math.abs(v)<0.005)v=0; return String(v).replace("-","−")};
+const fx3=x=>{if(!isFinite(x))return"∞";let s=x.toFixed(3);if(/^-0\.0+$/.test(s))s=s.slice(1);return s.replace("-","−")};
+const nf=x=>fx3(x);
+const na=x=>fx3(x);
 const fr=z=>{const r0=Math.abs(z.re)<1e-9,i0=Math.abs(z.im)<1e-9;if(i0)return nf(z.re);if(r0)return`${z.im<0?"−":""}j${nf(Math.abs(z.im))}`;return`${nf(z.re)} ${z.im<0?"−":"+"} j${nf(Math.abs(z.im))}`};
 const frp=z=>`(${fr(z)})`;
 const fp=z=>`${nf(cmag(z))}∠${na(cang(z))}°`;
@@ -1230,7 +1231,7 @@ function card(tp){
   let p=tp.gen(); if(tp.fix)p=tp.fix(p);
   const render=()=>{
     let b; try{b=tp.build(p)}catch(e){d.querySelector(".body").innerHTML=`<p class="hint">ค่าที่ใส่คำนวณไม่ได้ ลองตรวจตัวเลขอีกครั้ง</p>`;return}
-    const uid=Math.random().toString(36).slice(2,8);
+    const uid="q"+Math.random().toString(36).slice(2,8);
     d.querySelector(".body").innerHTML=`${b.fig?`<div class="fig">${b.fig}</div>`:""}<p>${b.text}</p>
     <div class="fields">${b.f.map((f,i)=>`<div class="field"><label for="${uid}_${i}">${f.l}</label><div class="row">${f.t==="s"?`<select id="${uid}_${i}"><option value="">เลือก</option>${f.o.map((o,j)=>`<option value="${j}">${o}</option>`).join("")}</select>`:`<input id="${uid}_${i}" inputmode="decimal" autocomplete="off">`}<span class="u">${f.u}</span></div></div>`).join("")}</div>
     <div class="bar"><button class="btn primary" data-a="check">ตรวจ</button><button class="btn" data-a="sol">ดูวิธีทำ</button><span class="score"></span></div>
@@ -1238,11 +1239,11 @@ function card(tp){
     d.querySelector('[data-a="check"]').onclick=()=>{
       let ok=0;
       b.f.forEach((f,i)=>{
-        const el=d.querySelector(`#${uid}_${i}`); let good=false;
+        const el=document.getElementById(`${uid}_${i}`); let good=false;
         if(f.t==="s") good=el.value!==""&&+el.value===f.v;
         else{const v=parseFloat(el.value.replace(/−/g,"-").replace(/,/g,""));
           if(!isNaN(v)){ if(f.t==="a"){const dd=((v-f.v)%360+540)%360-180;good=Math.abs(dd)<=0.6}
-            else good=Math.abs(v-f.v)<=Math.max(0.01*Math.abs(f.v),0.002);}}
+            else good=Math.abs(v-f.v)<=Math.max(0.01*Math.abs(f.v),0.0006);}}
         el.classList.toggle("ok",good);el.classList.toggle("bad",!good);if(good)ok++;
       });
       d.querySelector(".score").textContent=`ถูก ${ok}/${b.f.length}`;
