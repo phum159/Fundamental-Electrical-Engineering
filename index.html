@@ -11,19 +11,19 @@
 :root{
   --bg:#EDF0F2; --panel:#FFFFFF; --ink:#1B2530; --muted:#5A6672; --line:#C9D0D6;
   --L1:#7A4426; --L3:#8C9196; --N:#2B78C4; --G:#3E9A3A; --Gy:#E3C800;
-  --ok:#2E8B45; --okbg:#E3F3E6; --bad:#C0392B; --badbg:#FBE7E4; --sel:#2B78C4; --selbg:#E2EEF9;
+  --ok:#2E8B45; --okbg:#E3F3E6; --bad:#C0392B; --badbg:#FBE7E4; --sel:#2B78C4; --selbg:#E2EEF9; --hl:#D9730D;
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
     --bg:#141A20; --panel:#1D252D; --ink:#E6EBEF; --muted:#9AA6B1; --line:#34404B;
-    --okbg:#1E3526; --badbg:#3D2320; --selbg:#1C3246;
+    --okbg:#1E3526; --badbg:#3D2320; --selbg:#1C3246; --hl:#F0A04B;
   }
 }
 :root[data-theme="dark"]{
   --bg:#141A20; --panel:#1D252D; --ink:#E6EBEF; --muted:#9AA6B1; --line:#34404B;
-  --okbg:#1E3526; --badbg:#3D2320; --selbg:#1C3246;
+  --okbg:#1E3526; --badbg:#3D2320; --selbg:#1C3246; --hl:#F0A04B;
 }
 *,*::before,*::after{box-sizing:inherit}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
@@ -135,6 +135,15 @@ select,.btn{font:inherit;font-size:15px;padding:8px 14px;border-radius:8px;borde
 .filter button{font:inherit;font-size:14.5px;padding:6px 12px;border-radius:20px;border:1.5px solid var(--line);
   background:var(--panel);color:var(--ink);cursor:pointer}
 .filter button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.stepbox{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:12px 0}
+.stepbox .fig{margin:4px 0 8px}
+.stepmsg{font-size:15.5px;min-height:3.2em}
+.stepn{font-size:14px;color:var(--muted);font-weight:600}
+.btn:disabled{opacity:.4;cursor:default}
+.fig .shl{color:var(--hl)}
+.fig .snw{color:var(--ok)}
+.fig .shl :is(path,line,rect,circle),.fig .snw :is(path,line,rect,circle){stroke-width:3.4}
+.fig .shl text,.fig .snw text{font-weight:700}
 [hidden]{display:none!important}
 body.hide-nd .fig .nd, body.hide-cur .fig .cur{display:none}
 @media (max-width:640px){.mgrid{gap:8px}.chip{font-size:14px;padding:8px}header h1{font-size:25px}}
@@ -1087,6 +1096,68 @@ function ladderFig(p){
   body=Vsrc(70,yT,yB,`${p.Vm}cos(${p.w}t${p.ph?(p.ph>0?" + ":" − ")+Math.abs(p.ph)+"°":""}) V`,1)+body+W(70,yB,x,yB);
   return svg(x+150,250,body,150);
 }
+/* step-by-step reduction (drawn as its own figure, one per step) */
+const fs2=x=>(+x.toFixed(2)).toString().replace("-","−");
+const frs=z=>{const r0=Math.abs(z.re)<5e-3,i0=Math.abs(z.im)<5e-3;if(i0)return fs2(z.re);if(r0)return`${z.im<0?"−":""}j${fs2(Math.abs(z.im))}`;return`${fs2(z.re)} ${z.im<0?"−":"+"} j${fs2(Math.abs(z.im))}`};
+function Zh(x1,x2,y){const m=(x1+x2)/2;return W(x1,y,m-24,y)+`<rect x="${m-24}" y="${y-9}" width="48" height="18" fill="var(--bg)"/>`+W(m+24,y,x2,y)}
+function Zv(x,y1,y2){const m=(y1+y2)/2;return W(x,y1,x,m-24)+`<rect x="${x-9}" y="${m-24}" width="18" height="48" fill="var(--bg)"/>`+W(x,m+24,x,y2)}
+function stepFig(p,s){
+  const yT=40,yB=240,SW=140,PG=180, hl=new Set(s.hl||[]), nw=new Set(s.nw||[]);
+  let x=70, body="", prevK="p"; // a shunt right after the source gets a wire so it is not drawn on top of it
+  const lab=e=>e.t==="Z"?[`${e.n} =`,`${frs(e.z)} Ω`]:e.t==="R"?[`${e.n} = ${e.v} Ω`]:(s.imp||p.jf)?[`${e.n} = ${frs(zEl(e,p.w))} Ω`]:[`${e.n} = ${e.v} ${unit[e.t]}`];
+  const wrap=(e,g)=>hl.has(e.id)?`<g class="shl">${g}</g>`:nw.has(e.id)?`<g class="snw">${g}</g>`:g;
+  s.st.forEach(st=>{
+    if(st.k==="s"){
+      st.els.forEach(e=>{const L=lab(e);let g=e.t==="Z"?Zh(x,x+SW,yT):(e.t==="R"?Rh:e.t==="L"?Lh:Ch)(x,x+SW,yT,"");
+        g+=T(x+SW/2,yT-20,L[0])+(L[1]?T(x+SW/2,yT+32,L[1]):"");body+=wrap(e,g);x+=SW});
+      body+=dot(x,yT);
+    }else{
+      if(prevK==="p"){body+=W(x,yT,x+PG,yT);x+=PG}
+      const h=(yB-yT)/st.els.length;
+      st.els.forEach((e,j)=>{const y1=yT+j*h,y2=y1+h,m=(y1+y2)/2,L=lab(e);
+        let g=e.t==="Z"?Zv(x,y1,y2):(e.t==="R"?Rv:e.t==="L"?Lv:Cv)(x,y1,y2,"");
+        g+=L[1]?T(x+20,m-3,L[0],"start")+T(x+20,m+14,L[1],"start"):T(x+20,m+4,L[0],"start");body+=wrap(e,g)});
+      if(st.vo) body+=T(x+140,yT+14,"+ Vo","start")+T(x+140,yB-4,"−","start");
+    }
+    prevK=st.k;
+  });
+  body=Vsrc(70,yT,yB,`${p.Vm}cos(${p.w}t${p.ph?(p.ph>0?" + ":" − ")+Math.abs(p.ph)+"°":""}) V`,1)+body+W(70,yB,x,yB);
+  return svg(x+190,270,body,150);
+}
+function ladderSteps(p,r){
+  const n=p.st.length, w=p.w, out=[];
+  const cur=p.st.map((s,i)=>({k:s.k,vo:i===n-1,els:s.els.map(e=>({...e,id:e.n}))}));
+  let imp=!!p.jf, k=0;
+  const push=(hl,nw,msg)=>out.push({fig:stepFig(p,{st:clone(cur),imp,hl,nw}),msg});
+  const zOf=e=>e.t==="Z"?e.z:zEl(e,w);
+  push([],[],`วงจรเริ่มต้น กด “ถัดไป” เพื่อดูการยุบวงจรทีละขั้น (ยุบจากด้านขวาสุดเข้าหาแหล่งจ่าย)`);
+  if(!imp){
+    const lc=cur.flatMap(s=>s.els).filter(e=>e.t!=="R");
+    push(lc.map(e=>e.id),[],`ขั้นแรก แปลง ${lc.map(e=>e.n).join(", ")} เป็นอิมพีแดนซ์ก่อน (ω = ${w} rad/s) ตัวต้านทานใช้ค่าเดิมได้เลย`);
+    imp=true;
+    push([],lc.map(e=>e.id),lc.map(e=>M_(e.t==="L"?`${e.n}: jωL = j(${w})(${e.v}) = j${nf(w*e.v)} Ω`:`${e.n}: 1/(jωC) = 1/(j·${w}·${e.v}×10⁻³) = −j${nf(1/(w*e.v*1e-3))} Ω`)).join("<br>"));
+  }
+  for(let i=n-1;i>=0;i--){
+    const st=cur[i];
+    if(st.els.length>1){
+      const els=st.els, z=els.reduce((a,e)=>cadd(a,zOf(e)),Cx(0)), nm="Z"+(++k);
+      push(els.map(e=>e.id),[],`${els.map(e=>e.n).join(" กับ ")} อยู่ในกิ่งเดียวกัน ต่ออนุกรมกัน → รวมเป็นตัวเดียวโดยนำมาบวกกัน`);
+      st.els=[{t:"Z",z,n:nm,id:nm}];
+      push([],[nm],M_(`${nm} = ${els.map(e=>frp(zOf(e))).join(" + ")} = ${fr(z)} Ω`));
+    }
+    if(i<n-1){
+      const a=st.els[0], b=cur[i+1].els[0], za=zOf(a), zb=zOf(b), ser=st.k==="s";
+      const z=ser?cadd(za,zb):cpar(za,zb), nm=i===0?"Zin":"Z"+(++k);
+      push([a.id,b.id],[],ser?`${a.n} ต่ออนุกรมกับ ${b.n} (มีกระแสเดียวกันไหลผ่าน) → นำมาบวกกัน`:`${a.n} ขนานกับ ${b.n} (คร่อมแรงดันเดียวกัน ระหว่างโหนดบนกับกราวด์) → ใช้ ${M_("Z₁Z₂/(Z₁ + Z₂)")}`);
+      cur.splice(i,2,{k:"p",vo:false,els:[{t:"Z",z,n:nm,id:nm}]});
+      let msg=ser?M_(`${nm} = ${frp(za)} + ${frp(zb)} = ${fr(z)} Ω`)
+        :M_(`${nm} = ${frp(za)}${frp(zb)} / [${frp(za)} + ${frp(zb)}] = ${fr(z)} Ω`);
+      if(i===0) msg+=`<br>ยุบเหลืออิมพีแดนซ์ตัวเดียวแล้ว: <b>${M_(`Zin = ${fr(z)} = ${fp(z)} Ω`)}</b><br>→ ${M_(`I = Vs/Zin = ${p.Vm}∠${p.ph}° / ${fp(z)} = ${fp(r.Iin)} A`)}`;
+      push([],[nm],msg);
+    }
+  }
+  return out;
+}
 function buildLadder(p){
   const r=solveLadder(p), w=p.w, els=p.st.flatMap((s,i)=>s.els.map(e=>({...e,si:i})));
   const Pr=els.filter(e=>e.t==="R").map(e=>({n:e.n,P:0.5*cmag(r.Ist[e.si])**2*e.v}));
@@ -1106,7 +1177,7 @@ function buildLadder(p){
     if(s.k==="s") fw.push(`กระแสผ่าน ${brName(i)} = ${fp(r.Ist[i])} A, แรงดันตก = ${fp(r.Vst[i])} V`);
     else fw.push(`แรงดันคร่อมกิ่ง ${brName(i)} = ${fp(r.Vst[i])} V → กระแสกิ่ง = ${fp(r.Vst[i])} / ${fp(r.Zs[i])} = ${fp(r.Ist[i])} A`);
   });
-  return{fig:ladderFig(p),
+  return{fig:ladderFig(p),steps:ladderSteps(p,r),
   text:`vs = ${vs} V จงหา impedance รวมที่แหล่งจ่ายมองเห็น (Zin), กระแส I จากแหล่งจ่าย, แรงดัน Vo คร่อมกิ่งขวาสุด, กำลังเฉลี่ยที่แหล่งจ่ายจ่ายออก และกำลังเฉลี่ยที่ ${p.pr} ใช้`,
   f:[F_("|Zin|",cmag(r.Zeq[0]),"Ω"),F_("มุม Zin",cang(r.Zeq[0]),"°","a"),F_("|I|",cmag(r.Iin),"A"),F_("มุม I",cang(r.Iin),"°","a"),F_("|Vo|",cmag(r.Vo),"V"),F_("มุม Vo",cang(r.Vo),"°","a"),F_("P เฉลี่ยของแหล่งจ่าย",Psrc,"W"),F_(`P เฉลี่ยของ ${p.pr}`,Ptar,"W")],
   sol:`<ol>
@@ -1234,7 +1305,8 @@ function card(tp){
     const uid="q"+Math.random().toString(36).slice(2,8);
     d.querySelector(".body").innerHTML=`${b.fig?`<div class="fig">${b.fig}</div>`:""}<p>${b.text}</p>
     <div class="fields">${b.f.map((f,i)=>`<div class="field"><label for="${uid}_${i}">${f.l}</label><div class="row">${f.t==="s"?`<select id="${uid}_${i}"><option value="">เลือก</option>${f.o.map((o,j)=>`<option value="${j}">${o}</option>`).join("")}</select>`:`<input id="${uid}_${i}" inputmode="decimal" autocomplete="off">`}<span class="u">${f.u}</span></div></div>`).join("")}</div>
-    <div class="bar"><button class="btn primary" data-a="check">ตรวจ</button><button class="btn" data-a="sol">ดูวิธีทำ</button><span class="score"></span></div>
+    <div class="bar"><button class="btn primary" data-a="check">ตรวจ</button><button class="btn" data-a="sol">ดูวิธีทำ</button>${b.steps?`<button class="btn" data-a="steps">ยุบวงจรทีละขั้น</button>`:""}<span class="score"></span></div>
+    ${b.steps?`<div class="stepbox" hidden><div class="bar"><span class="stepn grow"></span><button class="btn small" data-a="sreset">เริ่มใหม่</button><button class="btn small" data-a="sprev">◀ ย้อนกลับ</button><button class="btn small primary" data-a="snext">ถัดไป ▶</button></div><div class="fig"></div><div class="stepmsg"></div></div>`:""}
     <div class="sol"><div class="key"><b>คำตอบ:</b> ${b.f.map(f=>`${f.l} = ${f.t==="s"?f.o[f.v]:(f.t==="a"?na(f.v):nf(f.v))} ${f.u}`).join(" · ")}</div>${b.sol}</div>`;
     d.querySelector('[data-a="check"]').onclick=()=>{
       let ok=0;
@@ -1249,6 +1321,14 @@ function card(tp){
       d.querySelector(".score").textContent=`ถูก ${ok}/${b.f.length}`;
     };
     d.querySelector('[data-a="sol"]').onclick=e=>{const s=d.querySelector(".sol");s.classList.toggle("show");e.target.textContent=s.classList.contains("show")?"ซ่อนวิธีทำ":"ดูวิธีทำ"};
+    if(b.steps){
+      let k=0; const sb=d.querySelector(".stepbox"), prev=sb.querySelector('[data-a="sprev"]'), next=sb.querySelector('[data-a="snext"]');
+      const show=()=>{sb.querySelector(".fig").innerHTML=b.steps[k].fig;sb.querySelector(".stepmsg").innerHTML=b.steps[k].msg;
+        sb.querySelector(".stepn").textContent=`ขั้นที่ ${k+1} / ${b.steps.length}`;prev.disabled=k===0;next.disabled=k===b.steps.length-1};
+      prev.onclick=()=>{if(k>0){k--;show()}}; next.onclick=()=>{if(k<b.steps.length-1){k++;show()}};
+      sb.querySelector('[data-a="sreset"]').onclick=()=>{k=0;show()};
+      d.querySelector('[data-a="steps"]').onclick=e=>{sb.hidden=!sb.hidden;e.target.textContent=sb.hidden?"ยุบวงจรทีละขั้น":"ซ่อนขั้นตอนยุบวงจร";if(!sb.hidden)show()};
+    }
     fillParams();
   };
   const fillParams=()=>{
