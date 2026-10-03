@@ -6,24 +6,39 @@
 <title>EECC0232 ฝึกก่อนสอบ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+/* layout: one centered column — hero with exam map, sticky pill tabs, then cards. Each exam question owns a wire colour (L1 brown, N blue, PE green, amber, teal, rose). */
 :root{
-  --bg:#EDF0F2; --panel:#FFFFFF; --ink:#1B2530; --muted:#5A6672; --line:#C9D0D6;
+  --bg:#F1F4F7; --panel:#FFFFFF; --panel2:#F6F8FA; --ink:#15202B; --muted:#5A6878; --line:#DDE3E9; --line2:#C5CFD8;
+  --accent:#1D6FD8; --accentbg:#E6F0FC; --onaccent:#FFFFFF;
   --L1:#7A4426; --L3:#8C9196; --N:#2B78C4; --G:#3E9A3A; --Gy:#E3C800;
-  --ok:#2E8B45; --okbg:#E3F3E6; --bad:#C0392B; --badbg:#FBE7E4; --sel:#2B78C4; --selbg:#E2EEF9; --hl:#D9730D;
+  --q1:#9A5A34; --q2:#1D6FD8; --q3:#2E8B45; --q4:#C27A0E; --q5:#0E8C8C; --q6:#C2416B;
+  --ok:#23864A; --okbg:#E2F4E8; --bad:#C0392B; --badbg:#FCE9E6; --sel:#1D6FD8; --selbg:#E6F0FC; --hl:#D9730D;
+  --grid:rgba(29,111,216,.07); --shadow:0 1px 2px rgba(16,32,48,.06),0 8px 24px rgba(16,32,48,.06);
+  --f-body:"IBM Plex Sans Thai","Leelawadee UI","Tahoma",sans-serif;
+  --f-head:"Chakra Petch","IBM Plex Sans Thai","Leelawadee UI",Tahoma,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Consolas,"Courier New",monospace;
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
-    --bg:#141A20; --panel:#1D252D; --ink:#E6EBEF; --muted:#9AA6B1; --line:#34404B;
-    --okbg:#1E3526; --badbg:#3D2320; --selbg:#1C3246; --hl:#F0A04B;
+    --bg:#0D131A; --panel:#151E28; --panel2:#1B2632; --ink:#E6ECF2; --muted:#93A2B2; --line:#243241; --line2:#32424F;
+    --accent:#5AA2F0; --accentbg:#16304D; --onaccent:#08121C;
+    --q1:#D08A5E; --q2:#5AA2F0; --q3:#55C07A; --q4:#F0A84B; --q5:#3CC4C4; --q6:#EE7C9E;
+    --ok:#4CC06A; --okbg:#173225; --badbg:#3A201D; --sel:#5AA2F0; --selbg:#16304D; --hl:#F0A04B;
+    --grid:rgba(90,162,240,.07); --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);
+    color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#141A20; --panel:#1D252D; --ink:#E6EBEF; --muted:#9AA6B1; --line:#34404B;
-  --okbg:#1E3526; --badbg:#3D2320; --selbg:#1C3246; --hl:#F0A04B;
+  --bg:#0D131A; --panel:#151E28; --panel2:#1B2632; --ink:#E6ECF2; --muted:#93A2B2; --line:#243241; --line2:#32424F;
+  --accent:#5AA2F0; --accentbg:#16304D; --onaccent:#08121C;
+  --q1:#D08A5E; --q2:#5AA2F0; --q3:#55C07A; --q4:#F0A84B; --q5:#3CC4C4; --q6:#EE7C9E;
+  --ok:#4CC06A; --okbg:#173225; --badbg:#3A201D; --sel:#5AA2F0; --selbg:#16304D; --hl:#F0A04B;
+  --grid:rgba(90,162,240,.07); --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);
+  color-scheme:dark;
 }
 *,*::before,*::after{box-sizing:inherit}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
@@ -105,6 +120,7 @@ select,.btn{font:inherit;font-size:15px;padding:8px 14px;border-radius:8px;borde
 .blank.active{border-bottom-color:var(--sel);background:var(--selbg)}
 .blank.ok{border-bottom:2px solid var(--ok);color:var(--ok);font-weight:600}
 .blank.bad{border-bottom:2px solid var(--bad);color:var(--bad);text-decoration:line-through}
+.perr{color:var(--bad);font-size:14.5px;font-weight:600}
 .why{display:block;font-size:14.5px;color:var(--muted);margin-top:4px}
 .why b{color:var(--ok)}
 /* calc */
@@ -184,6 +200,145 @@ kbd{display:inline-block;min-width:1.7em;padding:0 6px;margin:2px 1px;border:1px
 .sumt{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
 .sumt td{padding:4px 8px;border-bottom:1px solid var(--line)}
 .sumt td:last-child{font-weight:700;color:var(--ok);text-align:right;white-space:nowrap}
+/* ================= redesign layer ================= */
+body{font-family:var(--f-body)}
+.wrap{max-width:1040px;padding-inline:16px;padding-block:18px 80px}
+h1,h2,h3,.prob h3,.stitle,.notes summary{font-family:var(--f-head);letter-spacing:.01em;text-wrap:balance}
+/* hero */
+.hero{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:22px 22px}
+.hero .cable{margin:0;grid-template-rows:repeat(5,4px);gap:2px}
+.hero .cable span{border-radius:0}
+.hero-in{padding:22px 24px 20px}
+.eyebrow{margin:0;font-family:var(--f-head);font-weight:600;font-size:14px;letter-spacing:.08em;color:var(--accent)}
+.hero h1{font-size:clamp(34px,6vw,52px);line-height:1.05;margin:4px 0 8px;font-weight:700}
+.hero .lead{margin:0;color:var(--muted);max-width:62ch;font-size:17px}
+.hero .fine{margin:14px 0 0;color:var(--muted);font-size:13.5px;max-width:80ch}
+.exam-map{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-top:18px}
+.exam-map button{font:inherit;text-align:left;cursor:pointer;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:14px;
+  padding:10px 12px 11px;display:flex;flex-direction:column;gap:2px;position:relative;transition:transform .15s,border-color .15s,box-shadow .15s}
+.exam-map button::before{content:"";width:28px;height:4px;border-radius:2px;background:var(--qc);margin-bottom:6px}
+.exam-map b{font-family:var(--f-head);font-size:18px;color:var(--qc)}
+.exam-map span{font-size:13.5px;line-height:1.35;color:var(--ink)}
+.exam-map em{font-style:normal;font-size:12px;font-weight:600;color:var(--muted);margin-top:4px}
+.exam-map button:hover{transform:translateY(-2px);border-color:var(--qc);box-shadow:var(--shadow)}
+@media (max-width:820px){.exam-map{grid-template-columns:repeat(3,minmax(0,1fr))}}
+/* tabs */
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;margin:16px 0 18px;padding:6px;
+  border:1px solid var(--line);border-bottom:1px solid var(--line);border-radius:16px;background:color-mix(in srgb,var(--panel) 88%,transparent);
+  backdrop-filter:saturate(1.4) blur(10px);-webkit-backdrop-filter:saturate(1.4) blur(10px);box-shadow:var(--shadow);scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs button{flex:1 0 auto;display:flex;align-items:center;justify-content:center;gap:8px;border:0;margin:0;border-radius:11px;padding:10px 14px;
+  font-weight:600;color:var(--muted);white-space:nowrap;transition:background .15s,color .15s}
+nav.tabs button small{font-weight:500;font-size:12.5px;opacity:.8}
+nav.tabs button svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+nav.tabs button:hover{color:var(--ink);background:var(--panel2)}
+nav.tabs button[aria-selected="true"]{background:var(--accent);color:var(--onaccent)}
+nav.tabs button[aria-selected="true"]{border-color:transparent}
+@media (max-width:640px){nav.tabs button{flex:0 0 auto;padding:9px 12px}nav.tabs button small{display:none}}
+/* controls */
+.bar{gap:10px;margin-bottom:14px}
+select,.btn{border-radius:10px;border:1px solid var(--line2);padding:8px 14px;transition:background .15s,border-color .15s,transform .1s}
+.btn:hover:not(:disabled){border-color:var(--accent);background:var(--panel2)}
+.btn:active:not(:disabled){transform:translateY(1px)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--onaccent)}
+.btn.primary:hover:not(:disabled){background:var(--accent);filter:brightness(1.08)}
+.btn.small{border-radius:9px;padding:6px 12px}
+.score{display:inline-block;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.score:not(:empty){background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:3px 12px}
+.sw-l{display:inline-flex;align-items:center;gap:8px;font-size:14.5px;color:var(--muted);cursor:pointer;user-select:none}
+.sw-l input{appearance:none;-webkit-appearance:none;width:36px;height:20px;border-radius:999px;background:var(--line2);position:relative;cursor:pointer;margin:0;transition:background .2s;flex:none}
+.sw-l input::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 2px rgba(0,0,0,.25)}
+.sw-l input:checked{background:var(--accent)}
+.sw-l input:checked::after{transform:translateX(16px)}
+.hint{font-size:14.5px}
+.said{border:0;border-left:0;background:var(--accentbg);border-radius:12px;padding:12px 14px;font-size:15px;max-width:none}
+.said>b:first-child{color:var(--accent)}
+.trap{border-left:0;border-radius:12px;padding:10px 14px}
+/* filter chips */
+.filter button{border-radius:999px;border:1px solid var(--line2);padding:7px 14px;display:inline-flex;align-items:center;gap:8px;transition:background .15s,border-color .15s}
+.filter button[style]::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--qc)}
+.filter button:hover{border-color:var(--qc,var(--accent))}
+.filter button[aria-pressed="true"]{background:var(--qc,var(--ink));border-color:var(--qc,var(--ink));color:var(--onaccent)}
+.filter button[aria-pressed="true"]::before{background:var(--onaccent)}
+:root:not([data-theme="dark"]) .filter button[data-f="all"][aria-pressed="true"]{color:var(--bg)}
+/* problem cards */
+.prob{--qc:var(--accent);border:1px solid var(--line);border-radius:18px;padding:20px 22px;box-shadow:var(--shadow);margin-bottom:20px}
+.prob[data-g="1"]{--qc:var(--q1)} .prob[data-g="2"]{--qc:var(--q2)} .prob[data-g="3"]{--qc:var(--q3)} .prob[data-g="4"]{--qc:var(--q4)}
+.prob .tag{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-head);font-size:13px;font-weight:700;letter-spacing:.04em;
+  color:var(--qc);background:color-mix(in srgb,var(--qc) 12%,transparent);border-radius:999px;padding:2px 10px}
+.prob h3{font-size:21px;margin:8px 0 6px;line-height:1.3}
+.prob>.said{background:var(--panel2);color:var(--ink);font-size:14.5px}
+.prob .body>p{font-size:16px;line-height:1.7}
+.fig{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:8px 10px;margin:12px 0}
+.stepbox .fig{background:none;border:0;padding:0}
+.fields{gap:12px}
+.field label{font-size:13.5px;font-weight:600}
+.field input,.field select{border-radius:9px;border:1px solid var(--line2);background:var(--panel);padding:8px 10px;transition:border-color .15s,box-shadow .15s}
+.field input:focus,.field select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
+.params{background:var(--panel2);border:1px dashed var(--line2);border-radius:14px;padding:12px 14px}
+.params .field input{background:var(--panel)}
+.sol{border-top:1px solid var(--line);padding-top:14px}
+.sol .key{background:var(--okbg);border-radius:12px;padding:10px 14px;line-height:1.8}
+.m{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:0 6px}
+.prob [data-a="steps"]{background:var(--qc);border-color:var(--qc);color:var(--onaccent);font-weight:600}
+.prob [data-a="check"]{font-weight:600}
+.fnSel{border-radius:9px;font-size:14px;padding:6px 10px}
+/* step viewer */
+.stepbox.modern{border-radius:18px;background:var(--panel);box-shadow:none;border:1px solid var(--line)}
+.snum{background:var(--qc,var(--accent));color:var(--onaccent);font-family:var(--f-head)}
+.sdots button.now::before{background:var(--qc,var(--hl))}
+.write{border:1px solid var(--line2);border-style:dashed;background:var(--panel);border-radius:12px}
+.keys{background:var(--panel2);border:1px solid var(--line);border-radius:12px}
+.keys code{font-family:var(--f-mono);background:var(--panel);border-radius:8px}
+.calc .ans,.ans{border-radius:999px}
+.warn{border-left:0;border-radius:12px}
+/* fill-in */
+.bank{border:1px solid var(--line2);border-radius:16px;box-shadow:var(--shadow);padding:12px 14px;top:calc(env(safe-area-inset-top,0px) + 74px)}
+.bank h3{font-size:14px;letter-spacing:.04em;color:var(--muted)}
+.word{border-radius:999px;border:1px solid var(--line2);background:var(--panel2);padding:5px 12px;transition:background .15s,border-color .15s}
+.word:hover{border-color:var(--accent);background:var(--accentbg)}
+.qlist{gap:12px}
+.qlist li{border-radius:14px;padding:14px 16px;box-shadow:var(--shadow)}
+.qlist li::before{font-family:var(--f-head);color:var(--accent)}
+.blank{border-bottom-width:2px;border-radius:6px 6px 0 0;min-width:160px}
+.blank.active{background:var(--accentbg)}
+/* matching */
+.mgrid{gap:16px}
+.chip{border:1px solid var(--line2);border-radius:14px;padding:12px 14px;transition:border-color .15s,background .15s,transform .1s}
+.chip:hover:not(.done){border-color:var(--accent);transform:translateY(-1px)}
+.chip.sel{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
+.log div{border-left:0;border-radius:10px;background:var(--okbg)}
+.done-msg{border-left:0;border-radius:12px}
+/* notes */
+.notes details{border-radius:16px;box-shadow:var(--shadow);padding:0 20px;margin-bottom:14px}
+.notes summary{font-size:19px;padding:16px 0;list-style:none;display:flex;align-items:center;gap:10px}
+.notes summary::-webkit-details-marker{display:none}
+.notes summary::after{content:"";margin-left:auto;width:10px;height:10px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);transition:transform .2s;flex:none}
+.notes details[open]>summary::after{transform:rotate(-135deg)}
+.notes details[open]>summary{border-bottom:1px solid var(--line);margin-bottom:6px}
+.notes th{background:var(--panel2)}
+.notes table{border-radius:10px;overflow:hidden}
+.exam-map i{font-style:normal;display:block}
+@media (max-width:640px){
+  .hero-in{padding:16px}
+  .hero h1{font-size:34px}
+  .hero .lead{font-size:15px}
+  .exam-map{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:14px}
+  .exam-map button{padding:8px 10px 9px;border-radius:12px}
+  .exam-map button::before{margin-bottom:4px;width:22px}
+  .exam-map b{font-size:16px}
+  .exam-map span{font-size:12.5px}
+  .exam-map i,.exam-map em{display:none}
+  .hero .fine{font-size:12.5px;margin-top:10px}
+  nav.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:5px;overflow:visible}
+  nav.tabs button{flex-direction:column;gap:3px;padding:7px 2px;font-size:13px;border-radius:10px;white-space:normal;text-align:center;line-height:1.2}
+  nav.tabs button svg{width:20px;height:20px}
+  .bank{top:calc(env(safe-area-inset-top,0px) + 76px)}
+  .prob{padding:16px 14px;border-radius:16px}
+  .prob h3{font-size:19px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
 [hidden]{display:none!important}
 body.hide-nd .fig .nd, body.hide-cur .fig .cur{display:none}
 @media (max-width:640px){.mgrid{gap:8px}.chip{font-size:14px;padding:8px}header h1{font-size:25px}}
@@ -191,31 +346,43 @@ body.hide-nd .fig .nd, body.hide-cur .fig .cur{display:none}
 </head>
 <body>
 <div class="wrap">
-<header>
+<header class="hero">
   <div class="cable" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
-  <h1>EECC0232 ฝึกก่อนสอบ</h1>
-  <p>ยึดตามที่อาจารย์ใบ้ในคลิปและแนวข้อสอบของภาควิชาเป็นหลัก เนื้อหาจากสไลด์ที่อาจารย์ไม่ได้พูดถึงติดป้าย “เสริม” และไม่ถูกสุ่มถาม เว้นแต่จะเปิดเอง ข้อ 1–4 สุ่มตัวเลขใหม่ได้ ใช้ตัวเลขตัวอย่างของอาจารย์ได้ หรือใส่ตัวเลขเองแล้วให้โปรแกรมทำเฉลย</p>
+  <div class="hero-in">
+    <p class="eyebrow">EECC0232 · ไฟฟ้าเบื้องต้น</p>
+    <h1>ฝึกก่อนสอบ</h1>
+    <p class="lead">โจทย์คำนวณสุ่มตัวเลขได้ไม่จำกัด มีวิธีทำทีละขั้นพร้อมบรรทัดที่พิมพ์ในเครื่องคิดเลข และแบบฝึกเติมคำ จับคู่ สรุปเนื้อหาสำหรับข้อ 5–6</p>
+    <div class="exam-map" aria-label="ข้อสอบ 6 ข้อ กดเพื่อไปฝึก">
+      <button data-go="1" style="--qc:var(--q1)"><b>ข้อ 1</b><span>วงจร DC<i> Nodal / Mesh</i></span><em>25 คะแนน</em></button>
+      <button data-go="2" style="--qc:var(--q2)"><b>ข้อ 2</b><span>เฟเซอร์<i> ยุบวงจร</i></span><em>25 คะแนน</em></button>
+      <button data-go="3" style="--qc:var(--q3)"><b>ข้อ 3</b><span>กำลังเชิงซ้อน<i> P, Q, S, pf</i></span><em>25 คะแนน</em></button>
+      <button data-go="4" style="--qc:var(--q4)"><b>ข้อ 4</b><span>ไฟสามเฟส<i> Y–Y</i></span><em>25 คะแนน</em></button>
+      <button data-go="5" style="--qc:var(--q5)"><b>ข้อ 5</b><span>ไดโอด<i> BJT, MOS</i></span><em>เติมคำ</em></button>
+      <button data-go="6" style="--qc:var(--q6)"><b>ข้อ 6</b><span>สายไฟ<i> ความปลอดภัย</i></span><em>เติมคำ</em></button>
+    </div>
+    <p class="fine">ยึดตามที่อาจารย์ใบ้ในคลิปและแนวข้อสอบของภาควิชาเป็นหลัก เนื้อหาจากสไลด์ที่อาจารย์ไม่ได้พูดถึงติดป้าย “เสริม” และไม่ถูกสุ่มถาม เว้นแต่จะเปิดเอง</p>
+  </div>
 </header>
 
-<nav role="tablist">
-  <button role="tab" data-tab="calc" aria-selected="true">ฝึกคำนวณ ข้อ 1–4</button>
-  <button role="tab" data-tab="fill" aria-selected="false">เติมคำ ข้อ 5–6</button>
-  <button role="tab" data-tab="match" aria-selected="false">จับคู่ ข้อ 5–6</button>
-  <button role="tab" data-tab="notes" aria-selected="false">สรุปเนื้อหา ข้อ 5–6</button>
+<nav role="tablist" class="tabs">
+  <button role="tab" data-tab="calc" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M8 7h8M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01"/></svg>ฝึกคำนวณ <small>ข้อ 1–4</small></button>
+  <button role="tab" data-tab="fill" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>เติมคำ <small>ข้อ 5–6</small></button>
+  <button role="tab" data-tab="match" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="7" r="2.5"/><circle cx="18" cy="17" r="2.5"/><path d="M8.5 7h3a3 3 0 0 1 3 3v4a3 3 0 0 0 3 3"/></svg>จับคู่ <small>ข้อ 5–6</small></button>
+  <button role="tab" data-tab="notes" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg>สรุปเนื้อหา <small>ข้อ 5–6</small></button>
 </nav>
 
 <section id="tab-calc">
   <div class="bar">
     <div class="filter" id="cFilter">
       <button aria-pressed="true" data-f="all">ทั้งหมด</button>
-      <button aria-pressed="false" data-f="1">ข้อ 1 DC</button>
-      <button aria-pressed="false" data-f="2">ข้อ 2 Phasor</button>
-      <button aria-pressed="false" data-f="3">ข้อ 3 Complex Power</button>
-      <button aria-pressed="false" data-f="4">ข้อ 4 สามเฟส</button>
+      <button aria-pressed="false" data-f="1" style="--qc:var(--q1)">ข้อ 1 DC</button>
+      <button aria-pressed="false" data-f="2" style="--qc:var(--q2)">ข้อ 2 Phasor</button>
+      <button aria-pressed="false" data-f="3" style="--qc:var(--q3)">ข้อ 3 Complex Power</button>
+      <button aria-pressed="false" data-f="4" style="--qc:var(--q4)">ข้อ 4 สามเฟส</button>
     </div>
     <span class="grow"></span>
-    <label class="score" style="font-weight:500"><input type="checkbox" id="tNode" checked> แสดงโหนด</label>
-    <label class="score" style="font-weight:500"><input type="checkbox" id="tCur" checked> แสดงทิศกระแส</label>
+    <label class="sw-l"><input type="checkbox" id="tNode" checked> แสดงโหนด</label>
+    <label class="sw-l"><input type="checkbox" id="tCur" checked> แสดงทิศกระแส</label>
   </div>
   <div class="said"><b>ข้อ 1–4 เป็นข้อคำนวณ ข้อละ 25 คะแนน</b> อาจารย์ย้ำว่าต้องไปหัดทำเอง โดยเฉพาะหัดกดเครื่องคิดเลขโหมด complex ถ้าตั้งสมการถูกก็ได้คะแนนแม้ผลลัพธ์สุดท้ายผิด และการวาดรูปวงจรพร้อมทิศกระแสจะได้คะแนนเพิ่ม</div>
 <p class="hint">ปุ่ม “ตัวเลขตัวอย่างของอาจารย์” ใช้ค่าจากตัวอย่างที่อาจารย์ชี้ในคลิป กด “สุ่มตัวเลขใหม่” ได้เรื่อย ๆ หรือกด “ใส่ตัวเลขเอง” เพื่อใส่ค่าจากโจทย์จริงแล้วดูเฉลย ตอบเป็นทศนิยม คลาดเคลื่อนได้ประมาณ 1% มุมใส่เป็นองศา (มุม 195° กับ −165° ถือว่าเท่ากัน) กระแสที่ไหลสวนทิศที่กำหนดให้ใส่ค่าติดลบ</p>
@@ -227,7 +394,7 @@ body.hide-nd .fig .nd, body.hide-cur .fig .cur{display:none}
     <select id="fTopic" aria-label="เลือกหัวข้อ"></select>
     <select id="fCount" aria-label="จำนวนข้อ"><option value="5">5 ข้อ</option><option value="6">6 ข้อ</option><option value="10">10 ข้อ</option><option value="12" selected>12 ข้อ</option><option value="15">15 ข้อ</option><option value="20">20 ข้อ</option><option value="30">30 ข้อ</option><option value="all">ทั้งหมด</option></select>
     <button class="btn primary" id="fNew">สุ่มข้อสอบชุดใหม่</button>
-    <button class="btn" id="fCheck">ตรวจคำตอบ</button><label class="score" style="font-weight:500"><input type="checkbox" class="xtoggle"> รวมเนื้อหาเสริมจากสไลด์</label>
+    <button class="btn" id="fCheck">ตรวจคำตอบ</button><label class="sw-l"><input type="checkbox" class="xtoggle"> รวมเนื้อหาเสริมจากสไลด์</label>
     <span class="grow"></span>
     <span class="score" id="fScore"></span>
   </div>
@@ -241,7 +408,7 @@ body.hide-nd .fig .nd, body.hide-cur .fig .cur{display:none}
   <div class="bar">
     <select id="mTopic" aria-label="เลือกหัวข้อ"></select>
     <select id="mCount" aria-label="จำนวนข้อ"><option value="5">5 ข้อ</option><option value="6" selected>6 ข้อ</option><option value="10">10 ข้อ</option><option value="12">12 ข้อ</option><option value="15">15 ข้อ</option><option value="20">20 ข้อ</option><option value="30">30 ข้อ</option><option value="all">ทั้งหมด</option></select>
-    <button class="btn primary" id="mNew">สุ่มชุดใหม่</button><label class="score" style="font-weight:500"><input type="checkbox" class="xtoggle"> รวมเนื้อหาเสริมจากสไลด์</label>
+    <button class="btn primary" id="mNew">สุ่มชุดใหม่</button><label class="sw-l"><input type="checkbox" class="xtoggle"> รวมเนื้อหาเสริมจากสไลด์</label>
     <span class="grow"></span>
     <span class="score" id="mScore"></span>
   </div>
@@ -801,10 +968,10 @@ $("#mCount").onchange=()=>newMatch();
 $("#mNew").onclick=()=>{topicOptions($("#mTopic"),$("#mTopic").value);newMatch()}; $("#mTopic").onchange=newMatch;
 
 /* ================= fill-in ================= */
-let F={items:[],active:null};
+let F={items:[],active:null,counted:new Set()};
 function newFill(){
   const t=$("#fTopic").value, list=pool(t);
-  F={items:pickSet(list,getN("#fCount")),active:null};
+  F={items:pickSet(list,getN("#fCount")),active:null,counted:new Set()};
   const ol=$("#fList"); ol.innerHTML=""; $("#fBank").innerHTML=""; $("#fScore").textContent="";
   if(!F.items.length){ol.innerHTML=`<li><div class="qbody">ยังไม่มีข้อที่เคยตอบผิด เลือกหัวข้ออื่นก่อน</div></li>`;return}
   const answers=new Set(F.items.map(x=>x.a));
@@ -835,9 +1002,9 @@ $("#fCheck").onclick=()=>{
   let ok=0;
   document.querySelectorAll(".blank").forEach(b=>{
     const x=F.items[+b.dataset.i];b.classList.remove("active");
-    const why=b.nextElementSibling;
-    if(b.dataset.v===x.a){b.classList.add("ok");ok++;bumpMiss(x,-1);why.innerHTML=x.e?esc(x.e):""}
-    else{b.classList.add("bad");bumpMiss(x,1);why.innerHTML=`<b>เฉลย: ${esc(x.a)}</b>${x.e?" — "+esc(x.e):""}`}
+    const why=b.nextElementSibling, first=!F.counted.has(x.id); F.counted.add(x.id);
+    if(b.dataset.v===x.a){b.classList.add("ok");ok++;if(first)bumpMiss(x,-1);why.innerHTML=x.e?esc(x.e):""}
+    else{b.classList.add("bad");if(first)bumpMiss(x,1);why.innerHTML=`<b>เฉลย: ${esc(x.a)}</b>${x.e?" — "+esc(x.e):""}`}
   });
   F.active=null;
   $("#fScore").textContent=`ได้ ${ok}/${F.items.length}`;
@@ -1099,12 +1266,19 @@ function solveLadder(p){
 }
 /* ข้อ 2 source can be written with cos or sin; phasors always use cos as the reference */
 let LAD_MODE="cos"; try{LAD_MODE=localStorage.getItem("ladFn")||"cos"}catch(e){}
-const ladPickFn=()=>LAD_MODE==="mix"?pick(["cos","sin"]):LAD_MODE;
-const isSin=p=>p.fn==="sin";
+const FN_OFF={cos:0,sin:-90,"-cos":180,"-sin":90}; // angle to add so the source becomes +cos
+if(!(LAD_MODE in FN_OFF)&&LAD_MODE!=="mix"&&LAD_MODE!=="mix4")LAD_MODE="cos";
+const ladPickFn=()=>LAD_MODE==="mix"?pick(["cos","sin"]):LAD_MODE==="mix4"?pick(["cos","sin","-cos","-sin"]):LAD_MODE;
+const fnOf=p=>p.fn in FN_OFF?p.fn:"cos";
+const isSin=p=>fnOf(p)==="sin";
+const notCos=p=>fnOf(p)!=="cos";
+const fnTxt=p=>fnOf(p).replace("-","−");
 const wrapA=a=>{a=((a+180)%360+360)%360-180;return a===-180?180:a};
-const phC=p=>wrapA(p.ph-(isSin(p)?90:0));
+/* −cos: use −180° for a positive angle and +180° otherwise, so the new angle needs no wrapping */
+const offOf=p=>fnOf(p)==="-cos"?(p.ph>0?-180:180):FN_OFF[fnOf(p)];
+const phC=p=>wrapA(p.ph+offOf(p));
 const tStr=(w,a)=>`${w}t${Math.abs(a)>=5e-4?(a>0?" + ":" − ")+tn(Math.abs(a))+"°":""}`;
-const vsStr=p=>`${p.Vm}${isSin(p)?"sin":"cos"}(${tStr(p.w,p.ph)})`;
+const vsStr=p=>`${fnOf(p)[0]==="-"?"−":""}${p.Vm}${fnOf(p).replace("-","")}(${tStr(p.w,p.ph)})`;
 function genLadder(topo){
   const kinds=topo==="A"?["s","p","p"]:["s","p","s","p"];
   for(let tries=0;tries<2000;tries++){
@@ -1188,6 +1362,25 @@ const KSET=note("ตั้งค่าครั้งเดียว: [doc] → 
   note("∠ อยู่ใน Symbol palette [ctrl][📖] · i อยู่ที่ปุ่ม [π▸] · ▸Polar อยู่ใน [menu] → Number → Complex Number Tools · เครื่องหมายลบใช้ [(−)]");
 const kl=(...ls)=>ls.filter(Boolean).join("");
 const ansS=x=>`<span class="ans">${x}</span>`;
+/* sin vs cos picture: sin peaks 90° after cos, so sin(x) = cos(x − 90°) */
+/* cos vs the given form: sin peaks 90° late, −sin 90° early, −cos is upside down (180°) */
+function sinCosWave(fn){
+  const W0=40,W1=330,A=58,Y0=36+A+10,X=d=>W0+(W1-W0)*d/360;
+  const g={sin:Math.sin,"-sin":a=>-Math.sin(a),"-cos":a=>-Math.cos(a)}[fn];
+  const path=f=>{let d="";for(let a=0;a<=360;a+=5)d+=`${a?"L":"M"}${X(a).toFixed(1)} ${(Y0-A*f(a*DEG)).toFixed(1)}`;return d};
+  const [from,to,lab,peak]={sin:[0,90,"ช้ากว่า 90°",90],"-sin":[270,360,"มาก่อน 90°",270],"-cos":[0,180,"ห่าง 180° (กลับหัว)",180]}[fn];
+  const nm=fn.replace("-","−");
+  let b=`<line x1="${W0}" y1="${Y0}" x2="${W1+8}" y2="${Y0}" stroke-width="1" opacity=".5"/>`;
+  [0,90,180,270,360].forEach(a=>{b+=`<line x1="${X(a)}" y1="${Y0-A-4}" x2="${X(a)}" y2="${Y0+A+4}" stroke-width="1" stroke-dasharray="3 4" opacity=".4"/>`+T(X(a),Y0+A+20,a+"°")});
+  b+=`<path d="${path(Math.cos)}" stroke="#2B78C4" stroke-width="2.6"/><path d="${path(g)}" stroke="#C2621F" stroke-width="2.6"/>`;
+  const ax=fn==="-sin"?[X(to),X(from)+1]:[X(from),X(to)-1];
+  b+=arrowSvg(ax[0],Y0-A-12,ax[1],Y0-A-12,"var(--hl)",2.4)+`<g style="color:var(--hl)">${T((X(from)+X(to))/2,Y0-A-20,lab)}</g>`;
+  b+=T(W1+6,Y0-6,"ωt","start");
+  const ly=Y0+A+44;
+  b+=`<line x1="${W0}" y1="${ly-4}" x2="${W0+22}" y2="${ly-4}" stroke="#2B78C4" stroke-width="3"/><g style="color:#2B78C4">${T(W0+28,ly,"cos: ยอดที่ 0°","start")}</g>`;
+  b+=`<line x1="${W0+150}" y1="${ly-4}" x2="${W0+172}" y2="${ly-4}" stroke="#C2621F" stroke-width="3"/><g style="color:#C2621F">${T(W0+178,ly,`${nm}: ยอดที่ ${peak}°`,"start")}</g>`;
+  return `<svg viewBox="0 0 ${W1+30} ${ly+10}" width="${W1+30}" fill="none" stroke="currentColor" stroke-width="2">${b}</svg>`;
+}
 function ladderSteps(p,r){
   const n=p.st.length, w=p.w, out=[];
   const cur=p.st.map((s,i)=>({k:s.k,vo:i===n-1,els:s.els.map(e=>({...e,id:e.n}))})), orig=clone(cur);
@@ -1195,10 +1388,19 @@ function ladderSteps(p,r){
   const push=(hl,nw,o,st=cur)=>out.push({...o,fig:stepFig(p,{st:clone(st),imp,hl,nw})});
   const zOf=e=>e.t==="Z"?e.z:zEl(e,w);
   const vs=vsStr(p), Vs=cpol(p.Vm,phC(p));
-  push([],[],{short:"เริ่ม",title:"แปลงแหล่งจ่ายเป็นเฟเซอร์",why:`เลขหน้า ${isSin(p)?"sin":"cos"} = ขนาด, มุมหลัง ωt = มุม, เลขหน้า t = ω`,
-    write:`vs = ${vs} V<br>${isSin(p)?`แปลง sin เป็น cos: sin(x) = cos(x − 90°)<br>vs = ${p.Vm}cos(${tStr(w,phC(p))}) V<br>`:""}${ansS(`Vs = ${p.Vm}∠${na(phC(p))}° V, ω = ${w} rad/s`)}`,
-    keys:isSin(p)?kl(KSET,TL(`${tn(p.ph)}-90`,`มุม ${tn(phC(p))}`)):KSET,
-    warn:isSin(p)?"เฟเซอร์ใช้ cos เป็นอ้างอิง: เจอ sin ต้องลบ 90° ก่อนเสมอ (เจอ −sin ให้บวก 90°)":""});
+  if(notCos(p)){const fn=fnOf(p), off=offOf(p), nm=fnTxt(p), sg=x=>x<0?"−":"+";
+    const rules=[["sin","sin(x) = cos(x − 90°)"],["-sin","−sin(x) = cos(x + 90°)"],["-cos","−cos(x) = cos(x ± 180°)"]].map(([k,t])=>k===fn?`<b>${t}</b> ← ใช้บรรทัดนี้`:t).join("<br>");
+    const why={sin:"sin คือ cos ที่เลื่อนไปช้ากว่า 90° → ลบ 90° ที่มุม",
+      "-sin":"−sin คือ cos ที่มาก่อน 90° → บวก 90° ที่มุม (เครื่องหมายลบหายไป)",
+      "-cos":"−cos คือ cos กลับหัว = เลื่อนไป 180° → บวกหรือลบ 180° ที่มุม (เครื่องหมายลบหายไป)"}[fn];
+    out.push({short:`${nm}→cos`,title:`แปลง ${nm} เป็น cos ก่อน`,fig:`${stepFig(p,{st:clone(cur),imp,hl:[],nw:[]})}<p class="q3cap">เทียบ ${nm} กับ cos</p>${sinCosWave(fn)}`,
+      why:`เฟเซอร์ใช้ +cos เป็นอ้างอิง ถ้าโจทย์ให้แบบอื่นต้องแปลงก่อน: ${why} (ดูรูป)`,
+      write:`กฎที่ใช้ (จำ 3 บรรทัดนี้):<br>${rules}<br><br>แทนค่า: vs = ${vs} V<br>= ${p.Vm}cos(${w}t ${sg(p.ph)} ${tn(Math.abs(p.ph))}° ${sg(off)} ${tn(Math.abs(off))}°)<br>${ansS(`vs = ${p.Vm}cos(${tStr(w,phC(p))}) V`)}`,
+      keys:kl(KSET,TL(`${tn(p.ph)}${off<0?"-":"+"}${tn(Math.abs(off))}`,`มุมใหม่ ${tn(phC(p))}`)),
+      warn:`${off<0?"ลบ":"บวก"} ${tn(Math.abs(off))}° ที่มุม ไม่ใช่ที่ ωt · ขนาดเท่าเดิมและเป็นบวกเสมอ${fn[0]==="-"?" (เครื่องหมายลบหน้าฟังก์ชันย้ายไปอยู่ในมุมแล้ว)":""}${isSin(p)?" · ตอนตอบ vo(t) จะตอบกลับเป็น sin ก็ได้โดยบวก 90°":""}`});}
+  push([],[],{short:"เริ่ม",title:"แปลงแหล่งจ่ายเป็นเฟเซอร์",why:"เลขหน้า cos = ขนาด, มุมหลัง ωt = มุม, เลขหน้า t = ω",
+    write:`vs = ${notCos(p)?`${p.Vm}cos(${tStr(w,phC(p))})`:vs} V${notCos(p)?" (จากขั้นก่อน)":""}<br>${ansS(`Vs = ${p.Vm}∠${na(phC(p))}° V, ω = ${w} rad/s`)}`,
+    keys:notCos(p)?"":KSET});
   if(!imp){
     const lc=cur.flatMap(s=>s.els).filter(e=>e.t!=="R");
     push(lc.map(e=>e.id),[],{short:"jX",title:`แปลง ${lc.map(e=>e.n).join(", ")} เป็นอิมพีแดนซ์`,why:"L → +jωL, C → 1/(jωC) = −j/(ωC) ตัวต้านทานใช้ค่าเดิม (ขั้นนี้มีคะแนนแยก)"});
@@ -1257,7 +1459,7 @@ function buildLadder(p){
   const r=solveLadder(p), w=p.w, els=p.st.flatMap((s,i)=>s.els.map(e=>({...e,si:i})));
   const Pr=els.filter(e=>e.t==="R").map(e=>({n:e.n,P:0.5*cmag(r.Ist[e.si])**2*e.v}));
   const Psrc=0.5*p.Vm*cmag(r.Iin)*Math.cos((phC(p)-cang(r.Iin))*DEG), Ptar=Pr.find(x=>x.n===p.pr).P;
-  const vs=vsStr(p), cosNote=isSin(p)?` = ${p.Vm}cos(${tStr(w,phC(p))})`:"";
+  const vs=vsStr(p), cosNote=notCos(p)?` = ${p.Vm}cos(${tStr(w,phC(p))})`:"";
   const conv=els.map(e=>e.t==="R"?`${e.n} = ${e.v} Ω`:e.t==="L"?`${e.n}: jωL = j(${w})(${e.v}) = j${nf(w*e.v)} Ω`:`${e.n}: 1/(jωC) = 1/(j·${w}·${e.v}×10⁻³) = −j${nf(1/(w*e.v*1e-3))} Ω`);
   const brName=i=>p.st[i].els.map(e=>e.n).join(" + ");
   let red=[]; const n=p.st.length;
@@ -1281,10 +1483,10 @@ function buildLadder(p){
     write:`กระแสผ่าน ${p.pr} = ${fp(It)} A<br>P = ½·|I|²·R = ½ × ${nf(cmag(It))}² × ${tg.v}<br>${ansS(`P(${p.pr}) = ${nf(Ptar)} W`)}`,
     keys:TL(`0.5*${tn(cmag(It))}^2*${tg.v}`,nf(Ptar))});
   return{fig:ladderFig(p),steps,
-  text:`vs = ${vs} V${isSin(p)?" (ให้ใช้ cos เป็นฟังก์ชันอ้างอิงของเฟเซอร์)":""} จงหา impedance รวมที่แหล่งจ่ายมองเห็น (Zin), กระแส I จากแหล่งจ่าย, แรงดัน Vo คร่อมกิ่งขวาสุด, กำลังเฉลี่ยที่แหล่งจ่ายจ่ายออก และกำลังเฉลี่ยที่ ${p.pr} ใช้`,
+  text:`vs = ${vs} V${notCos(p)?" (ให้ใช้ +cos เป็นฟังก์ชันอ้างอิงของเฟเซอร์)":""} จงหา impedance รวมที่แหล่งจ่ายมองเห็น (Zin), กระแส I จากแหล่งจ่าย, แรงดัน Vo คร่อมกิ่งขวาสุด, กำลังเฉลี่ยที่แหล่งจ่ายจ่ายออก และกำลังเฉลี่ยที่ ${p.pr} ใช้`,
   f:[F_("|Zin|",cmag(r.Zeq[0]),"Ω"),F_("มุม Zin",cang(r.Zeq[0]),"°","a"),F_("|I|",cmag(r.Iin),"A"),F_("มุม I",cang(r.Iin),"°","a"),F_("|Vo|",cmag(r.Vo),"V"),F_("มุม Vo",cang(r.Vo),"°","a"),F_("P เฉลี่ยของแหล่งจ่าย",Psrc,"W"),F_(`P เฉลี่ยของ ${p.pr}`,Ptar,"W")],
   sol:`<ol>
-  <li>แปลงแหล่งจ่ายเป็นเฟเซอร์: ${M_(`vs = ${vs}${cosNote} → Vs = ${p.Vm}∠${na(phC(p))}° V`)}${isSin(p)?" (sin แปลงเป็น cos โดยลบ 90°)":""}, ${M_(`ω = ${w} rad/s`)}</li>
+  <li>แปลงแหล่งจ่ายเป็นเฟเซอร์: ${M_(`vs = ${vs}${cosNote} → Vs = ${p.Vm}∠${na(phC(p))}° V`)}${notCos(p)?` (${fnTxt(p)} แปลงเป็น cos โดย${offOf(p)<0?"ลบ":"บวก"} ${tn(Math.abs(offOf(p)))}°)`:""}, ${M_(`ω = ${w} rad/s`)}</li>
   ${p.jf?`<li>โจทย์ให้ L และ C มาในรูป jX แล้ว ใช้คำนวณได้เลย (ถ้าโจทย์ให้เป็น H หรือ F ต้องแปลงก่อน: jωL และ 1/(jωC))</li>`:`<li>แปลงอุปกรณ์เป็นอิมพีแดนซ์ (ขั้นนี้มีคะแนนแยก):<br>${conv.map(M_).join("<br>")}</li>`}
   <li>ยุบวงจรจากขวาไปซ้าย:<br>${red.map(M_).join("<br>")}<br>→ <b>${M_(`Zin = ${fr(r.Zeq[0])} = ${fp(r.Zeq[0])} Ω`)}</b></li>
   <li><b>${M_(`I = Vs/Zin = ${p.Vm}∠${na(phC(p))}° / ${fp(r.Zeq[0])} = ${fp(r.Iin)} A`)}</b></li>
@@ -1294,8 +1496,8 @@ function buildLadder(p){
   <li>กำลังเฉลี่ยตัวต้านทาน ${M_("P = ½·|I|²·R")}: ${Pr.map(x=>M_(`P(${x.n}) = ${nf(x.P)} W`)).join(", ")} รวม ${nf(Pr.reduce((a,b)=>a+b.P,0))} W = กำลังแหล่งจ่าย ✓ (L และ C ไม่กินกำลังเฉลี่ย)</li></ol>`};
 }
 function ladderEdit(p){const out=[["Vm","Vm (แอมพลิจูด)","V"],["ph","มุมเฟสของแหล่งจ่าย","°"],["w","ω","rad/s"]];p.st.forEach((s,i)=>s.els.forEach((e,j)=>out.push([`st.${i}.els.${j}.v`,e.n,unit[e.t]])));return out}
-const T2A={g:2,onPreset:p=>{p.fn=LAD_MODE==='sin'?'sin':'cos'},name:"Phasor แบบ EX03-04 หน้า 30 (R อนุกรม + กิ่งขนาน 2 กิ่ง)",note:"อาจารย์: “มาแบบนี้เลย คล้ายๆ แบบนี้เลย” มี C มี L อาจวางสลับกัน หรืออาจมี R เพิ่มอีกตัว ถ้าโจทย์ให้ C, L เป็นค่า F, H ต้องแปลงเป็น j ก่อน ขั้นนี้ได้คะแนนแยก แหล่งจ่ายตัวเดียว ไม่ต้องใช้ node/mesh ใช้กฎของโอห์มกับยุบวงจรก็พอ",gen:()=>genLadder("A"),preset:{topo:"A",w:4,Vm:20,ph:-15,jf:0,pr:"R1",st:[{k:"s",els:[{t:"R",v:60,n:"R1"}]},{k:"p",els:[{t:"C",v:10,n:"C1"}]},{k:"p",els:[{t:"L",v:5,n:"L1"}]}]},edit:ladderEdit,build:buildLadder};
-const T2B={g:2,onPreset:p=>{p.fn=LAD_MODE==='sin'?'sin':'cos'},name:"ฝึกเพิ่ม: วงจรแลดเดอร์ อนุกรม-ขนาน-อนุกรม-ขนาน",note:"อาจารย์ไม่ได้ใบ้รูปนี้ แต่อยู่ในขอบเขตแนวข้อสอบ (แหล่งจ่าย 1 ตัว R L C 5–6 ตัว) ใช้ฝึกยุบวงจรให้คล่อง",gen:()=>genLadder("B"),edit:ladderEdit,build:buildLadder};
+const T2A={g:2,onPreset:p=>{p.fn=LAD_MODE in FN_OFF?LAD_MODE:'cos'},name:"Phasor แบบ EX03-04 หน้า 30 (R อนุกรม + กิ่งขนาน 2 กิ่ง)",note:"อาจารย์: “มาแบบนี้เลย คล้ายๆ แบบนี้เลย” มี C มี L อาจวางสลับกัน หรืออาจมี R เพิ่มอีกตัว ถ้าโจทย์ให้ C, L เป็นค่า F, H ต้องแปลงเป็น j ก่อน ขั้นนี้ได้คะแนนแยก แหล่งจ่ายตัวเดียว ไม่ต้องใช้ node/mesh ใช้กฎของโอห์มกับยุบวงจรก็พอ",gen:()=>genLadder("A"),preset:{topo:"A",w:4,Vm:20,ph:-15,jf:0,pr:"R1",st:[{k:"s",els:[{t:"R",v:60,n:"R1"}]},{k:"p",els:[{t:"C",v:10,n:"C1"}]},{k:"p",els:[{t:"L",v:5,n:"L1"}]}]},edit:ladderEdit,build:buildLadder};
+const T2B={g:2,onPreset:p=>{p.fn=LAD_MODE in FN_OFF?LAD_MODE:'cos'},name:"ฝึกเพิ่ม: วงจรแลดเดอร์ อนุกรม-ขนาน-อนุกรม-ขนาน",note:"อาจารย์ไม่ได้ใบ้รูปนี้ แต่อยู่ในขอบเขตแนวข้อสอบ (แหล่งจ่าย 1 ตัว R L C 5–6 ตัว) ใช้ฝึกยุบวงจรให้คล่อง",gen:()=>genLadder("B"),edit:ladderEdit,build:buildLadder};
 
 /* ---------------- ข้อ 3 complex power ---------------- */
 const LT={m:"มอเตอร์",k:"โหลด",h:"ฮีตเตอร์"};
@@ -1445,6 +1647,7 @@ const T3B={g:3,name:"แก้ตัวประกอบกำลังด้�
  gen:()=>({V:pick([220,230,240]),f:50,P:pick([2,3,4,5,8,10,15,20]),pf1:pick([0.6,0.65,0.7,0.75,0.8]),pf2:pick([0.9,0.92,0.95,0.98,1])}),
  edit:p=>[["V","แรงดัน (rms)","V"],["f","ความถี่","Hz"],["P","กำลังโหลด","kW"],["pf1","pf เดิม (ล้าหลัง)",""],["pf2","pf ที่ต้องการ",""]],
  build(p){
+  if(p.pf2<p.pf1)throw{userMsg:"pf ที่ต้องการต้องไม่น้อยกว่า pf เดิม (ตัวเก็บประจุทำให้ pf สูงขึ้นเท่านั้น)"};
   const P=p.P*1e3, t1=Math.acos(p.pf1), t2=Math.acos(p.pf2), Q1=P*Math.tan(t1), Q2=P*Math.tan(t2), Qc=Q1-Q2, w=2*Math.PI*p.f, C=Qc/(w*p.V*p.V)*1e6;
   const I1=P/(p.V*p.pf1), I2=P/(p.V*p.pf2);
   const cir=(hl,lC)=>q3Circuit({V:p.V,loads:[{t:"k",lines:["โหลด",`${p.P} kW`,`pf ${p.pf1} ล้าหลัง`]},{t:"c",cur:"IC",lines:lC?["C",`${nf(C)} µF`,""]:["C = ?","ต่อขนาน",""]}]},hl,false);
@@ -1637,7 +1840,7 @@ function card(tp){
   const d=document.createElement("article"); d.className="prob"; d.dataset.g=tp.g;
   let p=tp.gen(); if(tp.fix)p=tp.fix(p);
   const render=()=>{
-    let b; try{b=tp.build(p)}catch(e){d.querySelector(".body").innerHTML=`<p class="hint">ค่าที่ใส่คำนวณไม่ได้ ลองตรวจตัวเลขอีกครั้ง</p>`;return}
+    let b; try{b=tp.build(p);if(b.f.some(f=>f.t!=="s"&&!isFinite(f.v)))throw 0}catch(e){d.querySelector(".body").innerHTML=`<p class="hint">${e&&e.userMsg||"ค่าที่ใส่คำนวณไม่ได้ (เช่น หารด้วยศูนย์) ลองตรวจตัวเลขอีกครั้ง"}</p>`;return}
     const uid="q"+Math.random().toString(36).slice(2,8);
     d.querySelector(".body").innerHTML=`${b.fig?`<div class="fig">${b.fig}</div>`:""}<p>${b.text}</p>
     <div class="fields">${b.f.map((f,i)=>`<div class="field"><label for="${uid}_${i}">${f.l}</label><div class="row">${f.t==="s"?`<select id="${uid}_${i}"><option value="">เลือก</option>${f.o.map((o,j)=>`<option value="${j}">${o}</option>`).join("")}</select>`:`<input id="${uid}_${i}" inputmode="decimal" autocomplete="off">`}<span class="u">${f.u}</span></div></div>`).join("")}</div>
@@ -1681,8 +1884,8 @@ function card(tp){
     d.querySelector(".params .fields").innerHTML=tp.edit(p).map(([k,l,u])=>`<div class="field"><label>${l}</label><div class="row"><input data-k="${k}" value="${getP(p,k)}" inputmode="decimal"><span class="u">${u}</span></div></div>`).join("");
   };
   d.innerHTML=`<span class="tag">ข้อ ${tp.g}</span><h3>${tp.name}</h3>${tp.note?`<p class="said">${tp.note}</p>`:""}
-    <div class="bar"><button class="btn small" data-a="new">สุ่มตัวเลขใหม่</button>${tp.preset?`<button class="btn small" data-a="preset">ตัวเลขตัวอย่างของอาจารย์</button>`:""}<button class="btn small" data-a="edit">ใส่ตัวเลขเอง</button>${tp.g===2?`<select class="fnSel" aria-label="รูปแบบแหล่งจ่าย"><option value="cos">แหล่งจ่าย cos อย่างเดียว</option><option value="sin">แหล่งจ่าย sin อย่างเดียว</option><option value="mix">สุ่ม cos / sin</option></select>`:""}</div>
-    <div class="params"><p class="hint" style="margin:0">แก้ค่าแล้วกด “คำนวณเฉลย” รูปแบบวงจรคงเดิม</p><div class="fields"></div><button class="btn small primary" data-a="apply">คำนวณเฉลย</button></div>
+    <div class="bar"><button class="btn small" data-a="new">สุ่มตัวเลขใหม่</button>${tp.preset?`<button class="btn small" data-a="preset">ตัวเลขตัวอย่างของอาจารย์</button>`:""}<button class="btn small" data-a="edit">ใส่ตัวเลขเอง</button>${tp.g===2?`<select class="fnSel" aria-label="รูปแบบแหล่งจ่าย"><option value="cos">แหล่งจ่าย cos อย่างเดียว</option><option value="sin">แหล่งจ่าย sin อย่างเดียว</option><option value="-cos">แหล่งจ่าย −cos อย่างเดียว</option><option value="-sin">แหล่งจ่าย −sin อย่างเดียว</option><option value="mix">สุ่ม cos / sin</option><option value="mix4">สุ่มทั้ง 4 แบบ (cos, sin, −cos, −sin)</option></select>`:""}</div>
+    <div class="params"><p class="hint" style="margin:0">แก้ค่าแล้วกด “คำนวณเฉลย” รูปแบบวงจรคงเดิม</p><div class="fields"></div><button class="btn small primary" data-a="apply">คำนวณเฉลย</button> <span class="perr" role="alert"></span></div>
     <div class="body"></div>`;
   d.querySelector('[data-a="new"]').onclick=()=>{p=tp.gen();if(tp.fix)p=tp.fix(p);render()};
   if(tp.preset)d.querySelector('[data-a="preset"]').onclick=()=>{p=clone(tp.preset);if(tp.onPreset)tp.onPreset(p);render()};
@@ -1691,10 +1894,19 @@ function card(tp){
     document.addEventListener("ladmode",()=>{sel.value=LAD_MODE;p.fn=ladPickFn();render()});}
   d.querySelector('[data-a="edit"]').onclick=()=>d.querySelector(".params").classList.toggle("show");
   d.querySelector('[data-a="apply"]').onclick=()=>{
-    const np=clone(p); let bad=false;
-    d.querySelectorAll(".params input").forEach(inp=>{const v=parseFloat(inp.value.replace(/−/g,"-"));if(isNaN(v))bad=true;else setP(np,inp.dataset.k,v)});
-    if(bad){alert("มีช่องที่ไม่ใช่ตัวเลข");return}
-    p=np; render(); const s=d.querySelector(".sol"); s.classList.add("show"); d.querySelector('[data-a="sol"]').textContent="ซ่อนวิธีทำ";
+    /* validate before solving: numbers only, choices from the label (“1 = …, −1 = …”), pf in (0, 1], component values > 0 */
+    const np=clone(p), ed=tp.edit(p), err=d.querySelector(".perr"); let msg="";
+    d.querySelectorAll(".params input").forEach(inp=>{if(msg)return;
+      const [k,l,u]=ed.find(e=>e[0]===inp.dataset.k)||[inp.dataset.k,inp.dataset.k,""];
+      const v=parseFloat(inp.value.replace(/−/g,"-").replace(/,/g,""));
+      const opts=[...l.matchAll(/(−?\d+)\s=\s/g)].map(m=>+m[1].replace("−","-"));
+      if(isNaN(v))msg=`ช่อง “${l}” ไม่ใช่ตัวเลข`;
+      else if(opts.length&&!opts.includes(v))msg=`ช่อง “${l}” ใส่ได้แค่ ${opts.map(x=>x<0?"−"+(-x):x).join(" หรือ ")}`;
+      else if(/pf/.test(l)&&!(v>0&&v<=1))msg=`ช่อง “${l}” ต้องมากกว่า 0 และไม่เกิน 1`;
+      else if(((/^(Ω|H|mF|µF|kW|kVA|rad\/s|Hz)$/.test(u)&&!/\.X$/.test(k))||k==="X")&&!(v>0))msg=`ช่อง “${l}” ต้องมากกว่า 0`;
+      else setP(np,k,v)});
+    err.textContent=msg; if(msg)return;
+    p=np; render(); const s=d.querySelector(".sol"); if(s){s.classList.add("show"); d.querySelector('[data-a="sol"]').textContent="ซ่อนวิธีทำ"}
   };
   render();
   return d;
@@ -1704,6 +1916,10 @@ document.querySelectorAll("#cFilter button").forEach(b=>b.onclick=()=>{
   document.querySelectorAll("#cFilter button").forEach(x=>x.setAttribute("aria-pressed",x===b));
   document.querySelectorAll(".prob").forEach(p=>p.hidden=!(b.dataset.f==="all"||p.dataset.g===b.dataset.f));
 });
+document.querySelectorAll(".exam-map [data-go]").forEach(b=>b.onclick=()=>{const g=b.dataset.go;
+  if(+g<=4){document.querySelector('nav button[data-tab="calc"]').click();document.querySelector(`#cFilter button[data-f="${g}"]`).click();}
+  else{document.querySelector('nav button[data-tab="fill"]').click();const t=$("#fTopic");t.value=g;newFill();}
+  document.querySelector("nav.tabs").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});});
 $("#tNode").onchange=e=>document.body.classList.toggle("hide-nd",!e.target.checked);
 $("#tCur").onchange=e=>document.body.classList.toggle("hide-cur",!e.target.checked);
 </script>
