@@ -1100,12 +1100,19 @@ function solveLadder(p){
 }
 /* ข้อ 2 source can be written with cos or sin; phasors always use cos as the reference */
 let LAD_MODE="cos"; try{LAD_MODE=localStorage.getItem("ladFn")||"cos"}catch(e){}
-const ladPickFn=()=>LAD_MODE==="mix"?pick(["cos","sin"]):LAD_MODE;
-const isSin=p=>p.fn==="sin";
+const FN_OFF={cos:0,sin:-90,"-cos":180,"-sin":90}; // angle to add so the source becomes +cos
+if(!(LAD_MODE in FN_OFF)&&LAD_MODE!=="mix"&&LAD_MODE!=="mix4")LAD_MODE="cos";
+const ladPickFn=()=>LAD_MODE==="mix"?pick(["cos","sin"]):LAD_MODE==="mix4"?pick(["cos","sin","-cos","-sin"]):LAD_MODE;
+const fnOf=p=>p.fn in FN_OFF?p.fn:"cos";
+const isSin=p=>fnOf(p)==="sin";
+const notCos=p=>fnOf(p)!=="cos";
+const fnTxt=p=>fnOf(p).replace("-","−");
 const wrapA=a=>{a=((a+180)%360+360)%360-180;return a===-180?180:a};
-const phC=p=>wrapA(p.ph-(isSin(p)?90:0));
+/* −cos: use −180° for a positive angle and +180° otherwise, so the new angle needs no wrapping */
+const offOf=p=>fnOf(p)==="-cos"?(p.ph>0?-180:180):FN_OFF[fnOf(p)];
+const phC=p=>wrapA(p.ph+offOf(p));
 const tStr=(w,a)=>`${w}t${Math.abs(a)>=5e-4?(a>0?" + ":" − ")+tn(Math.abs(a))+"°":""}`;
-const vsStr=p=>`${p.Vm}${isSin(p)?"sin":"cos"}(${tStr(p.w,p.ph)})`;
+const vsStr=p=>`${fnOf(p)[0]==="-"?"−":""}${p.Vm}${fnOf(p).replace("-","")}(${tStr(p.w,p.ph)})`;
 function genLadder(topo){
   const kinds=topo==="A"?["s","p","p"]:["s","p","s","p"];
   for(let tries=0;tries<2000;tries++){
@@ -1190,17 +1197,22 @@ const KSET=note("ตั้งค่าครั้งเดียว: [doc] → 
 const kl=(...ls)=>ls.filter(Boolean).join("");
 const ansS=x=>`<span class="ans">${x}</span>`;
 /* sin vs cos picture: sin peaks 90° after cos, so sin(x) = cos(x − 90°) */
-function sinCosWave(){
+/* cos vs the given form: sin peaks 90° late, −sin 90° early, −cos is upside down (180°) */
+function sinCosWave(fn){
   const W0=40,W1=330,A=58,Y0=36+A+10,X=d=>W0+(W1-W0)*d/360;
+  const g={sin:Math.sin,"-sin":a=>-Math.sin(a),"-cos":a=>-Math.cos(a)}[fn];
   const path=f=>{let d="";for(let a=0;a<=360;a+=5)d+=`${a?"L":"M"}${X(a).toFixed(1)} ${(Y0-A*f(a*DEG)).toFixed(1)}`;return d};
+  const [from,to,lab,peak]={sin:[0,90,"ช้ากว่า 90°",90],"-sin":[270,360,"มาก่อน 90°",270],"-cos":[0,180,"ห่าง 180° (กลับหัว)",180]}[fn];
+  const nm=fn.replace("-","−");
   let b=`<line x1="${W0}" y1="${Y0}" x2="${W1+8}" y2="${Y0}" stroke-width="1" opacity=".5"/>`;
   [0,90,180,270,360].forEach(a=>{b+=`<line x1="${X(a)}" y1="${Y0-A-4}" x2="${X(a)}" y2="${Y0+A+4}" stroke-width="1" stroke-dasharray="3 4" opacity=".4"/>`+T(X(a),Y0+A+20,a+"°")});
-  b+=`<path d="${path(Math.cos)}" stroke="#2B78C4" stroke-width="2.6"/><path d="${path(Math.sin)}" stroke="#C2621F" stroke-width="2.6"/>`;
-  b+=arrowSvg(X(0),Y0-A-12,X(90)-1,Y0-A-12,"var(--hl)",2.4)+`<g style="color:var(--hl)">${T(X(45),Y0-A-20,"ช้ากว่า 90°")}</g>`;
+  b+=`<path d="${path(Math.cos)}" stroke="#2B78C4" stroke-width="2.6"/><path d="${path(g)}" stroke="#C2621F" stroke-width="2.6"/>`;
+  const ax=fn==="-sin"?[X(to),X(from)+1]:[X(from),X(to)-1];
+  b+=arrowSvg(ax[0],Y0-A-12,ax[1],Y0-A-12,"var(--hl)",2.4)+`<g style="color:var(--hl)">${T((X(from)+X(to))/2,Y0-A-20,lab)}</g>`;
   b+=T(W1+6,Y0-6,"ωt","start");
   const ly=Y0+A+44;
   b+=`<line x1="${W0}" y1="${ly-4}" x2="${W0+22}" y2="${ly-4}" stroke="#2B78C4" stroke-width="3"/><g style="color:#2B78C4">${T(W0+28,ly,"cos: ยอดที่ 0°","start")}</g>`;
-  b+=`<line x1="${W0+150}" y1="${ly-4}" x2="${W0+172}" y2="${ly-4}" stroke="#C2621F" stroke-width="3"/><g style="color:#C2621F">${T(W0+178,ly,"sin: ยอดที่ 90°","start")}</g>`;
+  b+=`<line x1="${W0+150}" y1="${ly-4}" x2="${W0+172}" y2="${ly-4}" stroke="#C2621F" stroke-width="3"/><g style="color:#C2621F">${T(W0+178,ly,`${nm}: ยอดที่ ${peak}°`,"start")}</g>`;
   return `<svg viewBox="0 0 ${W1+30} ${ly+10}" width="${W1+30}" fill="none" stroke="currentColor" stroke-width="2">${b}</svg>`;
 }
 function ladderSteps(p,r){
@@ -1210,14 +1222,19 @@ function ladderSteps(p,r){
   const push=(hl,nw,o,st=cur)=>out.push({...o,fig:stepFig(p,{st:clone(st),imp,hl,nw})});
   const zOf=e=>e.t==="Z"?e.z:zEl(e,w);
   const vs=vsStr(p), Vs=cpol(p.Vm,phC(p));
-  if(isSin(p)) out.push({short:"sin→cos",title:"แปลง sin เป็น cos ก่อน",fig:`${stepFig(p,{st:clone(cur),imp,hl:[],nw:[]})}<p class="q3cap">sin ช้ากว่า cos อยู่ 90°</p>${sinCosWave()}`,
-    why:"เฟเซอร์ใช้ cos เป็นอ้างอิง ถ้าโจทย์ให้ sin ต้องแปลงเป็น cos ก่อน เพราะ sin คือ cos ที่เลื่อนไปช้ากว่า 90° (ดูรูป)",
-    write:`กฎที่ใช้ (จำ 3 บรรทัดนี้):<br>sin(x) = cos(x − 90°)<br>−sin(x) = cos(x + 90°)<br>−cos(x) = cos(x ± 180°)<br><br>แทนค่า: vs = ${vs} V<br>= ${p.Vm}cos(${w}t ${p.ph<0?"−":"+"} ${tn(Math.abs(p.ph))}° − 90°)<br>${ansS(`vs = ${p.Vm}cos(${tStr(w,phC(p))}) V`)}`,
-    keys:kl(KSET,TL(`${tn(p.ph)}-90`,`มุมใหม่ ${tn(phC(p))}`)),
-    warn:"ลบ 90° ที่มุม ไม่ใช่ที่ ωt และขนาดเท่าเดิม · ตอนตอบ vo(t) จะตอบกลับเป็น sin ก็ได้โดยบวก 90°"});
+  if(notCos(p)){const fn=fnOf(p), off=offOf(p), nm=fnTxt(p), sg=x=>x<0?"−":"+";
+    const rules=[["sin","sin(x) = cos(x − 90°)"],["-sin","−sin(x) = cos(x + 90°)"],["-cos","−cos(x) = cos(x ± 180°)"]].map(([k,t])=>k===fn?`<b>${t}</b> ← ใช้บรรทัดนี้`:t).join("<br>");
+    const why={sin:"sin คือ cos ที่เลื่อนไปช้ากว่า 90° → ลบ 90° ที่มุม",
+      "-sin":"−sin คือ cos ที่มาก่อน 90° → บวก 90° ที่มุม (เครื่องหมายลบหายไป)",
+      "-cos":"−cos คือ cos กลับหัว = เลื่อนไป 180° → บวกหรือลบ 180° ที่มุม (เครื่องหมายลบหายไป)"}[fn];
+    out.push({short:`${nm}→cos`,title:`แปลง ${nm} เป็น cos ก่อน`,fig:`${stepFig(p,{st:clone(cur),imp,hl:[],nw:[]})}<p class="q3cap">เทียบ ${nm} กับ cos</p>${sinCosWave(fn)}`,
+      why:`เฟเซอร์ใช้ +cos เป็นอ้างอิง ถ้าโจทย์ให้แบบอื่นต้องแปลงก่อน: ${why} (ดูรูป)`,
+      write:`กฎที่ใช้ (จำ 3 บรรทัดนี้):<br>${rules}<br><br>แทนค่า: vs = ${vs} V<br>= ${p.Vm}cos(${w}t ${sg(p.ph)} ${tn(Math.abs(p.ph))}° ${sg(off)} ${tn(Math.abs(off))}°)<br>${ansS(`vs = ${p.Vm}cos(${tStr(w,phC(p))}) V`)}`,
+      keys:kl(KSET,TL(`${tn(p.ph)}${off<0?"-":"+"}${tn(Math.abs(off))}`,`มุมใหม่ ${tn(phC(p))}`)),
+      warn:`${off<0?"ลบ":"บวก"} ${tn(Math.abs(off))}° ที่มุม ไม่ใช่ที่ ωt · ขนาดเท่าเดิมและเป็นบวกเสมอ${fn[0]==="-"?" (เครื่องหมายลบหน้าฟังก์ชันย้ายไปอยู่ในมุมแล้ว)":""}${isSin(p)?" · ตอนตอบ vo(t) จะตอบกลับเป็น sin ก็ได้โดยบวก 90°":""}`});}
   push([],[],{short:"เริ่ม",title:"แปลงแหล่งจ่ายเป็นเฟเซอร์",why:"เลขหน้า cos = ขนาด, มุมหลัง ωt = มุม, เลขหน้า t = ω",
-    write:`vs = ${isSin(p)?`${p.Vm}cos(${tStr(w,phC(p))})`:vs} V${isSin(p)?" (จากขั้นก่อน)":""}<br>${ansS(`Vs = ${p.Vm}∠${na(phC(p))}° V, ω = ${w} rad/s`)}`,
-    keys:isSin(p)?"":KSET});
+    write:`vs = ${notCos(p)?`${p.Vm}cos(${tStr(w,phC(p))})`:vs} V${notCos(p)?" (จากขั้นก่อน)":""}<br>${ansS(`Vs = ${p.Vm}∠${na(phC(p))}° V, ω = ${w} rad/s`)}`,
+    keys:notCos(p)?"":KSET});
   if(!imp){
     const lc=cur.flatMap(s=>s.els).filter(e=>e.t!=="R");
     push(lc.map(e=>e.id),[],{short:"jX",title:`แปลง ${lc.map(e=>e.n).join(", ")} เป็นอิมพีแดนซ์`,why:"L → +jωL, C → 1/(jωC) = −j/(ωC) ตัวต้านทานใช้ค่าเดิม (ขั้นนี้มีคะแนนแยก)"});
@@ -1276,7 +1293,7 @@ function buildLadder(p){
   const r=solveLadder(p), w=p.w, els=p.st.flatMap((s,i)=>s.els.map(e=>({...e,si:i})));
   const Pr=els.filter(e=>e.t==="R").map(e=>({n:e.n,P:0.5*cmag(r.Ist[e.si])**2*e.v}));
   const Psrc=0.5*p.Vm*cmag(r.Iin)*Math.cos((phC(p)-cang(r.Iin))*DEG), Ptar=Pr.find(x=>x.n===p.pr).P;
-  const vs=vsStr(p), cosNote=isSin(p)?` = ${p.Vm}cos(${tStr(w,phC(p))})`:"";
+  const vs=vsStr(p), cosNote=notCos(p)?` = ${p.Vm}cos(${tStr(w,phC(p))})`:"";
   const conv=els.map(e=>e.t==="R"?`${e.n} = ${e.v} Ω`:e.t==="L"?`${e.n}: jωL = j(${w})(${e.v}) = j${nf(w*e.v)} Ω`:`${e.n}: 1/(jωC) = 1/(j·${w}·${e.v}×10⁻³) = −j${nf(1/(w*e.v*1e-3))} Ω`);
   const brName=i=>p.st[i].els.map(e=>e.n).join(" + ");
   let red=[]; const n=p.st.length;
@@ -1300,10 +1317,10 @@ function buildLadder(p){
     write:`กระแสผ่าน ${p.pr} = ${fp(It)} A<br>P = ½·|I|²·R = ½ × ${nf(cmag(It))}² × ${tg.v}<br>${ansS(`P(${p.pr}) = ${nf(Ptar)} W`)}`,
     keys:TL(`0.5*${tn(cmag(It))}^2*${tg.v}`,nf(Ptar))});
   return{fig:ladderFig(p),steps,
-  text:`vs = ${vs} V${isSin(p)?" (ให้ใช้ cos เป็นฟังก์ชันอ้างอิงของเฟเซอร์)":""} จงหา impedance รวมที่แหล่งจ่ายมองเห็น (Zin), กระแส I จากแหล่งจ่าย, แรงดัน Vo คร่อมกิ่งขวาสุด, กำลังเฉลี่ยที่แหล่งจ่ายจ่ายออก และกำลังเฉลี่ยที่ ${p.pr} ใช้`,
+  text:`vs = ${vs} V${notCos(p)?" (ให้ใช้ +cos เป็นฟังก์ชันอ้างอิงของเฟเซอร์)":""} จงหา impedance รวมที่แหล่งจ่ายมองเห็น (Zin), กระแส I จากแหล่งจ่าย, แรงดัน Vo คร่อมกิ่งขวาสุด, กำลังเฉลี่ยที่แหล่งจ่ายจ่ายออก และกำลังเฉลี่ยที่ ${p.pr} ใช้`,
   f:[F_("|Zin|",cmag(r.Zeq[0]),"Ω"),F_("มุม Zin",cang(r.Zeq[0]),"°","a"),F_("|I|",cmag(r.Iin),"A"),F_("มุม I",cang(r.Iin),"°","a"),F_("|Vo|",cmag(r.Vo),"V"),F_("มุม Vo",cang(r.Vo),"°","a"),F_("P เฉลี่ยของแหล่งจ่าย",Psrc,"W"),F_(`P เฉลี่ยของ ${p.pr}`,Ptar,"W")],
   sol:`<ol>
-  <li>แปลงแหล่งจ่ายเป็นเฟเซอร์: ${M_(`vs = ${vs}${cosNote} → Vs = ${p.Vm}∠${na(phC(p))}° V`)}${isSin(p)?" (sin แปลงเป็น cos โดยลบ 90°)":""}, ${M_(`ω = ${w} rad/s`)}</li>
+  <li>แปลงแหล่งจ่ายเป็นเฟเซอร์: ${M_(`vs = ${vs}${cosNote} → Vs = ${p.Vm}∠${na(phC(p))}° V`)}${notCos(p)?` (${fnTxt(p)} แปลงเป็น cos โดย${offOf(p)<0?"ลบ":"บวก"} ${tn(Math.abs(offOf(p)))}°)`:""}, ${M_(`ω = ${w} rad/s`)}</li>
   ${p.jf?`<li>โจทย์ให้ L และ C มาในรูป jX แล้ว ใช้คำนวณได้เลย (ถ้าโจทย์ให้เป็น H หรือ F ต้องแปลงก่อน: jωL และ 1/(jωC))</li>`:`<li>แปลงอุปกรณ์เป็นอิมพีแดนซ์ (ขั้นนี้มีคะแนนแยก):<br>${conv.map(M_).join("<br>")}</li>`}
   <li>ยุบวงจรจากขวาไปซ้าย:<br>${red.map(M_).join("<br>")}<br>→ <b>${M_(`Zin = ${fr(r.Zeq[0])} = ${fp(r.Zeq[0])} Ω`)}</b></li>
   <li><b>${M_(`I = Vs/Zin = ${p.Vm}∠${na(phC(p))}° / ${fp(r.Zeq[0])} = ${fp(r.Iin)} A`)}</b></li>
@@ -1313,8 +1330,8 @@ function buildLadder(p){
   <li>กำลังเฉลี่ยตัวต้านทาน ${M_("P = ½·|I|²·R")}: ${Pr.map(x=>M_(`P(${x.n}) = ${nf(x.P)} W`)).join(", ")} รวม ${nf(Pr.reduce((a,b)=>a+b.P,0))} W = กำลังแหล่งจ่าย ✓ (L และ C ไม่กินกำลังเฉลี่ย)</li></ol>`};
 }
 function ladderEdit(p){const out=[["Vm","Vm (แอมพลิจูด)","V"],["ph","มุมเฟสของแหล่งจ่าย","°"],["w","ω","rad/s"]];p.st.forEach((s,i)=>s.els.forEach((e,j)=>out.push([`st.${i}.els.${j}.v`,e.n,unit[e.t]])));return out}
-const T2A={g:2,onPreset:p=>{p.fn=LAD_MODE==='sin'?'sin':'cos'},name:"Phasor แบบ EX03-04 หน้า 30 (R อนุกรม + กิ่งขนาน 2 กิ่ง)",note:"อาจารย์: “มาแบบนี้เลย คล้ายๆ แบบนี้เลย” มี C มี L อาจวางสลับกัน หรืออาจมี R เพิ่มอีกตัว ถ้าโจทย์ให้ C, L เป็นค่า F, H ต้องแปลงเป็น j ก่อน ขั้นนี้ได้คะแนนแยก แหล่งจ่ายตัวเดียว ไม่ต้องใช้ node/mesh ใช้กฎของโอห์มกับยุบวงจรก็พอ",gen:()=>genLadder("A"),preset:{topo:"A",w:4,Vm:20,ph:-15,jf:0,pr:"R1",st:[{k:"s",els:[{t:"R",v:60,n:"R1"}]},{k:"p",els:[{t:"C",v:10,n:"C1"}]},{k:"p",els:[{t:"L",v:5,n:"L1"}]}]},edit:ladderEdit,build:buildLadder};
-const T2B={g:2,onPreset:p=>{p.fn=LAD_MODE==='sin'?'sin':'cos'},name:"ฝึกเพิ่ม: วงจรแลดเดอร์ อนุกรม-ขนาน-อนุกรม-ขนาน",note:"อาจารย์ไม่ได้ใบ้รูปนี้ แต่อยู่ในขอบเขตแนวข้อสอบ (แหล่งจ่าย 1 ตัว R L C 5–6 ตัว) ใช้ฝึกยุบวงจรให้คล่อง",gen:()=>genLadder("B"),edit:ladderEdit,build:buildLadder};
+const T2A={g:2,onPreset:p=>{p.fn=LAD_MODE in FN_OFF?LAD_MODE:'cos'},name:"Phasor แบบ EX03-04 หน้า 30 (R อนุกรม + กิ่งขนาน 2 กิ่ง)",note:"อาจารย์: “มาแบบนี้เลย คล้ายๆ แบบนี้เลย” มี C มี L อาจวางสลับกัน หรืออาจมี R เพิ่มอีกตัว ถ้าโจทย์ให้ C, L เป็นค่า F, H ต้องแปลงเป็น j ก่อน ขั้นนี้ได้คะแนนแยก แหล่งจ่ายตัวเดียว ไม่ต้องใช้ node/mesh ใช้กฎของโอห์มกับยุบวงจรก็พอ",gen:()=>genLadder("A"),preset:{topo:"A",w:4,Vm:20,ph:-15,jf:0,pr:"R1",st:[{k:"s",els:[{t:"R",v:60,n:"R1"}]},{k:"p",els:[{t:"C",v:10,n:"C1"}]},{k:"p",els:[{t:"L",v:5,n:"L1"}]}]},edit:ladderEdit,build:buildLadder};
+const T2B={g:2,onPreset:p=>{p.fn=LAD_MODE in FN_OFF?LAD_MODE:'cos'},name:"ฝึกเพิ่ม: วงจรแลดเดอร์ อนุกรม-ขนาน-อนุกรม-ขนาน",note:"อาจารย์ไม่ได้ใบ้รูปนี้ แต่อยู่ในขอบเขตแนวข้อสอบ (แหล่งจ่าย 1 ตัว R L C 5–6 ตัว) ใช้ฝึกยุบวงจรให้คล่อง",gen:()=>genLadder("B"),edit:ladderEdit,build:buildLadder};
 
 /* ---------------- ข้อ 3 complex power ---------------- */
 const LT={m:"มอเตอร์",k:"โหลด",h:"ฮีตเตอร์"};
@@ -1701,7 +1718,7 @@ function card(tp){
     d.querySelector(".params .fields").innerHTML=tp.edit(p).map(([k,l,u])=>`<div class="field"><label>${l}</label><div class="row"><input data-k="${k}" value="${getP(p,k)}" inputmode="decimal"><span class="u">${u}</span></div></div>`).join("");
   };
   d.innerHTML=`<span class="tag">ข้อ ${tp.g}</span><h3>${tp.name}</h3>${tp.note?`<p class="said">${tp.note}</p>`:""}
-    <div class="bar"><button class="btn small" data-a="new">สุ่มตัวเลขใหม่</button>${tp.preset?`<button class="btn small" data-a="preset">ตัวเลขตัวอย่างของอาจารย์</button>`:""}<button class="btn small" data-a="edit">ใส่ตัวเลขเอง</button>${tp.g===2?`<select class="fnSel" aria-label="รูปแบบแหล่งจ่าย"><option value="cos">แหล่งจ่าย cos อย่างเดียว</option><option value="sin">แหล่งจ่าย sin อย่างเดียว</option><option value="mix">สุ่ม cos / sin</option></select>`:""}</div>
+    <div class="bar"><button class="btn small" data-a="new">สุ่มตัวเลขใหม่</button>${tp.preset?`<button class="btn small" data-a="preset">ตัวเลขตัวอย่างของอาจารย์</button>`:""}<button class="btn small" data-a="edit">ใส่ตัวเลขเอง</button>${tp.g===2?`<select class="fnSel" aria-label="รูปแบบแหล่งจ่าย"><option value="cos">แหล่งจ่าย cos อย่างเดียว</option><option value="sin">แหล่งจ่าย sin อย่างเดียว</option><option value="-cos">แหล่งจ่าย −cos อย่างเดียว</option><option value="-sin">แหล่งจ่าย −sin อย่างเดียว</option><option value="mix">สุ่ม cos / sin</option><option value="mix4">สุ่มทั้ง 4 แบบ (cos, sin, −cos, −sin)</option></select>`:""}</div>
     <div class="params"><p class="hint" style="margin:0">แก้ค่าแล้วกด “คำนวณเฉลย” รูปแบบวงจรคงเดิม</p><div class="fields"></div><button class="btn small primary" data-a="apply">คำนวณเฉลย</button> <span class="perr" role="alert"></span></div>
     <div class="body"></div>`;
   d.querySelector('[data-a="new"]').onclick=()=>{p=tp.gen();if(tp.fix)p=tp.fix(p);render()};
