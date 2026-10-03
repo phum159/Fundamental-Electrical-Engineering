@@ -105,6 +105,7 @@ select,.btn{font:inherit;font-size:15px;padding:8px 14px;border-radius:8px;borde
 .blank.active{border-bottom-color:var(--sel);background:var(--selbg)}
 .blank.ok{border-bottom:2px solid var(--ok);color:var(--ok);font-weight:600}
 .blank.bad{border-bottom:2px solid var(--bad);color:var(--bad);text-decoration:line-through}
+.perr{color:var(--bad);font-size:14.5px;font-weight:600}
 .why{display:block;font-size:14.5px;color:var(--muted);margin-top:4px}
 .why b{color:var(--ok)}
 /* calc */
@@ -801,10 +802,10 @@ $("#mCount").onchange=()=>newMatch();
 $("#mNew").onclick=()=>{topicOptions($("#mTopic"),$("#mTopic").value);newMatch()}; $("#mTopic").onchange=newMatch;
 
 /* ================= fill-in ================= */
-let F={items:[],active:null};
+let F={items:[],active:null,counted:new Set()};
 function newFill(){
   const t=$("#fTopic").value, list=pool(t);
-  F={items:pickSet(list,getN("#fCount")),active:null};
+  F={items:pickSet(list,getN("#fCount")),active:null,counted:new Set()};
   const ol=$("#fList"); ol.innerHTML=""; $("#fBank").innerHTML=""; $("#fScore").textContent="";
   if(!F.items.length){ol.innerHTML=`<li><div class="qbody">ยังไม่มีข้อที่เคยตอบผิด เลือกหัวข้ออื่นก่อน</div></li>`;return}
   const answers=new Set(F.items.map(x=>x.a));
@@ -835,9 +836,9 @@ $("#fCheck").onclick=()=>{
   let ok=0;
   document.querySelectorAll(".blank").forEach(b=>{
     const x=F.items[+b.dataset.i];b.classList.remove("active");
-    const why=b.nextElementSibling;
-    if(b.dataset.v===x.a){b.classList.add("ok");ok++;bumpMiss(x,-1);why.innerHTML=x.e?esc(x.e):""}
-    else{b.classList.add("bad");bumpMiss(x,1);why.innerHTML=`<b>เฉลย: ${esc(x.a)}</b>${x.e?" — "+esc(x.e):""}`}
+    const why=b.nextElementSibling, first=!F.counted.has(x.id); F.counted.add(x.id);
+    if(b.dataset.v===x.a){b.classList.add("ok");ok++;if(first)bumpMiss(x,-1);why.innerHTML=x.e?esc(x.e):""}
+    else{b.classList.add("bad");if(first)bumpMiss(x,1);why.innerHTML=`<b>เฉลย: ${esc(x.a)}</b>${x.e?" — "+esc(x.e):""}`}
   });
   F.active=null;
   $("#fScore").textContent=`ได้ ${ok}/${F.items.length}`;
@@ -1188,6 +1189,20 @@ const KSET=note("ตั้งค่าครั้งเดียว: [doc] → 
   note("∠ อยู่ใน Symbol palette [ctrl][📖] · i อยู่ที่ปุ่ม [π▸] · ▸Polar อยู่ใน [menu] → Number → Complex Number Tools · เครื่องหมายลบใช้ [(−)]");
 const kl=(...ls)=>ls.filter(Boolean).join("");
 const ansS=x=>`<span class="ans">${x}</span>`;
+/* sin vs cos picture: sin peaks 90° after cos, so sin(x) = cos(x − 90°) */
+function sinCosWave(){
+  const W0=40,W1=330,A=58,Y0=36+A+10,X=d=>W0+(W1-W0)*d/360;
+  const path=f=>{let d="";for(let a=0;a<=360;a+=5)d+=`${a?"L":"M"}${X(a).toFixed(1)} ${(Y0-A*f(a*DEG)).toFixed(1)}`;return d};
+  let b=`<line x1="${W0}" y1="${Y0}" x2="${W1+8}" y2="${Y0}" stroke-width="1" opacity=".5"/>`;
+  [0,90,180,270,360].forEach(a=>{b+=`<line x1="${X(a)}" y1="${Y0-A-4}" x2="${X(a)}" y2="${Y0+A+4}" stroke-width="1" stroke-dasharray="3 4" opacity=".4"/>`+T(X(a),Y0+A+20,a+"°")});
+  b+=`<path d="${path(Math.cos)}" stroke="#2B78C4" stroke-width="2.6"/><path d="${path(Math.sin)}" stroke="#C2621F" stroke-width="2.6"/>`;
+  b+=arrowSvg(X(0),Y0-A-12,X(90)-1,Y0-A-12,"var(--hl)",2.4)+`<g style="color:var(--hl)">${T(X(45),Y0-A-20,"ช้ากว่า 90°")}</g>`;
+  b+=T(W1+6,Y0-6,"ωt","start");
+  const ly=Y0+A+44;
+  b+=`<line x1="${W0}" y1="${ly-4}" x2="${W0+22}" y2="${ly-4}" stroke="#2B78C4" stroke-width="3"/><g style="color:#2B78C4">${T(W0+28,ly,"cos: ยอดที่ 0°","start")}</g>`;
+  b+=`<line x1="${W0+150}" y1="${ly-4}" x2="${W0+172}" y2="${ly-4}" stroke="#C2621F" stroke-width="3"/><g style="color:#C2621F">${T(W0+178,ly,"sin: ยอดที่ 90°","start")}</g>`;
+  return `<svg viewBox="0 0 ${W1+30} ${ly+10}" width="${W1+30}" fill="none" stroke="currentColor" stroke-width="2">${b}</svg>`;
+}
 function ladderSteps(p,r){
   const n=p.st.length, w=p.w, out=[];
   const cur=p.st.map((s,i)=>({k:s.k,vo:i===n-1,els:s.els.map(e=>({...e,id:e.n}))})), orig=clone(cur);
@@ -1195,10 +1210,14 @@ function ladderSteps(p,r){
   const push=(hl,nw,o,st=cur)=>out.push({...o,fig:stepFig(p,{st:clone(st),imp,hl,nw})});
   const zOf=e=>e.t==="Z"?e.z:zEl(e,w);
   const vs=vsStr(p), Vs=cpol(p.Vm,phC(p));
-  push([],[],{short:"เริ่ม",title:"แปลงแหล่งจ่ายเป็นเฟเซอร์",why:`เลขหน้า ${isSin(p)?"sin":"cos"} = ขนาด, มุมหลัง ωt = มุม, เลขหน้า t = ω`,
-    write:`vs = ${vs} V<br>${isSin(p)?`แปลง sin เป็น cos: sin(x) = cos(x − 90°)<br>vs = ${p.Vm}cos(${tStr(w,phC(p))}) V<br>`:""}${ansS(`Vs = ${p.Vm}∠${na(phC(p))}° V, ω = ${w} rad/s`)}`,
-    keys:isSin(p)?kl(KSET,TL(`${tn(p.ph)}-90`,`มุม ${tn(phC(p))}`)):KSET,
-    warn:isSin(p)?"เฟเซอร์ใช้ cos เป็นอ้างอิง: เจอ sin ต้องลบ 90° ก่อนเสมอ (เจอ −sin ให้บวก 90°)":""});
+  if(isSin(p)) out.push({short:"sin→cos",title:"แปลง sin เป็น cos ก่อน",fig:`${stepFig(p,{st:clone(cur),imp,hl:[],nw:[]})}<p class="q3cap">sin ช้ากว่า cos อยู่ 90°</p>${sinCosWave()}`,
+    why:"เฟเซอร์ใช้ cos เป็นอ้างอิง ถ้าโจทย์ให้ sin ต้องแปลงเป็น cos ก่อน เพราะ sin คือ cos ที่เลื่อนไปช้ากว่า 90° (ดูรูป)",
+    write:`กฎที่ใช้ (จำ 3 บรรทัดนี้):<br>sin(x) = cos(x − 90°)<br>−sin(x) = cos(x + 90°)<br>−cos(x) = cos(x ± 180°)<br><br>แทนค่า: vs = ${vs} V<br>= ${p.Vm}cos(${w}t ${p.ph<0?"−":"+"} ${tn(Math.abs(p.ph))}° − 90°)<br>${ansS(`vs = ${p.Vm}cos(${tStr(w,phC(p))}) V`)}`,
+    keys:kl(KSET,TL(`${tn(p.ph)}-90`,`มุมใหม่ ${tn(phC(p))}`)),
+    warn:"ลบ 90° ที่มุม ไม่ใช่ที่ ωt และขนาดเท่าเดิม · ตอนตอบ vo(t) จะตอบกลับเป็น sin ก็ได้โดยบวก 90°"});
+  push([],[],{short:"เริ่ม",title:"แปลงแหล่งจ่ายเป็นเฟเซอร์",why:"เลขหน้า cos = ขนาด, มุมหลัง ωt = มุม, เลขหน้า t = ω",
+    write:`vs = ${isSin(p)?`${p.Vm}cos(${tStr(w,phC(p))})`:vs} V${isSin(p)?" (จากขั้นก่อน)":""}<br>${ansS(`Vs = ${p.Vm}∠${na(phC(p))}° V, ω = ${w} rad/s`)}`,
+    keys:isSin(p)?"":KSET});
   if(!imp){
     const lc=cur.flatMap(s=>s.els).filter(e=>e.t!=="R");
     push(lc.map(e=>e.id),[],{short:"jX",title:`แปลง ${lc.map(e=>e.n).join(", ")} เป็นอิมพีแดนซ์`,why:"L → +jωL, C → 1/(jωC) = −j/(ωC) ตัวต้านทานใช้ค่าเดิม (ขั้นนี้มีคะแนนแยก)"});
@@ -1445,6 +1464,7 @@ const T3B={g:3,name:"แก้ตัวประกอบกำลังด้�
  gen:()=>({V:pick([220,230,240]),f:50,P:pick([2,3,4,5,8,10,15,20]),pf1:pick([0.6,0.65,0.7,0.75,0.8]),pf2:pick([0.9,0.92,0.95,0.98,1])}),
  edit:p=>[["V","แรงดัน (rms)","V"],["f","ความถี่","Hz"],["P","กำลังโหลด","kW"],["pf1","pf เดิม (ล้าหลัง)",""],["pf2","pf ที่ต้องการ",""]],
  build(p){
+  if(p.pf2<p.pf1)throw{userMsg:"pf ที่ต้องการต้องไม่น้อยกว่า pf เดิม (ตัวเก็บประจุทำให้ pf สูงขึ้นเท่านั้น)"};
   const P=p.P*1e3, t1=Math.acos(p.pf1), t2=Math.acos(p.pf2), Q1=P*Math.tan(t1), Q2=P*Math.tan(t2), Qc=Q1-Q2, w=2*Math.PI*p.f, C=Qc/(w*p.V*p.V)*1e6;
   const I1=P/(p.V*p.pf1), I2=P/(p.V*p.pf2);
   const cir=(hl,lC)=>q3Circuit({V:p.V,loads:[{t:"k",lines:["โหลด",`${p.P} kW`,`pf ${p.pf1} ล้าหลัง`]},{t:"c",cur:"IC",lines:lC?["C",`${nf(C)} µF`,""]:["C = ?","ต่อขนาน",""]}]},hl,false);
@@ -1637,7 +1657,7 @@ function card(tp){
   const d=document.createElement("article"); d.className="prob"; d.dataset.g=tp.g;
   let p=tp.gen(); if(tp.fix)p=tp.fix(p);
   const render=()=>{
-    let b; try{b=tp.build(p)}catch(e){d.querySelector(".body").innerHTML=`<p class="hint">ค่าที่ใส่คำนวณไม่ได้ ลองตรวจตัวเลขอีกครั้ง</p>`;return}
+    let b; try{b=tp.build(p);if(b.f.some(f=>f.t!=="s"&&!isFinite(f.v)))throw 0}catch(e){d.querySelector(".body").innerHTML=`<p class="hint">${e&&e.userMsg||"ค่าที่ใส่คำนวณไม่ได้ (เช่น หารด้วยศูนย์) ลองตรวจตัวเลขอีกครั้ง"}</p>`;return}
     const uid="q"+Math.random().toString(36).slice(2,8);
     d.querySelector(".body").innerHTML=`${b.fig?`<div class="fig">${b.fig}</div>`:""}<p>${b.text}</p>
     <div class="fields">${b.f.map((f,i)=>`<div class="field"><label for="${uid}_${i}">${f.l}</label><div class="row">${f.t==="s"?`<select id="${uid}_${i}"><option value="">เลือก</option>${f.o.map((o,j)=>`<option value="${j}">${o}</option>`).join("")}</select>`:`<input id="${uid}_${i}" inputmode="decimal" autocomplete="off">`}<span class="u">${f.u}</span></div></div>`).join("")}</div>
@@ -1682,7 +1702,7 @@ function card(tp){
   };
   d.innerHTML=`<span class="tag">ข้อ ${tp.g}</span><h3>${tp.name}</h3>${tp.note?`<p class="said">${tp.note}</p>`:""}
     <div class="bar"><button class="btn small" data-a="new">สุ่มตัวเลขใหม่</button>${tp.preset?`<button class="btn small" data-a="preset">ตัวเลขตัวอย่างของอาจารย์</button>`:""}<button class="btn small" data-a="edit">ใส่ตัวเลขเอง</button>${tp.g===2?`<select class="fnSel" aria-label="รูปแบบแหล่งจ่าย"><option value="cos">แหล่งจ่าย cos อย่างเดียว</option><option value="sin">แหล่งจ่าย sin อย่างเดียว</option><option value="mix">สุ่ม cos / sin</option></select>`:""}</div>
-    <div class="params"><p class="hint" style="margin:0">แก้ค่าแล้วกด “คำนวณเฉลย” รูปแบบวงจรคงเดิม</p><div class="fields"></div><button class="btn small primary" data-a="apply">คำนวณเฉลย</button></div>
+    <div class="params"><p class="hint" style="margin:0">แก้ค่าแล้วกด “คำนวณเฉลย” รูปแบบวงจรคงเดิม</p><div class="fields"></div><button class="btn small primary" data-a="apply">คำนวณเฉลย</button> <span class="perr" role="alert"></span></div>
     <div class="body"></div>`;
   d.querySelector('[data-a="new"]').onclick=()=>{p=tp.gen();if(tp.fix)p=tp.fix(p);render()};
   if(tp.preset)d.querySelector('[data-a="preset"]').onclick=()=>{p=clone(tp.preset);if(tp.onPreset)tp.onPreset(p);render()};
@@ -1691,10 +1711,19 @@ function card(tp){
     document.addEventListener("ladmode",()=>{sel.value=LAD_MODE;p.fn=ladPickFn();render()});}
   d.querySelector('[data-a="edit"]').onclick=()=>d.querySelector(".params").classList.toggle("show");
   d.querySelector('[data-a="apply"]').onclick=()=>{
-    const np=clone(p); let bad=false;
-    d.querySelectorAll(".params input").forEach(inp=>{const v=parseFloat(inp.value.replace(/−/g,"-"));if(isNaN(v))bad=true;else setP(np,inp.dataset.k,v)});
-    if(bad){alert("มีช่องที่ไม่ใช่ตัวเลข");return}
-    p=np; render(); const s=d.querySelector(".sol"); s.classList.add("show"); d.querySelector('[data-a="sol"]').textContent="ซ่อนวิธีทำ";
+    /* validate before solving: numbers only, choices from the label (“1 = …, −1 = …”), pf in (0, 1], component values > 0 */
+    const np=clone(p), ed=tp.edit(p), err=d.querySelector(".perr"); let msg="";
+    d.querySelectorAll(".params input").forEach(inp=>{if(msg)return;
+      const [k,l,u]=ed.find(e=>e[0]===inp.dataset.k)||[inp.dataset.k,inp.dataset.k,""];
+      const v=parseFloat(inp.value.replace(/−/g,"-").replace(/,/g,""));
+      const opts=[...l.matchAll(/(−?\d+)\s=\s/g)].map(m=>+m[1].replace("−","-"));
+      if(isNaN(v))msg=`ช่อง “${l}” ไม่ใช่ตัวเลข`;
+      else if(opts.length&&!opts.includes(v))msg=`ช่อง “${l}” ใส่ได้แค่ ${opts.map(x=>x<0?"−"+(-x):x).join(" หรือ ")}`;
+      else if(/pf/.test(l)&&!(v>0&&v<=1))msg=`ช่อง “${l}” ต้องมากกว่า 0 และไม่เกิน 1`;
+      else if(((/^(Ω|H|mF|µF|kW|kVA|rad\/s|Hz)$/.test(u)&&!/\.X$/.test(k))||k==="X")&&!(v>0))msg=`ช่อง “${l}” ต้องมากกว่า 0`;
+      else setP(np,k,v)});
+    err.textContent=msg; if(msg)return;
+    p=np; render(); const s=d.querySelector(".sol"); if(s){s.classList.add("show"); d.querySelector('[data-a="sol"]').textContent="ซ่อนวิธีทำ"}
   };
   render();
   return d;
