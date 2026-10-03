@@ -200,6 +200,40 @@ kbd{display:inline-block;min-width:1.7em;padding:0 6px;margin:2px 1px;border:1px
 .sumt{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
 .sumt td{padding:4px 8px;border-bottom:1px solid var(--line)}
 .sumt td:last-child{font-weight:700;color:var(--ok);text-align:right;white-space:nowrap}
+/* ข้อ 3 formula sheet */
+.cheat{--qc:var(--q3);background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);margin-bottom:20px;padding:0 22px}
+.cheat>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:10px;padding:16px 0;font-family:var(--f-head);font-weight:700;font-size:20px}
+.cheat>summary::-webkit-details-marker{display:none}
+.cheat>summary::after{content:"";margin-left:auto;width:10px;height:10px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);transition:transform .2s;flex:none}
+.cheat[open]>summary::after{transform:rotate(-135deg)}
+.cheat .tag{font-family:var(--f-head);font-size:13px;font-weight:700;color:var(--qc);background:color-mix(in srgb,var(--qc) 12%,transparent);border-radius:999px;padding:2px 10px}
+.cheat .cbody{padding:0 0 18px;border-top:1px solid var(--line)}
+.cheat h4{font-family:var(--f-head);font-size:16px;margin:16px 0 6px;color:var(--qc)}
+.cheat .tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+.cheat table{border-collapse:collapse;width:100%;min-width:720px;font-size:15px;font-variant-numeric:tabular-nums}
+.cheat th,.cheat td{padding:8px 10px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+.cheat tr:last-child td{border-bottom:0}
+.cheat th{background:var(--panel2);font-size:13.5px;color:var(--muted)}
+.cheat td:first-child{font-weight:700}
+.cheat .lag{color:var(--q2)} .cheat .lead{color:var(--q6)}
+.cheat .f{font-family:var(--f-mono);font-weight:600;font-size:14px;white-space:nowrap}
+.cheat .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+.cheat .box{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-size:15px;line-height:1.75}
+.cheat .box b:first-child{display:block;font-family:var(--f-head);margin-bottom:2px}
+.cheat .tag{white-space:nowrap}
+@media (max-width:640px){
+  .cheat{padding:0 14px}
+  .cheat>summary{font-size:17px}
+  .cheat .tw{border:0;overflow:visible}
+  .cheat table{min-width:0}
+  .cheat table,.cheat tbody,.cheat tr,.cheat td{display:block}
+  .cheat tr:first-child{display:none}
+  .cheat tr{border:1px solid var(--line);border-radius:12px;margin-bottom:8px;padding:6px 10px;background:var(--panel2)}
+  .cheat td{border:0;padding:3px 0;display:flex;gap:10px;justify-content:space-between;align-items:baseline}
+  .cheat td:first-child{display:block;font-size:15.5px;padding-bottom:5px;margin-bottom:3px;border-bottom:1px solid var(--line)}
+  .cheat td[data-l]:not(:first-child)::before{content:attr(data-l);font-family:var(--f-body);font-weight:500;font-size:13px;color:var(--muted)}
+  .cheat .f{white-space:normal;text-align:right}
+}
 /* ================= redesign layer ================= */
 body{font-family:var(--f-body)}
 .wrap{max-width:1040px;padding-inline:16px;padding-block:18px 80px}
@@ -1911,10 +1945,42 @@ function card(tp){
   render();
   return d;
 }
-TPL.forEach(tp=>$("#cList").appendChild(card(tp)));
+/* ข้อ 3 formula sheet: which formula for which kind of load */
+function cheat3(){
+  const d=document.createElement("details");d.className="cheat";d.dataset.g="3";d.open=true;
+  d.innerHTML=`<summary><span class="tag">ข้อ 3</span>สรุปสูตร: โหลดแบบไหนใช้สูตรอะไร</summary><div class="cbody">
+  <h4>1. หากระแสของแต่ละโหลด (V คือแรงดัน rms ที่ 0°)</h4>
+  <div class="tw"><table>
+   <tr><th>โหลด</th><th>โจทย์ให้</th><th>ขนาด |I|</th><th>มุมของ I</th><th>P (W)</th><th>Q (VAR)</th></tr>
+   <tr><td>มอเตอร์ <span class="lag">(ล้าหลัง)</span></td><td>P (kW), pf</td><td class="f">P / (V·pf)</td><td class="f lag">−cos⁻¹(pf)</td><td class="f">P</td><td class="f lag">+P·tan θ</td></tr>
+   <tr><td>โหลดให้ kVA <span class="lag">ล้าหลัง</span></td><td>S (kVA), pf</td><td class="f">S / V</td><td class="f lag">−cos⁻¹(pf)</td><td class="f">S·pf</td><td class="f lag">+S·sin θ</td></tr>
+   <tr><td>โหลดให้ kVA <span class="lead">นำหน้า</span></td><td>S (kVA), pf</td><td class="f">S / V</td><td class="f lead">+cos⁻¹(pf)</td><td class="f">S·pf</td><td class="f lead">−S·sin θ</td></tr>
+   <tr><td>ฮีตเตอร์ / หลอดไส้ (R ล้วน)</td><td>P (kW)</td><td class="f">P / V</td><td class="f">0°</td><td class="f">P</td><td class="f">0</td></tr>
+   <tr><td>โหลด R–L <span class="lag">(ล้าหลัง)</span></td><td>R, L, f</td><td class="f">V / |Z|</td><td class="f lag">−∠Z</td><td class="f">|I|²R</td><td class="f lag">+|I|²X<sub>L</sub></td></tr>
+   <tr><td>โหลด R–C <span class="lead">(นำหน้า)</span></td><td>R, C, f</td><td class="f">V / |Z|</td><td class="f lead">+|∠Z|</td><td class="f">|I|²R</td><td class="f lead">−|I|²X<sub>C</sub></td></tr>
+   <tr><td>ตัวเก็บประจุล้วน (ใช้แก้ pf)</td><td>C, f</td><td class="f">V·ωC</td><td class="f lead">+90°</td><td class="f">0</td><td class="f lead">−V²ωC</td></tr>
+  </table></div>
+  <p class="hint" style="margin:6px 0 0">θ = cos⁻¹(pf) · X<sub>L</sub> = 2πfL · X<sub>C</sub> = 1/(2πfC) · Z = R + jX<sub>L</sub> หรือ R − jX<sub>C</sub></p>
+  <h4>2. รวมแล้วหาคำตอบ</h4>
+  <div class="grid2">
+   <div class="box"><b>กระแสรวม (โหลดต่อขนาน)</b>I = I₁ + I₂ + … บวกแบบเชิงซ้อน (แปลงเป็น a + jb ก่อน)<br>ห้ามบวกขนาดตรง ๆ</div>
+   <div class="box"><b>กำลังเชิงซ้อน</b>S = V·I* = P + jQ<br>|S| = V·|I| = √(P² + Q²)<br>หรือรวมทีละโหลด: P = ΣP, Q = ΣQ</div>
+   <div class="box"><b>ตัวประกอบกำลัง</b>pf = cos(θv − θi) = P / |S|<br>Q &gt; 0 → <span class="lag">ล้าหลัง</span> · Q &lt; 0 → <span class="lead">นำหน้า</span></div>
+   <div class="box"><b>แก้ pf ด้วยตัวเก็บประจุ</b>Qc = P(tan θ₁ − tan θ₂)<br>C = Qc / (2πf·V²)</div>
+  </div>
+  <h4>3. จำให้ขึ้นใจ</h4>
+  <div class="grid2">
+   <div class="box"><b>ELI the ICE man</b><span class="lag">ELI</span>: ขดลวด (L, มอเตอร์) แรงดัน E นำกระแส I → I ล้าหลัง มุม I ติดลบ Q บวก<br><span class="lead">ICE</span>: ตัวเก็บประจุ (C) กระแส I นำแรงดัน E → I นำหน้า มุม I บวก Q ลบ</div>
+   <div class="box"><b>หน่วยที่พลาดบ่อย</b>kW, kVA คูณ 1000 · µF คูณ 10⁻⁶<br>V ต้องเป็น rms (ถ้าให้ค่ายอด หาร √2)<br>ให้ kVA ห้ามหารด้วย pf อีก</div>
+  </div></div>`;
+  const hd=[...d.querySelectorAll("tr:first-child th")].map(th=>th.textContent);
+  d.querySelectorAll("tr").forEach(tr=>[...tr.children].forEach((td,i)=>{if(td.tagName==="TD"){td.dataset.l=hd[i];td.innerHTML=`<span>${td.innerHTML}</span>`}}));
+  return d;
+}
+TPL.forEach(tp=>{if(tp===T3)$("#cList").appendChild(cheat3());$("#cList").appendChild(card(tp))});
 document.querySelectorAll("#cFilter button").forEach(b=>b.onclick=()=>{
   document.querySelectorAll("#cFilter button").forEach(x=>x.setAttribute("aria-pressed",x===b));
-  document.querySelectorAll(".prob").forEach(p=>p.hidden=!(b.dataset.f==="all"||p.dataset.g===b.dataset.f));
+  document.querySelectorAll(".prob,.cheat").forEach(p=>p.hidden=!(b.dataset.f==="all"||p.dataset.g===b.dataset.f));
 });
 document.querySelectorAll(".exam-map [data-go]").forEach(b=>b.onclick=()=>{const g=b.dataset.go;
   if(+g<=4){document.querySelector('nav button[data-tab="calc"]').click();document.querySelector(`#cFilter button[data-f="${g}"]`).click();}
