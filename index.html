@@ -6,24 +6,39 @@
 <title>EECC0232 ฝึกก่อนสอบ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+/* layout: one centered column — hero with exam map, sticky pill tabs, then cards. Each exam question owns a wire colour (L1 brown, N blue, PE green, amber, teal, rose). */
 :root{
-  --bg:#EDF0F2; --panel:#FFFFFF; --ink:#1B2530; --muted:#5A6672; --line:#C9D0D6;
+  --bg:#F1F4F7; --panel:#FFFFFF; --panel2:#F6F8FA; --ink:#15202B; --muted:#5A6878; --line:#DDE3E9; --line2:#C5CFD8;
+  --accent:#1D6FD8; --accentbg:#E6F0FC; --onaccent:#FFFFFF;
   --L1:#7A4426; --L3:#8C9196; --N:#2B78C4; --G:#3E9A3A; --Gy:#E3C800;
-  --ok:#2E8B45; --okbg:#E3F3E6; --bad:#C0392B; --badbg:#FBE7E4; --sel:#2B78C4; --selbg:#E2EEF9; --hl:#D9730D;
+  --q1:#9A5A34; --q2:#1D6FD8; --q3:#2E8B45; --q4:#C27A0E; --q5:#0E8C8C; --q6:#C2416B;
+  --ok:#23864A; --okbg:#E2F4E8; --bad:#C0392B; --badbg:#FCE9E6; --sel:#1D6FD8; --selbg:#E6F0FC; --hl:#D9730D;
+  --grid:rgba(29,111,216,.07); --shadow:0 1px 2px rgba(16,32,48,.06),0 8px 24px rgba(16,32,48,.06);
+  --f-body:"IBM Plex Sans Thai","Leelawadee UI","Tahoma",sans-serif;
+  --f-head:"Chakra Petch","IBM Plex Sans Thai","Leelawadee UI",Tahoma,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Consolas,"Courier New",monospace;
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
-    --bg:#141A20; --panel:#1D252D; --ink:#E6EBEF; --muted:#9AA6B1; --line:#34404B;
-    --okbg:#1E3526; --badbg:#3D2320; --selbg:#1C3246; --hl:#F0A04B;
+    --bg:#0D131A; --panel:#151E28; --panel2:#1B2632; --ink:#E6ECF2; --muted:#93A2B2; --line:#243241; --line2:#32424F;
+    --accent:#5AA2F0; --accentbg:#16304D; --onaccent:#08121C;
+    --q1:#D08A5E; --q2:#5AA2F0; --q3:#55C07A; --q4:#F0A84B; --q5:#3CC4C4; --q6:#EE7C9E;
+    --ok:#4CC06A; --okbg:#173225; --badbg:#3A201D; --sel:#5AA2F0; --selbg:#16304D; --hl:#F0A04B;
+    --grid:rgba(90,162,240,.07); --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);
+    color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#141A20; --panel:#1D252D; --ink:#E6EBEF; --muted:#9AA6B1; --line:#34404B;
-  --okbg:#1E3526; --badbg:#3D2320; --selbg:#1C3246; --hl:#F0A04B;
+  --bg:#0D131A; --panel:#151E28; --panel2:#1B2632; --ink:#E6ECF2; --muted:#93A2B2; --line:#243241; --line2:#32424F;
+  --accent:#5AA2F0; --accentbg:#16304D; --onaccent:#08121C;
+  --q1:#D08A5E; --q2:#5AA2F0; --q3:#55C07A; --q4:#F0A84B; --q5:#3CC4C4; --q6:#EE7C9E;
+  --ok:#4CC06A; --okbg:#173225; --badbg:#3A201D; --sel:#5AA2F0; --selbg:#16304D; --hl:#F0A04B;
+  --grid:rgba(90,162,240,.07); --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);
+  color-scheme:dark;
 }
 *,*::before,*::after{box-sizing:inherit}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
@@ -185,6 +200,145 @@ kbd{display:inline-block;min-width:1.7em;padding:0 6px;margin:2px 1px;border:1px
 .sumt{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
 .sumt td{padding:4px 8px;border-bottom:1px solid var(--line)}
 .sumt td:last-child{font-weight:700;color:var(--ok);text-align:right;white-space:nowrap}
+/* ================= redesign layer ================= */
+body{font-family:var(--f-body)}
+.wrap{max-width:1040px;padding-inline:16px;padding-block:18px 80px}
+h1,h2,h3,.prob h3,.stitle,.notes summary{font-family:var(--f-head);letter-spacing:.01em;text-wrap:balance}
+/* hero */
+.hero{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:22px 22px}
+.hero .cable{margin:0;grid-template-rows:repeat(5,4px);gap:2px}
+.hero .cable span{border-radius:0}
+.hero-in{padding:22px 24px 20px}
+.eyebrow{margin:0;font-family:var(--f-head);font-weight:600;font-size:14px;letter-spacing:.08em;color:var(--accent)}
+.hero h1{font-size:clamp(34px,6vw,52px);line-height:1.05;margin:4px 0 8px;font-weight:700}
+.hero .lead{margin:0;color:var(--muted);max-width:62ch;font-size:17px}
+.hero .fine{margin:14px 0 0;color:var(--muted);font-size:13.5px;max-width:80ch}
+.exam-map{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-top:18px}
+.exam-map button{font:inherit;text-align:left;cursor:pointer;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:14px;
+  padding:10px 12px 11px;display:flex;flex-direction:column;gap:2px;position:relative;transition:transform .15s,border-color .15s,box-shadow .15s}
+.exam-map button::before{content:"";width:28px;height:4px;border-radius:2px;background:var(--qc);margin-bottom:6px}
+.exam-map b{font-family:var(--f-head);font-size:18px;color:var(--qc)}
+.exam-map span{font-size:13.5px;line-height:1.35;color:var(--ink)}
+.exam-map em{font-style:normal;font-size:12px;font-weight:600;color:var(--muted);margin-top:4px}
+.exam-map button:hover{transform:translateY(-2px);border-color:var(--qc);box-shadow:var(--shadow)}
+@media (max-width:820px){.exam-map{grid-template-columns:repeat(3,minmax(0,1fr))}}
+/* tabs */
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;margin:16px 0 18px;padding:6px;
+  border:1px solid var(--line);border-bottom:1px solid var(--line);border-radius:16px;background:color-mix(in srgb,var(--panel) 88%,transparent);
+  backdrop-filter:saturate(1.4) blur(10px);-webkit-backdrop-filter:saturate(1.4) blur(10px);box-shadow:var(--shadow);scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs button{flex:1 0 auto;display:flex;align-items:center;justify-content:center;gap:8px;border:0;margin:0;border-radius:11px;padding:10px 14px;
+  font-weight:600;color:var(--muted);white-space:nowrap;transition:background .15s,color .15s}
+nav.tabs button small{font-weight:500;font-size:12.5px;opacity:.8}
+nav.tabs button svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+nav.tabs button:hover{color:var(--ink);background:var(--panel2)}
+nav.tabs button[aria-selected="true"]{background:var(--accent);color:var(--onaccent)}
+nav.tabs button[aria-selected="true"]{border-color:transparent}
+@media (max-width:640px){nav.tabs button{flex:0 0 auto;padding:9px 12px}nav.tabs button small{display:none}}
+/* controls */
+.bar{gap:10px;margin-bottom:14px}
+select,.btn{border-radius:10px;border:1px solid var(--line2);padding:8px 14px;transition:background .15s,border-color .15s,transform .1s}
+.btn:hover:not(:disabled){border-color:var(--accent);background:var(--panel2)}
+.btn:active:not(:disabled){transform:translateY(1px)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--onaccent)}
+.btn.primary:hover:not(:disabled){background:var(--accent);filter:brightness(1.08)}
+.btn.small{border-radius:9px;padding:6px 12px}
+.score{display:inline-block;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.score:not(:empty){background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:3px 12px}
+.sw-l{display:inline-flex;align-items:center;gap:8px;font-size:14.5px;color:var(--muted);cursor:pointer;user-select:none}
+.sw-l input{appearance:none;-webkit-appearance:none;width:36px;height:20px;border-radius:999px;background:var(--line2);position:relative;cursor:pointer;margin:0;transition:background .2s;flex:none}
+.sw-l input::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 2px rgba(0,0,0,.25)}
+.sw-l input:checked{background:var(--accent)}
+.sw-l input:checked::after{transform:translateX(16px)}
+.hint{font-size:14.5px}
+.said{border:0;border-left:0;background:var(--accentbg);border-radius:12px;padding:12px 14px;font-size:15px;max-width:none}
+.said>b:first-child{color:var(--accent)}
+.trap{border-left:0;border-radius:12px;padding:10px 14px}
+/* filter chips */
+.filter button{border-radius:999px;border:1px solid var(--line2);padding:7px 14px;display:inline-flex;align-items:center;gap:8px;transition:background .15s,border-color .15s}
+.filter button[style]::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--qc)}
+.filter button:hover{border-color:var(--qc,var(--accent))}
+.filter button[aria-pressed="true"]{background:var(--qc,var(--ink));border-color:var(--qc,var(--ink));color:var(--onaccent)}
+.filter button[aria-pressed="true"]::before{background:var(--onaccent)}
+:root:not([data-theme="dark"]) .filter button[data-f="all"][aria-pressed="true"]{color:var(--bg)}
+/* problem cards */
+.prob{--qc:var(--accent);border:1px solid var(--line);border-radius:18px;padding:20px 22px;box-shadow:var(--shadow);margin-bottom:20px}
+.prob[data-g="1"]{--qc:var(--q1)} .prob[data-g="2"]{--qc:var(--q2)} .prob[data-g="3"]{--qc:var(--q3)} .prob[data-g="4"]{--qc:var(--q4)}
+.prob .tag{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-head);font-size:13px;font-weight:700;letter-spacing:.04em;
+  color:var(--qc);background:color-mix(in srgb,var(--qc) 12%,transparent);border-radius:999px;padding:2px 10px}
+.prob h3{font-size:21px;margin:8px 0 6px;line-height:1.3}
+.prob>.said{background:var(--panel2);color:var(--ink);font-size:14.5px}
+.prob .body>p{font-size:16px;line-height:1.7}
+.fig{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:8px 10px;margin:12px 0}
+.stepbox .fig{background:none;border:0;padding:0}
+.fields{gap:12px}
+.field label{font-size:13.5px;font-weight:600}
+.field input,.field select{border-radius:9px;border:1px solid var(--line2);background:var(--panel);padding:8px 10px;transition:border-color .15s,box-shadow .15s}
+.field input:focus,.field select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
+.params{background:var(--panel2);border:1px dashed var(--line2);border-radius:14px;padding:12px 14px}
+.params .field input{background:var(--panel)}
+.sol{border-top:1px solid var(--line);padding-top:14px}
+.sol .key{background:var(--okbg);border-radius:12px;padding:10px 14px;line-height:1.8}
+.m{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:0 6px}
+.prob [data-a="steps"]{background:var(--qc);border-color:var(--qc);color:var(--onaccent);font-weight:600}
+.prob [data-a="check"]{font-weight:600}
+.fnSel{border-radius:9px;font-size:14px;padding:6px 10px}
+/* step viewer */
+.stepbox.modern{border-radius:18px;background:var(--panel);box-shadow:none;border:1px solid var(--line)}
+.snum{background:var(--qc,var(--accent));color:var(--onaccent);font-family:var(--f-head)}
+.sdots button.now::before{background:var(--qc,var(--hl))}
+.write{border:1px solid var(--line2);border-style:dashed;background:var(--panel);border-radius:12px}
+.keys{background:var(--panel2);border:1px solid var(--line);border-radius:12px}
+.keys code{font-family:var(--f-mono);background:var(--panel);border-radius:8px}
+.calc .ans,.ans{border-radius:999px}
+.warn{border-left:0;border-radius:12px}
+/* fill-in */
+.bank{border:1px solid var(--line2);border-radius:16px;box-shadow:var(--shadow);padding:12px 14px;top:calc(env(safe-area-inset-top,0px) + 74px)}
+.bank h3{font-size:14px;letter-spacing:.04em;color:var(--muted)}
+.word{border-radius:999px;border:1px solid var(--line2);background:var(--panel2);padding:5px 12px;transition:background .15s,border-color .15s}
+.word:hover{border-color:var(--accent);background:var(--accentbg)}
+.qlist{gap:12px}
+.qlist li{border-radius:14px;padding:14px 16px;box-shadow:var(--shadow)}
+.qlist li::before{font-family:var(--f-head);color:var(--accent)}
+.blank{border-bottom-width:2px;border-radius:6px 6px 0 0;min-width:160px}
+.blank.active{background:var(--accentbg)}
+/* matching */
+.mgrid{gap:16px}
+.chip{border:1px solid var(--line2);border-radius:14px;padding:12px 14px;transition:border-color .15s,background .15s,transform .1s}
+.chip:hover:not(.done){border-color:var(--accent);transform:translateY(-1px)}
+.chip.sel{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
+.log div{border-left:0;border-radius:10px;background:var(--okbg)}
+.done-msg{border-left:0;border-radius:12px}
+/* notes */
+.notes details{border-radius:16px;box-shadow:var(--shadow);padding:0 20px;margin-bottom:14px}
+.notes summary{font-size:19px;padding:16px 0;list-style:none;display:flex;align-items:center;gap:10px}
+.notes summary::-webkit-details-marker{display:none}
+.notes summary::after{content:"";margin-left:auto;width:10px;height:10px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);transition:transform .2s;flex:none}
+.notes details[open]>summary::after{transform:rotate(-135deg)}
+.notes details[open]>summary{border-bottom:1px solid var(--line);margin-bottom:6px}
+.notes th{background:var(--panel2)}
+.notes table{border-radius:10px;overflow:hidden}
+.exam-map i{font-style:normal;display:block}
+@media (max-width:640px){
+  .hero-in{padding:16px}
+  .hero h1{font-size:34px}
+  .hero .lead{font-size:15px}
+  .exam-map{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:14px}
+  .exam-map button{padding:8px 10px 9px;border-radius:12px}
+  .exam-map button::before{margin-bottom:4px;width:22px}
+  .exam-map b{font-size:16px}
+  .exam-map span{font-size:12.5px}
+  .exam-map i,.exam-map em{display:none}
+  .hero .fine{font-size:12.5px;margin-top:10px}
+  nav.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:5px;overflow:visible}
+  nav.tabs button{flex-direction:column;gap:3px;padding:7px 2px;font-size:13px;border-radius:10px;white-space:normal;text-align:center;line-height:1.2}
+  nav.tabs button svg{width:20px;height:20px}
+  .bank{top:calc(env(safe-area-inset-top,0px) + 76px)}
+  .prob{padding:16px 14px;border-radius:16px}
+  .prob h3{font-size:19px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
 [hidden]{display:none!important}
 body.hide-nd .fig .nd, body.hide-cur .fig .cur{display:none}
 @media (max-width:640px){.mgrid{gap:8px}.chip{font-size:14px;padding:8px}header h1{font-size:25px}}
@@ -192,31 +346,43 @@ body.hide-nd .fig .nd, body.hide-cur .fig .cur{display:none}
 </head>
 <body>
 <div class="wrap">
-<header>
+<header class="hero">
   <div class="cable" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
-  <h1>EECC0232 ฝึกก่อนสอบ</h1>
-  <p>ยึดตามที่อาจารย์ใบ้ในคลิปและแนวข้อสอบของภาควิชาเป็นหลัก เนื้อหาจากสไลด์ที่อาจารย์ไม่ได้พูดถึงติดป้าย “เสริม” และไม่ถูกสุ่มถาม เว้นแต่จะเปิดเอง ข้อ 1–4 สุ่มตัวเลขใหม่ได้ ใช้ตัวเลขตัวอย่างของอาจารย์ได้ หรือใส่ตัวเลขเองแล้วให้โปรแกรมทำเฉลย</p>
+  <div class="hero-in">
+    <p class="eyebrow">EECC0232 · ไฟฟ้าเบื้องต้น</p>
+    <h1>ฝึกก่อนสอบ</h1>
+    <p class="lead">โจทย์คำนวณสุ่มตัวเลขได้ไม่จำกัด มีวิธีทำทีละขั้นพร้อมบรรทัดที่พิมพ์ในเครื่องคิดเลข และแบบฝึกเติมคำ จับคู่ สรุปเนื้อหาสำหรับข้อ 5–6</p>
+    <div class="exam-map" aria-label="ข้อสอบ 6 ข้อ กดเพื่อไปฝึก">
+      <button data-go="1" style="--qc:var(--q1)"><b>ข้อ 1</b><span>วงจร DC<i> Nodal / Mesh</i></span><em>25 คะแนน</em></button>
+      <button data-go="2" style="--qc:var(--q2)"><b>ข้อ 2</b><span>เฟเซอร์<i> ยุบวงจร</i></span><em>25 คะแนน</em></button>
+      <button data-go="3" style="--qc:var(--q3)"><b>ข้อ 3</b><span>กำลังเชิงซ้อน<i> P, Q, S, pf</i></span><em>25 คะแนน</em></button>
+      <button data-go="4" style="--qc:var(--q4)"><b>ข้อ 4</b><span>ไฟสามเฟส<i> Y–Y</i></span><em>25 คะแนน</em></button>
+      <button data-go="5" style="--qc:var(--q5)"><b>ข้อ 5</b><span>ไดโอด<i> BJT, MOS</i></span><em>เติมคำ</em></button>
+      <button data-go="6" style="--qc:var(--q6)"><b>ข้อ 6</b><span>สายไฟ<i> ความปลอดภัย</i></span><em>เติมคำ</em></button>
+    </div>
+    <p class="fine">ยึดตามที่อาจารย์ใบ้ในคลิปและแนวข้อสอบของภาควิชาเป็นหลัก เนื้อหาจากสไลด์ที่อาจารย์ไม่ได้พูดถึงติดป้าย “เสริม” และไม่ถูกสุ่มถาม เว้นแต่จะเปิดเอง</p>
+  </div>
 </header>
 
-<nav role="tablist">
-  <button role="tab" data-tab="calc" aria-selected="true">ฝึกคำนวณ ข้อ 1–4</button>
-  <button role="tab" data-tab="fill" aria-selected="false">เติมคำ ข้อ 5–6</button>
-  <button role="tab" data-tab="match" aria-selected="false">จับคู่ ข้อ 5–6</button>
-  <button role="tab" data-tab="notes" aria-selected="false">สรุปเนื้อหา ข้อ 5–6</button>
+<nav role="tablist" class="tabs">
+  <button role="tab" data-tab="calc" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M8 7h8M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01"/></svg>ฝึกคำนวณ <small>ข้อ 1–4</small></button>
+  <button role="tab" data-tab="fill" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>เติมคำ <small>ข้อ 5–6</small></button>
+  <button role="tab" data-tab="match" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="7" r="2.5"/><circle cx="18" cy="17" r="2.5"/><path d="M8.5 7h3a3 3 0 0 1 3 3v4a3 3 0 0 0 3 3"/></svg>จับคู่ <small>ข้อ 5–6</small></button>
+  <button role="tab" data-tab="notes" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg>สรุปเนื้อหา <small>ข้อ 5–6</small></button>
 </nav>
 
 <section id="tab-calc">
   <div class="bar">
     <div class="filter" id="cFilter">
       <button aria-pressed="true" data-f="all">ทั้งหมด</button>
-      <button aria-pressed="false" data-f="1">ข้อ 1 DC</button>
-      <button aria-pressed="false" data-f="2">ข้อ 2 Phasor</button>
-      <button aria-pressed="false" data-f="3">ข้อ 3 Complex Power</button>
-      <button aria-pressed="false" data-f="4">ข้อ 4 สามเฟส</button>
+      <button aria-pressed="false" data-f="1" style="--qc:var(--q1)">ข้อ 1 DC</button>
+      <button aria-pressed="false" data-f="2" style="--qc:var(--q2)">ข้อ 2 Phasor</button>
+      <button aria-pressed="false" data-f="3" style="--qc:var(--q3)">ข้อ 3 Complex Power</button>
+      <button aria-pressed="false" data-f="4" style="--qc:var(--q4)">ข้อ 4 สามเฟส</button>
     </div>
     <span class="grow"></span>
-    <label class="score" style="font-weight:500"><input type="checkbox" id="tNode" checked> แสดงโหนด</label>
-    <label class="score" style="font-weight:500"><input type="checkbox" id="tCur" checked> แสดงทิศกระแส</label>
+    <label class="sw-l"><input type="checkbox" id="tNode" checked> แสดงโหนด</label>
+    <label class="sw-l"><input type="checkbox" id="tCur" checked> แสดงทิศกระแส</label>
   </div>
   <div class="said"><b>ข้อ 1–4 เป็นข้อคำนวณ ข้อละ 25 คะแนน</b> อาจารย์ย้ำว่าต้องไปหัดทำเอง โดยเฉพาะหัดกดเครื่องคิดเลขโหมด complex ถ้าตั้งสมการถูกก็ได้คะแนนแม้ผลลัพธ์สุดท้ายผิด และการวาดรูปวงจรพร้อมทิศกระแสจะได้คะแนนเพิ่ม</div>
 <p class="hint">ปุ่ม “ตัวเลขตัวอย่างของอาจารย์” ใช้ค่าจากตัวอย่างที่อาจารย์ชี้ในคลิป กด “สุ่มตัวเลขใหม่” ได้เรื่อย ๆ หรือกด “ใส่ตัวเลขเอง” เพื่อใส่ค่าจากโจทย์จริงแล้วดูเฉลย ตอบเป็นทศนิยม คลาดเคลื่อนได้ประมาณ 1% มุมใส่เป็นองศา (มุม 195° กับ −165° ถือว่าเท่ากัน) กระแสที่ไหลสวนทิศที่กำหนดให้ใส่ค่าติดลบ</p>
@@ -228,7 +394,7 @@ body.hide-nd .fig .nd, body.hide-cur .fig .cur{display:none}
     <select id="fTopic" aria-label="เลือกหัวข้อ"></select>
     <select id="fCount" aria-label="จำนวนข้อ"><option value="5">5 ข้อ</option><option value="6">6 ข้อ</option><option value="10">10 ข้อ</option><option value="12" selected>12 ข้อ</option><option value="15">15 ข้อ</option><option value="20">20 ข้อ</option><option value="30">30 ข้อ</option><option value="all">ทั้งหมด</option></select>
     <button class="btn primary" id="fNew">สุ่มข้อสอบชุดใหม่</button>
-    <button class="btn" id="fCheck">ตรวจคำตอบ</button><label class="score" style="font-weight:500"><input type="checkbox" class="xtoggle"> รวมเนื้อหาเสริมจากสไลด์</label>
+    <button class="btn" id="fCheck">ตรวจคำตอบ</button><label class="sw-l"><input type="checkbox" class="xtoggle"> รวมเนื้อหาเสริมจากสไลด์</label>
     <span class="grow"></span>
     <span class="score" id="fScore"></span>
   </div>
@@ -242,7 +408,7 @@ body.hide-nd .fig .nd, body.hide-cur .fig .cur{display:none}
   <div class="bar">
     <select id="mTopic" aria-label="เลือกหัวข้อ"></select>
     <select id="mCount" aria-label="จำนวนข้อ"><option value="5">5 ข้อ</option><option value="6" selected>6 ข้อ</option><option value="10">10 ข้อ</option><option value="12">12 ข้อ</option><option value="15">15 ข้อ</option><option value="20">20 ข้อ</option><option value="30">30 ข้อ</option><option value="all">ทั้งหมด</option></select>
-    <button class="btn primary" id="mNew">สุ่มชุดใหม่</button><label class="score" style="font-weight:500"><input type="checkbox" class="xtoggle"> รวมเนื้อหาเสริมจากสไลด์</label>
+    <button class="btn primary" id="mNew">สุ่มชุดใหม่</button><label class="sw-l"><input type="checkbox" class="xtoggle"> รวมเนื้อหาเสริมจากสไลด์</label>
     <span class="grow"></span>
     <span class="score" id="mScore"></span>
   </div>
@@ -1750,6 +1916,10 @@ document.querySelectorAll("#cFilter button").forEach(b=>b.onclick=()=>{
   document.querySelectorAll("#cFilter button").forEach(x=>x.setAttribute("aria-pressed",x===b));
   document.querySelectorAll(".prob").forEach(p=>p.hidden=!(b.dataset.f==="all"||p.dataset.g===b.dataset.f));
 });
+document.querySelectorAll(".exam-map [data-go]").forEach(b=>b.onclick=()=>{const g=b.dataset.go;
+  if(+g<=4){document.querySelector('nav button[data-tab="calc"]').click();document.querySelector(`#cFilter button[data-f="${g}"]`).click();}
+  else{document.querySelector('nav button[data-tab="fill"]').click();const t=$("#fTopic");t.value=g;newFill();}
+  document.querySelector("nav.tabs").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});});
 $("#tNode").onchange=e=>document.body.classList.toggle("hide-nd",!e.target.checked);
 $("#tCur").onchange=e=>document.body.classList.toggle("hide-cur",!e.target.checked);
 </script>
