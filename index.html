@@ -1516,8 +1516,8 @@ function buildLadder(p){
     else fw.push(`แรงดันคร่อมกิ่ง ${brName(i)} = ${fp(r.Vst[i])} V → กระแสกิ่ง = ${fp(r.Vst[i])} / ${fp(r.Zs[i])} = ${fp(r.Ist[i])} A`);
   });
   const steps=ladderSteps(p,r), lastFig=steps[steps.length-1].fig, tg=els.find(e=>e.n===p.pr), It=r.Ist[tg.si];
-  steps.push({short:"P",title:"กำลังเฉลี่ยของแหล่งจ่าย",fig:lastFig,why:p.rms?"ใช้ค่า rms จึงไม่มี ½ · มุมคือ θv − θi":"ใช้ค่ายอด (Vm, Im) จึงมี ½ · มุมคือ θv − θi",
-    write:`P = ${p.rms?"Vrms·Irms":"½·Vm·Im"}·cos(θv − θi)<br>= ${hx}${p.Vm} × ${nf(cmag(r.Iin))} × cos(${na(phC(p))}° − (${na(cang(r.Iin))}°))<br>${ansS(`P = ${nf(Psrc)} W`)}`,
+  steps.push({short:"pf, P",title:"pf และกำลังเฉลี่ยของแหล่งจ่าย",fig:lastFig,why:p.rms?"ใช้ค่า rms จึงไม่มี ½ · มุมคือ θv − θi":"ใช้ค่ายอด (Vm, Im) จึงมี ½ · มุมคือ θv − θi",
+    write:`pf = cos(∠Zin) = cos(${na(cang(r.Zeq[0]))}°) = ${nf(Math.cos(cang(r.Zeq[0])*DEG))} ${r.Zeq[0].im>=0?"ล้าหลัง (lagging)":"นำหน้า (leading)"}<br>P = ${p.rms?"Vrms·Irms":"½·Vm·Im"}·cos(θv − θi)<br>= ${hx}${p.Vm} × ${nf(cmag(r.Iin))} × cos(${na(phC(p))}° − (${na(cang(r.Iin))}°))<br>${ansS(`P = ${nf(Psrc)} W`)}`,
     keys:TL(`${hk}${p.Vm}*${tn(cmag(r.Iin))}*cos(${tn(phC(p))}-(${tn(cang(r.Iin))}))`,nf(Psrc)),
     warn:p.rms?"ค่า rms ไม่ต้องคูณ ½ (ใส่ ½ เฉพาะตอนใช้ค่ายอด)":"ถ้าโจทย์ให้ค่า rms ไม่ต้องคูณ ½"});
   steps.push({short:"P "+p.pr,title:`กำลังเฉลี่ยของ ${p.pr}`,fig:lastFig,why:"กำลังเฉลี่ยกินที่ตัวต้านทานเท่านั้น ใช้กระแสที่ไหลผ่านตัวมันเอง",
@@ -1525,7 +1525,7 @@ function buildLadder(p){
     keys:TL(`${hk}${tn(cmag(It))}^2*${tg.v}`,nf(Ptar))});
   return{fig:ladderFig(p),steps,
   text:`${p.rms?`แหล่งจ่าย Vs = ${p.Vm}∠${tn(p.ph)}° V (rms), ω = ${w} rad/s`:`vs = ${vs} V${notCos(p)?" (ให้ใช้ +cos เป็นฟังก์ชันอ้างอิงของเฟเซอร์)":""}`} จงหา impedance รวมที่แหล่งจ่ายมองเห็น (Zin), กระแส I จากแหล่งจ่าย, แรงดัน Vo คร่อมกิ่งขวาสุด, กำลังเฉลี่ยที่แหล่งจ่ายจ่ายออก และกำลังเฉลี่ยที่ ${p.pr} ใช้`,
-  f:[F_("|Zin|",cmag(r.Zeq[0]),"Ω"),F_("มุม Zin",cang(r.Zeq[0]),"°","a"),F_(`|I|${p.rms?" (rms)":""}`,cmag(r.Iin),"A"),F_("มุม I",cang(r.Iin),"°","a"),F_(`|Vo|${p.rms?" (rms)":""}`,cmag(r.Vo),"V"),F_("มุม Vo",cang(r.Vo),"°","a"),F_("P เฉลี่ยของแหล่งจ่าย",Psrc,"W"),F_(`P เฉลี่ยของ ${p.pr}`,Ptar,"W")],
+  f:[F_("|Zin|",cmag(r.Zeq[0]),"Ω"),F_("มุม Zin",cang(r.Zeq[0]),"°","a"),F_(`|I|${p.rms?" (rms)":""}`,cmag(r.Iin),"A"),F_("มุม I",cang(r.Iin),"°","a"),F_(`|Vo|${p.rms?" (rms)":""}`,cmag(r.Vo),"V"),F_("มุม Vo",cang(r.Vo),"°","a"),F_("pf ที่แหล่งจ่ายมองเห็น",Math.cos(cang(r.Zeq[0])*DEG),""),F_("pf เป็นแบบ",r.Zeq[0].im>=0?0:1,"","s",["ล้าหลัง (lagging)","นำหน้า (leading)"]),F_("P เฉลี่ยของแหล่งจ่าย",Psrc,"W"),F_(`P เฉลี่ยของ ${p.pr}`,Ptar,"W")],
   sol:`<ol>
   <li>${p.rms?`แหล่งจ่ายเป็นเฟเซอร์ rms อยู่แล้ว: ${M_(`Vs = ${p.Vm}∠${na(p.ph)}° V`)}, ${M_(`ω = ${w} rad/s`)}</li><li style="display:none">`:""}แปลงแหล่งจ่ายเป็นเฟเซอร์: ${M_(`vs = ${vs}${cosNote} → Vs = ${p.Vm}∠${na(phC(p))}° V`)}${notCos(p)?` (${fnTxt(p)} แปลงเป็น cos โดย${offOf(p)<0?"ลบ":"บวก"} ${tn(Math.abs(offOf(p)))}°)`:""}, ${M_(`ω = ${w} rad/s`)}</li>
   ${p.jf?`<li>โจทย์ให้ L และ C มาในรูป jX แล้ว ใช้คำนวณได้เลย (ถ้าโจทย์ให้เป็น H หรือ F ต้องแปลงก่อน: jωL และ 1/(jωC))</li>`:`<li>แปลงอุปกรณ์เป็นอิมพีแดนซ์ (ขั้นนี้มีคะแนนแยก):<br>${conv.map(M_).join("<br>")}</li>`}
@@ -1533,6 +1533,7 @@ function buildLadder(p){
   <li><b>${M_(`I = Vs/Zin = ${p.Vm}∠${na(phC(p))}° / ${fp(r.Zeq[0])} = ${fp(r.Iin)} A`)}</b></li>
   <li>ไล่หากระแสและแรงดันทีละกิ่ง (ซ้ายไปขวา):<br>${fw.map(M_).join("<br>")}</li>
   <li><b>${M_(`Vo = ${fp(r.Vo)} V`)}</b> → ${M_(`vo(t) = ${nf((p.rms?Math.SQRT2:1)*cmag(r.Vo))}cos(${w}t ${cang(r.Vo)<0?"−":"+"} ${na(Math.abs(cang(r.Vo)))}°) V`)}</li>
+  <li>pf ที่แหล่งจ่ายมองเห็น: ${M_(`pf = cos(${na(cang(r.Zeq[0]))}°) = ${nf(Math.cos(cang(r.Zeq[0])*DEG))}`)} ${r.Zeq[0].im>=0?"ล้าหลัง":"นำหน้า"}</li>
   <li>กำลังเฉลี่ยแหล่งจ่าย: ${M_(`P = ${p.rms?"Vrms·Irms":"½·Vm·Im"}·cos(θv − θi) = ${hx}${p.Vm} × ${nf(cmag(r.Iin))} × cos(${na(phC(p))}° − (${na(cang(r.Iin))}°)) = ${nf(Psrc)} W`)}</li>
   <li>กำลังเฉลี่ยตัวต้านทาน ${M_(`P = ${hf}|I|²·R`)}: ${Pr.map(x=>M_(`P(${x.n}) = ${nf(x.P)} W`)).join(", ")} รวม ${nf(Pr.reduce((a,b)=>a+b.P,0))} W = กำลังแหล่งจ่าย ✓ (L และ C ไม่กินกำลังเฉลี่ย)</li></ol>`};
 }
@@ -1541,9 +1542,10 @@ const T2A={g:2,onPreset:p=>{p.fn=LAD_MODE in FN_OFF?LAD_MODE:'cos';p.rms=LAD_AMP
 const T2B={g:2,onPreset:p=>{p.fn=LAD_MODE in FN_OFF?LAD_MODE:'cos';p.rms=LAD_AMP==='rms'?1:0},name:"ฝึกเพิ่ม: วงจรแลดเดอร์ อนุกรม-ขนาน-อนุกรม-ขนาน",note:"อาจารย์ไม่ได้ใบ้รูปนี้ แต่อยู่ในขอบเขตแนวข้อสอบ (แหล่งจ่าย 1 ตัว R L C 5–6 ตัว) ใช้ฝึกยุบวงจรให้คล่อง",gen:()=>genLadder("B"),edit:ladderEdit,build:buildLadder};
 
 const T2C={g:2,fixedSrc:1,name:"แบบ Ex 10.13: R 6 Ω อนุกรมกับ (4 Ω ∥ j2 Ω) แหล่งจ่ายเป็นค่า rms",
- note:"อาจารย์ชี้ตัวอย่างนี้ แหล่งจ่ายให้มาเป็นค่า rms: ใช้ P = Vrms·Irms·cos θ และ P = |Irms|²R ไม่มี ½ วงจรเหมือนในหนังสือ ส่วนค่าแหล่งจ่ายสุ่มให้ฝึก",
+ note:"ตัวอย่างที่ 10.13 บทที่ 10 (อาจารย์ชี้): Vs = 60∠0° V rms หา pf ที่แหล่งจ่ายมองเห็นและกำลังเฉลี่ย ค่าในหนังสือ Z = 6.8 + j1.6 Ω, pf = 0.973 lagging, P = 501.48 W ใช้ P = Vrms·Irms·cos θ ไม่มี ½ กด “สุ่มตัวเลขใหม่” เพื่อฝึกกับแหล่งจ่ายค่าอื่น",
  gen(){const w=pick([1,2,5,10]);return{topo:"A",w,Vm:pick([10,12,20,24,50,100,120]),ph:pick([0,0,30,-30,45,60,-45,90]),jf:1,rms:1,fn:"cos",pr:pick(["R1","R2"]),
    st:[{k:"s",els:[{t:"R",v:6,n:"R1"}]},{k:"p",els:[{t:"R",v:4,n:"R2"}]},{k:"p",els:[{t:"L",v:2/w,n:"L1"}]}]}},
+ preset:{topo:"A",w:1,Vm:60,ph:0,jf:1,rms:1,fn:"cos",pr:"R1",st:[{k:"s",els:[{t:"R",v:6,n:"R1"}]},{k:"p",els:[{t:"R",v:4,n:"R2"}]},{k:"p",els:[{t:"L",v:2,n:"L1"}]}]},
  edit:p=>[["Vm","|Vs| (rms)","V"],["ph","มุมของ Vs","°"]],build:buildLadder};
 
 /* ---------------- ข้อ 3 complex power ---------------- */
