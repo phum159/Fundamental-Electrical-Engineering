@@ -162,6 +162,7 @@ select,.btn{font:inherit;font-size:15px;padding:8px 14px;border-radius:8px;borde
 .q3fig>.circ.wide{flex:1 1 500px}
 .q3fig .circ.wide svg{min-width:480px}
 .fig .shl text,.fig .snw text{font-weight:700}
+.q3fig.solo{justify-content:center}
 .q3fig{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:flex-start}
 .q3fig svg{max-width:100%}
 .q4ph{max-width:420px;margin:10px auto 0}
@@ -1714,7 +1715,7 @@ function q3Triangle(S){
 }
 function q3Steps(p,Is,It,S,pf,lag){
   const V=p.V, out=[];
-  const pack=(hl,srcHl,right,cap,o)=>out.push({...o,fig:`<div class="q3fig"><div class="circ"><p class="q3cap">วงจร</p>${q3Circuit(p,hl,srcHl)}</div><div><p class="q3cap">${cap}</p>${right}</div></div>`});
+  const pack=(hl,srcHl,right,cap,o)=>out.push({...o,fig:`<div class="q3fig solo"><div class="circ"><p class="q3cap">วงจร</p>${q3Circuit(p,hl,srcHl)}</div></div>`});
   pack([],false,q3Phasor(p,Is,It,"v"),"ไดอะแกรมเฟเซอร์",{short:"วาดวงจร",title:"วาดวงจร (ได้คะแนน)",why:"โจทย์เป็นคำบรรยาย ต้องวาดเอง: แหล่งจ่ายต่อขนานกับโหลดทุกตัว ทุกตัวได้แรงดันเท่ากัน",
     write:`แหล่งจ่าย V = ${V}∠0° V (rms) ต่อขนานกับโหลด ${p.loads.length} ตัว`,keys:KSET});
   p.loads.forEach((l,i)=>{const I=Is[i],k=`I${i+1}`,ang=cang(I);
@@ -1773,7 +1774,7 @@ const T3E1={g:3,name:"แบบตัวอย่าง 1: ให้ P กับ
   const V=p.V, P=p.P*1e3, th=Math.acos(p.pf)/DEG*(p.lead?-1:1), Sm=P/p.pf, Q=P*Math.tan(th*DEG), S=Cx(P,Q), I=cconj(cdiv(S,Cx(V))), Z=cdiv(Cx(V),I);
   const lt=p.lead?"นำหน้า":"ล้าหลัง";
   const cir=hl=>q3Circuit({V,loads:[{t:"z",cur:"I",lines:["โหลด",`${p.P} kW`,`pf ${p.pf} ${lt}`]}]},hl,false);
-  const steps=[], pk=(o,hl,cap,right)=>steps.push({...o,fig:`<div class="q3fig"><div class="circ"><p class="q3cap">วงจร</p>${cir(hl)}</div><div><p class="q3cap">${cap}</p>${right}</div></div>`});
+  const steps=[], pk=(o,hl,cap,right)=>steps.push({...o,fig:`<div class="q3fig solo"><div class="circ"><p class="q3cap">วงจร</p>${cir(hl)}</div></div>`});
   pk({short:"วาดวงจร",title:"วาดวงจร (ได้คะแนน)",why:"แหล่งจ่าย V∠0° ต่อกับโหลดตัวเดียว",write:`V = ${V}∠0° V rms, P = ${p.P} kW, pf = ${p.pf} ${lt}`,keys:KSET},[],"สามเหลี่ยมกำลัง",q3Triangle(S));
   pk({short:"S, Q",title:"กำลังปรากฏและกำลังรีแอกทีฟ",why:`|S| = P/pf · Q = P·tanθ (${p.lead?"นำหน้า Q ลบ":"ล้าหลัง Q บวก"})`,
     write:`θ = ${p.lead?"−":""}cos⁻¹(${p.pf}) = ${na(th)}°<br>${ansS(`|S| = ${P}/${p.pf} = ${nf(Sm)} VA`)}<br>${ansS(`Q = ${P}·tan(${na(th)}°) = ${nf(Q)} VAR`)}<br>S = ${fr(S)} VA`,
@@ -1810,7 +1811,7 @@ const T3E3={g:3,name:"แบบตัวอย่าง 3: เครื่อง
   const cir=hl=>q3Circuit({V:p.V,loads:p.loads.map(l=>({t:l.t,lines:[nm(l),`${l.P} W`,l.t==="m"?`pf ${l.pf} ล้าหลัง`:"pf = 1"]}))},hl,false);
   const pts=[Cx(0)];PQ.forEach(z=>pts.push(cadd(pts[pts.length-1],z)));
   const plot=(upto,tot)=>phPlot([...PQ.slice(0,upto+1).map((z,i)=>({a:pts[i],b:pts[i+1],c:PH[i%4],l:`S${i+1}`,w:2.4,mid:1})),...(tot?[{b:St,c:ok?"var(--ok)":"var(--bad)",w:3.4,l:"S รวม",mid:1,side:-1}]:[])],{ring:{r:p.Sg,label:`พิกัด ${p.Sg} VA`}});
-  const steps=[], pk=(o,hl,right)=>steps.push({...o,fig:`<div class="q3fig"><div class="circ"><p class="q3cap">วงจร (เครื่องกำเนิด ${p.Sg} VA)</p>${cir(hl)}</div><div><p class="q3cap">วงเส้นประ = พิกัดเครื่องกำเนิด</p>${right}</div></div>`});
+  const steps=[], pk=(o,hl,right)=>steps.push({...o,fig:`<div class="q3fig solo"><div class="circ"><p class="q3cap">วงจร (เครื่องกำเนิด ${p.Sg} VA)</p>${cir(hl)}</div></div>`});
   pk({short:"วาดวงจร",title:"วาดวงจร",why:"โหลดต่อขนานกับเครื่องกำเนิด ต้องหา |S| รวมแล้วเทียบกับพิกัด VA",write:`เครื่องกำเนิด ${p.Sg} VA, ${p.V} V rms · โหลด ${p.loads.length} ตัว`,keys:KSET},[],plot(0,false));
   p.loads.forEach((l,i)=>pk({short:`S${i+1}`,title:`P และ Q ของ${nm(l)} ${i+1}`,why:l.t==="m"?"Q = P·tan(cos⁻¹ pf)":"ตัวต้านทานล้วน Q = 0",
     write:l.t==="m"?ansS(`P${i+1} = ${l.P} W, Q${i+1} = ${l.P}·tan(cos⁻¹ ${l.pf}) = ${nf(PQ[i].im)} VAR`):ansS(`P${i+1} = ${l.P} W, Q${i+1} = 0`),
@@ -1836,7 +1837,7 @@ const T3B={g:3,extra:1,name:"แก้ตัวประกอบกำลัง
   const I1=P/(p.V*p.pf1), I2=P/(p.V*p.pf2);
   const cir=(hl,lC)=>q3Circuit({V:p.V,loads:[{t:"k",lines:["โหลด",`${p.P} kW`,`pf ${p.pf1} ล้าหลัง`]},{t:"c",cur:"IC",lines:lC?["C",`${nf(C)} µF`,""]:["C = ?","ต่อขนาน",""]}]},hl,false);
   const tri=(o)=>phPlot([{b:Cx(P),c:"#2B78C4",l:"P",mid:1,side:-1},...(o.before?[{a:Cx(P),b:Cx(P,Q1),c:"#C2621F",l:"Q1",keep:1,mid:1,op:o.after?.45:1},{b:Cx(P,Q1),c:"#C2621F",l:"S1",op:o.after?.45:1,w:2.6}]:[]),...(o.after?[{b:Cx(P,Q2),c:"var(--ok)",l:"S2",w:3.2}]:[]),...(o.qc?[{a:Cx(P,Q1),b:Cx(P,Q2),c:"var(--hl)",l:"Qc",keep:1,w:3.4,mid:1,side:-1}]:[])]);
-  const pk=(out,hl,lC,o,cap,right)=>out.push({...o,fig:`<div class="q3fig"><div class="circ"><p class="q3cap">วงจร</p>${cir(hl,lC)}</div><div><p class="q3cap">${cap}</p>${right}</div></div>`});
+  const pk=(out,hl,lC,o,cap,right)=>out.push({...o,fig:`<div class="q3fig solo"><div class="circ"><p class="q3cap">วงจร</p>${cir(hl,lC)}</div></div>`});
   const steps=[];
   pk(steps,[],false,{short:"วาดวงจร",title:"วาดวงจร (ได้คะแนน)",why:"ตัวเก็บประจุต่อ ขนาน กับโหลด จึงไม่เปลี่ยนแรงดันและกำลัง P ของโหลด",write:`V = ${p.V} V rms, f = ${p.f} Hz, P = ${p.P} kW, pf เดิม ${p.pf1} → ต้องการ ${p.pf2}`,keys:KSET},"สามเหลี่ยมกำลัง",tri({before:1}));
   pk(steps,[0],false,{short:"Q1",title:"Q เดิมของโหลด",why:"Q = P·tanθ โดย θ = cos⁻¹(pf)",write:`θ1 = cos⁻¹(${p.pf1}) = ${na(t1/DEG)}°<br>${ansS(`Q1 = ${P}·tan(${na(t1/DEG)}°) = ${nf(Q1)} VAR`)}`,keys:TL(`${P}*tan(cos⁻¹(${p.pf1}))`,tn(Q1))},"สามเหลี่ยมกำลังเดิม",tri({before:1}));
@@ -1858,7 +1859,7 @@ const T3C={g:3,extra:1,name:"โหลด R–L หรือ R–C ตัวเ�
   const w=2*Math.PI*p.f, X=p.xt===1?w*p.X:-1/(w*p.X*1e-6), Z=Cx(p.R,X), V=Cx(p.V), I=cdiv(V,Z), S=cmul(V,cconj(I)), pf=Math.cos(cang(Z)*DEG), lag=X>0;
   const xl=p.xt===1?`L = ${p.X} H`:`C = ${p.X} µF`;
   const cir=hl=>q3Circuit({V:p.V,loads:[{t:"z",cur:"I",lines:["โหลด",`R = ${p.R} Ω`,xl]}]},hl,false);
-  const pk=(o,hl,cap,right)=>steps.push({...o,fig:`<div class="q3fig"><div class="circ"><p class="q3cap">วงจร</p>${cir(hl)}</div><div><p class="q3cap">${cap}</p>${right}</div></div>`});
+  const pk=(o,hl,cap,right)=>steps.push({...o,fig:`<div class="q3fig solo"><div class="circ"><p class="q3cap">วงจร</p>${cir(hl)}</div></div>`});
   const steps=[];
   const zplot=phPlot([{b:Cx(p.R),c:"#2B78C4",l:`R`,mid:1,side:-1},{a:Cx(p.R),b:Z,c:"#C2621F",l:p.xt===1?"XL":"XC",keep:1,dash:"6 4"},{b:Z,c:"var(--ok)",w:3.2,l:"Z",mid:1}]);
   pk({short:"วาดวงจร",title:"วาดวงจร",why:"แหล่งจ่ายต่อกับ R อนุกรม "+(p.xt===1?"L":"C"),write:`V = ${p.V}∠0° V rms, f = ${p.f} Hz, R = ${p.R} Ω, ${xl}`,keys:KSET},[],"",zplot);
@@ -1883,7 +1884,7 @@ const T3D={g:3,name:"รวมกำลังทีละโหลด (วิธ
   const St=PQ.reduce(cadd,Cx(0)), Sm=cmag(St), pf=St.re/Sm, lag=St.im>=0, I=Sm/V;
   const pts=[Cx(0)];PQ.forEach(z=>pts.push(cadd(pts[pts.length-1],z)));
   const plot=(upto,tot)=>phPlot([...PQ.slice(0,upto+1).map((z,i)=>({a:pts[i],b:pts[i+1],c:PH[i%4],l:`S${i+1}`,w:i===upto&&!tot?3.2:2.2,op:i===upto||tot?1:.5,mid:1})),...(tot?[{b:St,c:"var(--ok)",w:3.4,l:"S รวม",mid:1,side:-1}]:[])]);
-  const steps=[], pk=(o,hl,right)=>steps.push({...o,fig:`<div class="q3fig"><div class="circ"><p class="q3cap">วงจร</p>${q3Circuit(p,hl,false)}</div><div><p class="q3cap">ต่อสามเหลี่ยมกำลังหัวต่อหาง</p>${right}</div></div>`});
+  const steps=[], pk=(o,hl,right)=>steps.push({...o,fig:`<div class="q3fig solo"><div class="circ"><p class="q3cap">วงจร</p>${q3Circuit(p,hl,false)}</div></div>`});
   pk({short:"วาดวงจร",title:"วาดวงจร",why:"โหลดต่อขนาน → กำลังของทุกตัวรวมกันได้ตรง ๆ (P บวก P, Q บวก Q)",write:`V = ${V} V rms, โหลด ${p.loads.length} ตัวต่อขนาน`,keys:KSET},[],plot(0,false));
   p.loads.forEach((l,i)=>{const z=PQ[i],k=i+1;const o={short:`S${k}`,title:`P และ Q ของ${LT[l.t]} ${k}`};
     if(l.t==="m"){o.why="ให้ P กับ pf → Q = P·tan(cos⁻¹ pf) (ล้าหลัง Q บวก)";o.write=`P${k} = ${nf(z.re)} W<br>${ansS(`Q${k} = ${nf(z.re)}·tan(cos⁻¹ ${l.pf}) = ${nf(z.im)} VAR`)}`;o.keys=TL(`${l.P*1e3}*tan(cos⁻¹(${l.pf}))`,tn(z.im));}
