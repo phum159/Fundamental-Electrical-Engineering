@@ -162,8 +162,10 @@ select,.btn{font:inherit;font-size:15px;padding:8px 14px;border-radius:8px;borde
 .q3fig>.circ.wide{flex:1 1 500px}
 .q3fig .circ.wide svg{min-width:480px}
 .fig .shl text,.fig .snw text{font-weight:700}
+.q3fig.solo{justify-content:center}
 .q3fig{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:flex-start}
 .q3fig svg{max-width:100%}
+.q4ph{max-width:420px;margin:10px auto 0}
 .q3cap{font-size:13px;color:var(--muted);font-weight:600;margin:0 0 2px}
 .stepbox.modern{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px 18px;box-shadow:0 6px 24px rgba(20,30,40,.08)}
 .stepbox.modern .stepn{visibility:hidden}
@@ -1084,43 +1086,32 @@ function Vsrc(x,y1,y2,lab,ac){const m=(y1+y2)/2;return W(x,y1,x,m-17)+`<circle c
 function Isrc(x,y1,y2,lab,up=1){const m=(y1+y2)/2,tip=up?m-11:m+11,base=up?m-3:m+3;return W(x,y1,x,m-17)+`<circle cx="${x}" cy="${m}" r="17"/>`+W(x,m+17,x,y2)+W(x,m+9,x,m-9)+`<polygon points="${x},${tip} ${x-5},${base} ${x+5},${base}" fill="currentColor"/>`+T(x+24,m+4,lab,"start")}
 const svg=(w,h,body,pad=0)=>`<svg viewBox="0 0 ${w+pad} ${h}" width="${w+pad}" fill="none" stroke="currentColor" stroke-width="2"><g transform="translate(${pad},0)">${body}</g></svg>`;
 function yyFig(za,zb,zc,Vp=220,legend="",hl={}){
+  /* parallel-line Y–Y drawing: lines a, b, n, c run left → right, sources tied at n (left bus), loads tied at N (right bus) */
   const f='font-family="Times New Roman, Times, serif" fill="currentColor" stroke="none"';
   const lab=(x,y,m,sub,a="start",cls="")=>`<text ${cls?`class="${cls}"`:""} x="${x}" y="${y}" text-anchor="${a}" font-size="19" ${f}><tspan font-weight="bold">${m}</tspan><tspan font-style="italic" font-size="13" dy="5">${sub}</tspan></text>`;
   const it=(x,y,s,a="middle",cls="nd")=>`<text class="${cls}" x="${x}" y="${y}" text-anchor="${a}" font-size="18" font-style="italic" ${f}>${s}</text>`;
   const tx=(x,y,s,a="start",sz=17)=>`<text x="${x}" y="${y}" text-anchor="${a}" font-size="${sz}" ${f}>${s}</text>`;
   const term=(x,y)=>`<circle cx="${x}" cy="${y}" r="3.2" fill="var(--panel)"/>`;
   const arr=(x,y)=>`<polygon class="cur" points="${x+8},${y} ${x-6},${y-5} ${x-6},${y+5}" fill="currentColor" stroke="none"/>`;
-  const darr=(x1,y1,x2,y2)=>{const a=Math.atan2(y2-y1,x2-x1),h=9;return `<g class="cur"><line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/><polygon points="${x2},${y2} ${x2-h*Math.cos(a-0.4)},${y2-h*Math.sin(a-0.4)} ${x2-h*Math.cos(a+0.4)},${y2-h*Math.sin(a+0.4)}" fill="currentColor" stroke="none"/></g>`};
-  const src=(cx,cy,topPlus=true)=>`<circle cx="${cx}" cy="${cy}" r="15" fill="var(--panel)"/>`+tx(cx,cy-3,topPlus?"+":"−","middle",15)+tx(cx,cy+12,topPlus?"−":"+","middle",15);
-  const box=(cx,cy,rot)=>`<rect x="${cx-20}" y="${cy-8}" width="40" height="16" transform="rotate(${rot} ${cx} ${cy})" fill="var(--panel)"/>`;
-  const vp=Math.round(Vp*100)/100;
-  let b="";
-  const P={a:"",b:"",c:"",n:""};
-  // wires
-  P.a+=`<polyline points="285,257 160,132 160,58 918,58 918,135 797,257" fill="none"/>`;
-  P.b+=`<polyline points="285,257 429,113 655,113 797,257" fill="none"/>`;
-  P.n+=`<line x1="285" y1="257" x2="797" y2="257"/>`;
-  P.c+=`<polyline points="285,257 285,378 797,378 797,257" fill="none"/>`;
-  // sources
-  P.a+=src(215,187); P.b+=src(345,197); P.c+=src(285,318,false);
-  P.a+=lab(197,193,"V","an","end").replace("</text>",`<tspan dy="-5" font-size="18"> = ${vp}∠0° V</tspan></text>`);
-  P.b+=lab(368,203,"V","bn").replace("</text>",`<tspan dy="-5" font-size="18"> = ${vp}∠−120° V</tspan></text>`);
-  P.c+=lab(266,324,"V","cn","end").replace("</text>",`<tspan dy="-5" font-size="18"> = ${vp}∠+120° V</tspan></text>`);
-  // terminals + labels
-  [[58,"a","A"],[113,"b","B"],[257,"n","N"],[378,"c","C"]].forEach(([y,s,S])=>{P[s]+=term(440,y)+term(600,y)+it(440,y-10,s)+it(600,y-10,S)});
-  // line currents
-  P.a+=arr(522,58)+lab(510,42,"I","aA","start","cur"); P.b+=arr(522,113)+lab(510,97,"I","bB","start","cur");
-  P.n+=arr(522,257)+lab(510,241,"I","nN","start","cur"); P.c+=arr(522,378)+lab(510,362,"I","cC","start","cur");
-  // loads
-  P.a+=box(858,196,-45)+lab(836,184,"Z",za[0],"end")+tx(890,188,"+","middle",15)+tx(872,236,"−","middle",15)+lab(898,222,"V","AN")+darr(952,168,928,186)+lab(944,160,"I","AN","start","cur");
-  P.b+=box(726,185,45)+lab(700,218,"Z",zb[0],"end")+tx(741,165,"+","middle",15)+tx(772,214,"−","middle",15)+lab(750,194,"V","BN")+darr(700,128,722,146)+lab(688,120,"I","BN","start","cur");
-  P.c+=box(797,318,90)+lab(783,322,"Z",zc[0],"end")+tx(826,296,"−","middle",15)+tx(826,348,"+","middle",15)+lab(816,326,"V","CN")+darr(807,400,807,368)+lab(815,398,"I","CN","start","cur");
-  // plain parts first, highlighted parts on top
+  const vp=Math.round(Vp*100)/100, XL=90, XR=950, SX=180, ZX=830;
+  const Y={a:70,b:150,n:230,c:310}, P={a:"",b:"",c:"",n:""};
+  // neutral: left bus (n), right bus (N) and the n–N wire
+  P.n+=`<line x1="${XL}" y1="${Y.a}" x2="${XL}" y2="${Y.c}"/><line x1="${XR}" y1="${Y.a}" x2="${XR}" y2="${Y.c}"/><line x1="${XL}" y1="${Y.n}" x2="${XR}" y2="${Y.n}"/>`;
+  const ph=[["a","A",za[0],"0°"],["b","B",zb[0],"−120°"],["c","C",zc[0],"+120°"]];
+  ph.forEach(([k,K,z,ang])=>{const y=Y[k];
+    P[k]+=`<line x1="${XL}" y1="${y}" x2="${SX-17}" y2="${y}"/><line x1="${SX+17}" y1="${y}" x2="${ZX-40}" y2="${y}"/><line x1="${ZX+40}" y1="${y}" x2="${XR}" y2="${y}"/>`;
+    P[k]+=`<circle cx="${SX}" cy="${y}" r="17" fill="var(--panel)"/>`+tx(SX-8,y+5,"−","middle",15)+tx(SX+8,y+5,"+","middle",15);
+    P[k]+=lab(SX,y-26,"V",k+"n","middle").replace("</text>",`<tspan dy="-5" font-size="18"> = ${vp}∠${ang} V</tspan></text>`);
+    P[k]+=`<rect x="${ZX-40}" y="${y-14}" width="80" height="28" rx="3" fill="var(--panel)"/>`+lab(ZX,y+5,"Z",z,"middle");
+    P[k]+=tx(ZX-36,y+36,"+","middle",16)+lab(ZX,y+38,"V",K+"N","middle")+tx(ZX+36,y+36,"−","middle",16);
+  });
+  [["a","A"],["b","B"],["n","N"],["c","C"]].forEach(([s,S])=>{const y=Y[s];P[s]+=term(300,y)+term(700,y)+it(300,y-10,s)+it(700,y-10,S)});
+  [["a","aA"],["b","bB"],["n","nN"],["c","cC"]].forEach(([k,sub])=>{const y=Y[k];P[k]+=arr(500,y)+lab(488,y-12,"I",sub,"start","cur")});
   const ks=["n","a","b","c"];
-  b+=ks.filter(k=>!hl[k]).map(k=>P[k]).join("")+ks.filter(k=>hl[k]).map(k=>`<g class="${hl[k]}">${P[k]}</g>`).join("");
-  b+=`<circle class="nd" cx="285" cy="257" r="3" fill="currentColor"/><circle class="nd" cx="797" cy="257" r="3" fill="currentColor"/>`;
-  if(legend) b+=tx(285,432,legend,"start",17);
-  return `<svg viewBox="0 0 1024 ${legend?448:415}" width="100%" style="max-width:920px;min-width:640px" fill="none" stroke="currentColor" stroke-width="1.6">${b}</svg>`;
+  let b=ks.filter(k=>!hl[k]).map(k=>P[k]).join("")+ks.filter(k=>hl[k]).map(k=>`<g class="${hl[k]}">${P[k]}</g>`).join("");
+  b+=`<circle class="nd" cx="${XL}" cy="${Y.n}" r="4" fill="currentColor"/><circle class="nd" cx="${XR}" cy="${Y.n}" r="4" fill="currentColor"/>`+it(XL-12,Y.n+6,"n","end")+it(XR+12,Y.n+6,"N","start");
+  if(legend) b+=tx(XL,384,legend,"start",17);
+  return `<svg viewBox="0 0 1024 ${legend?400:362}" width="100%" style="max-width:920px;min-width:640px" fill="none" stroke="currentColor" stroke-width="1.6">${b}</svg>`;
 }
 
 /* ================= helpers for templates ================= */
@@ -1724,7 +1715,7 @@ function q3Triangle(S){
 }
 function q3Steps(p,Is,It,S,pf,lag){
   const V=p.V, out=[];
-  const pack=(hl,srcHl,right,cap,o)=>out.push({...o,fig:`<div class="q3fig"><div class="circ"><p class="q3cap">วงจร</p>${q3Circuit(p,hl,srcHl)}</div><div><p class="q3cap">${cap}</p>${right}</div></div>`});
+  const pack=(hl,srcHl,right,cap,o)=>out.push({...o,fig:`<div class="q3fig solo"><div class="circ"><p class="q3cap">วงจร</p>${q3Circuit(p,hl,srcHl)}</div></div>`});
   pack([],false,q3Phasor(p,Is,It,"v"),"ไดอะแกรมเฟเซอร์",{short:"วาดวงจร",title:"วาดวงจร (ได้คะแนน)",why:"โจทย์เป็นคำบรรยาย ต้องวาดเอง: แหล่งจ่ายต่อขนานกับโหลดทุกตัว ทุกตัวได้แรงดันเท่ากัน",
     write:`แหล่งจ่าย V = ${V}∠0° V (rms) ต่อขนานกับโหลด ${p.loads.length} ตัว`,keys:KSET});
   p.loads.forEach((l,i)=>{const I=Is[i],k=`I${i+1}`,ang=cang(I);
@@ -1783,7 +1774,7 @@ const T3E1={g:3,name:"แบบตัวอย่าง 1: ให้ P กับ
   const V=p.V, P=p.P*1e3, th=Math.acos(p.pf)/DEG*(p.lead?-1:1), Sm=P/p.pf, Q=P*Math.tan(th*DEG), S=Cx(P,Q), I=cconj(cdiv(S,Cx(V))), Z=cdiv(Cx(V),I);
   const lt=p.lead?"นำหน้า":"ล้าหลัง";
   const cir=hl=>q3Circuit({V,loads:[{t:"z",cur:"I",lines:["โหลด",`${p.P} kW`,`pf ${p.pf} ${lt}`]}]},hl,false);
-  const steps=[], pk=(o,hl,cap,right)=>steps.push({...o,fig:`<div class="q3fig"><div class="circ"><p class="q3cap">วงจร</p>${cir(hl)}</div><div><p class="q3cap">${cap}</p>${right}</div></div>`});
+  const steps=[], pk=(o,hl,cap,right)=>steps.push({...o,fig:`<div class="q3fig solo"><div class="circ"><p class="q3cap">วงจร</p>${cir(hl)}</div></div>`});
   pk({short:"วาดวงจร",title:"วาดวงจร (ได้คะแนน)",why:"แหล่งจ่าย V∠0° ต่อกับโหลดตัวเดียว",write:`V = ${V}∠0° V rms, P = ${p.P} kW, pf = ${p.pf} ${lt}`,keys:KSET},[],"สามเหลี่ยมกำลัง",q3Triangle(S));
   pk({short:"S, Q",title:"กำลังปรากฏและกำลังรีแอกทีฟ",why:`|S| = P/pf · Q = P·tanθ (${p.lead?"นำหน้า Q ลบ":"ล้าหลัง Q บวก"})`,
     write:`θ = ${p.lead?"−":""}cos⁻¹(${p.pf}) = ${na(th)}°<br>${ansS(`|S| = ${P}/${p.pf} = ${nf(Sm)} VA`)}<br>${ansS(`Q = ${P}·tan(${na(th)}°) = ${nf(Q)} VAR`)}<br>S = ${fr(S)} VA`,
@@ -1820,7 +1811,7 @@ const T3E3={g:3,name:"แบบตัวอย่าง 3: เครื่อง
   const cir=hl=>q3Circuit({V:p.V,loads:p.loads.map(l=>({t:l.t,lines:[nm(l),`${l.P} W`,l.t==="m"?`pf ${l.pf} ล้าหลัง`:"pf = 1"]}))},hl,false);
   const pts=[Cx(0)];PQ.forEach(z=>pts.push(cadd(pts[pts.length-1],z)));
   const plot=(upto,tot)=>phPlot([...PQ.slice(0,upto+1).map((z,i)=>({a:pts[i],b:pts[i+1],c:PH[i%4],l:`S${i+1}`,w:2.4,mid:1})),...(tot?[{b:St,c:ok?"var(--ok)":"var(--bad)",w:3.4,l:"S รวม",mid:1,side:-1}]:[])],{ring:{r:p.Sg,label:`พิกัด ${p.Sg} VA`}});
-  const steps=[], pk=(o,hl,right)=>steps.push({...o,fig:`<div class="q3fig"><div class="circ"><p class="q3cap">วงจร (เครื่องกำเนิด ${p.Sg} VA)</p>${cir(hl)}</div><div><p class="q3cap">วงเส้นประ = พิกัดเครื่องกำเนิด</p>${right}</div></div>`});
+  const steps=[], pk=(o,hl,right)=>steps.push({...o,fig:`<div class="q3fig solo"><div class="circ"><p class="q3cap">วงจร (เครื่องกำเนิด ${p.Sg} VA)</p>${cir(hl)}</div></div>`});
   pk({short:"วาดวงจร",title:"วาดวงจร",why:"โหลดต่อขนานกับเครื่องกำเนิด ต้องหา |S| รวมแล้วเทียบกับพิกัด VA",write:`เครื่องกำเนิด ${p.Sg} VA, ${p.V} V rms · โหลด ${p.loads.length} ตัว`,keys:KSET},[],plot(0,false));
   p.loads.forEach((l,i)=>pk({short:`S${i+1}`,title:`P และ Q ของ${nm(l)} ${i+1}`,why:l.t==="m"?"Q = P·tan(cos⁻¹ pf)":"ตัวต้านทานล้วน Q = 0",
     write:l.t==="m"?ansS(`P${i+1} = ${l.P} W, Q${i+1} = ${l.P}·tan(cos⁻¹ ${l.pf}) = ${nf(PQ[i].im)} VAR`):ansS(`P${i+1} = ${l.P} W, Q${i+1} = 0`),
@@ -1846,7 +1837,7 @@ const T3B={g:3,extra:1,name:"แก้ตัวประกอบกำลัง
   const I1=P/(p.V*p.pf1), I2=P/(p.V*p.pf2);
   const cir=(hl,lC)=>q3Circuit({V:p.V,loads:[{t:"k",lines:["โหลด",`${p.P} kW`,`pf ${p.pf1} ล้าหลัง`]},{t:"c",cur:"IC",lines:lC?["C",`${nf(C)} µF`,""]:["C = ?","ต่อขนาน",""]}]},hl,false);
   const tri=(o)=>phPlot([{b:Cx(P),c:"#2B78C4",l:"P",mid:1,side:-1},...(o.before?[{a:Cx(P),b:Cx(P,Q1),c:"#C2621F",l:"Q1",keep:1,mid:1,op:o.after?.45:1},{b:Cx(P,Q1),c:"#C2621F",l:"S1",op:o.after?.45:1,w:2.6}]:[]),...(o.after?[{b:Cx(P,Q2),c:"var(--ok)",l:"S2",w:3.2}]:[]),...(o.qc?[{a:Cx(P,Q1),b:Cx(P,Q2),c:"var(--hl)",l:"Qc",keep:1,w:3.4,mid:1,side:-1}]:[])]);
-  const pk=(out,hl,lC,o,cap,right)=>out.push({...o,fig:`<div class="q3fig"><div class="circ"><p class="q3cap">วงจร</p>${cir(hl,lC)}</div><div><p class="q3cap">${cap}</p>${right}</div></div>`});
+  const pk=(out,hl,lC,o,cap,right)=>out.push({...o,fig:`<div class="q3fig solo"><div class="circ"><p class="q3cap">วงจร</p>${cir(hl,lC)}</div></div>`});
   const steps=[];
   pk(steps,[],false,{short:"วาดวงจร",title:"วาดวงจร (ได้คะแนน)",why:"ตัวเก็บประจุต่อ ขนาน กับโหลด จึงไม่เปลี่ยนแรงดันและกำลัง P ของโหลด",write:`V = ${p.V} V rms, f = ${p.f} Hz, P = ${p.P} kW, pf เดิม ${p.pf1} → ต้องการ ${p.pf2}`,keys:KSET},"สามเหลี่ยมกำลัง",tri({before:1}));
   pk(steps,[0],false,{short:"Q1",title:"Q เดิมของโหลด",why:"Q = P·tanθ โดย θ = cos⁻¹(pf)",write:`θ1 = cos⁻¹(${p.pf1}) = ${na(t1/DEG)}°<br>${ansS(`Q1 = ${P}·tan(${na(t1/DEG)}°) = ${nf(Q1)} VAR`)}`,keys:TL(`${P}*tan(cos⁻¹(${p.pf1}))`,tn(Q1))},"สามเหลี่ยมกำลังเดิม",tri({before:1}));
@@ -1868,7 +1859,7 @@ const T3C={g:3,extra:1,name:"โหลด R–L หรือ R–C ตัวเ�
   const w=2*Math.PI*p.f, X=p.xt===1?w*p.X:-1/(w*p.X*1e-6), Z=Cx(p.R,X), V=Cx(p.V), I=cdiv(V,Z), S=cmul(V,cconj(I)), pf=Math.cos(cang(Z)*DEG), lag=X>0;
   const xl=p.xt===1?`L = ${p.X} H`:`C = ${p.X} µF`;
   const cir=hl=>q3Circuit({V:p.V,loads:[{t:"z",cur:"I",lines:["โหลด",`R = ${p.R} Ω`,xl]}]},hl,false);
-  const pk=(o,hl,cap,right)=>steps.push({...o,fig:`<div class="q3fig"><div class="circ"><p class="q3cap">วงจร</p>${cir(hl)}</div><div><p class="q3cap">${cap}</p>${right}</div></div>`});
+  const pk=(o,hl,cap,right)=>steps.push({...o,fig:`<div class="q3fig solo"><div class="circ"><p class="q3cap">วงจร</p>${cir(hl)}</div></div>`});
   const steps=[];
   const zplot=phPlot([{b:Cx(p.R),c:"#2B78C4",l:`R`,mid:1,side:-1},{a:Cx(p.R),b:Z,c:"#C2621F",l:p.xt===1?"XL":"XC",keep:1,dash:"6 4"},{b:Z,c:"var(--ok)",w:3.2,l:"Z",mid:1}]);
   pk({short:"วาดวงจร",title:"วาดวงจร",why:"แหล่งจ่ายต่อกับ R อนุกรม "+(p.xt===1?"L":"C"),write:`V = ${p.V}∠0° V rms, f = ${p.f} Hz, R = ${p.R} Ω, ${xl}`,keys:KSET},[],"",zplot);
@@ -1893,7 +1884,7 @@ const T3D={g:3,name:"รวมกำลังทีละโหลด (วิธ
   const St=PQ.reduce(cadd,Cx(0)), Sm=cmag(St), pf=St.re/Sm, lag=St.im>=0, I=Sm/V;
   const pts=[Cx(0)];PQ.forEach(z=>pts.push(cadd(pts[pts.length-1],z)));
   const plot=(upto,tot)=>phPlot([...PQ.slice(0,upto+1).map((z,i)=>({a:pts[i],b:pts[i+1],c:PH[i%4],l:`S${i+1}`,w:i===upto&&!tot?3.2:2.2,op:i===upto||tot?1:.5,mid:1})),...(tot?[{b:St,c:"var(--ok)",w:3.4,l:"S รวม",mid:1,side:-1}]:[])]);
-  const steps=[], pk=(o,hl,right)=>steps.push({...o,fig:`<div class="q3fig"><div class="circ"><p class="q3cap">วงจร</p>${q3Circuit(p,hl,false)}</div><div><p class="q3cap">ต่อสามเหลี่ยมกำลังหัวต่อหาง</p>${right}</div></div>`});
+  const steps=[], pk=(o,hl,right)=>steps.push({...o,fig:`<div class="q3fig solo"><div class="circ"><p class="q3cap">วงจร</p>${q3Circuit(p,hl,false)}</div></div>`});
   pk({short:"วาดวงจร",title:"วาดวงจร",why:"โหลดต่อขนาน → กำลังของทุกตัวรวมกันได้ตรง ๆ (P บวก P, Q บวก Q)",write:`V = ${V} V rms, โหลด ${p.loads.length} ตัวต่อขนาน`,keys:KSET},[],plot(0,false));
   p.loads.forEach((l,i)=>{const z=PQ[i],k=i+1;const o={short:`S${k}`,title:`P และ Q ของ${LT[l.t]} ${k}`};
     if(l.t==="m"){o.why="ให้ P กับ pf → Q = P·tan(cos⁻¹ pf) (ล้าหลัง Q บวก)";o.write=`P${k} = ${nf(z.re)} W<br>${ansS(`Q${k} = ${nf(z.re)}·tan(cos⁻¹ ${l.pf}) = ${nf(z.im)} VAR`)}`;o.keys=TL(`${l.P*1e3}*tan(cos⁻¹(${l.pf}))`,tn(z.im));}
@@ -1909,6 +1900,21 @@ const T3D={g:3,name:"รวมกำลังทีละโหลด (วิธ
   sol:`<ol>${PQ.map((z,i)=>`<li>โหลด ${i+1}: ${M_(`P = ${nf(z.re)} W, Q = ${nf(z.im)} VAR`)}</li>`).join("")}<li>${M_(`P = ${nf(St.re)} W, Q = ${nf(St.im)} VAR`)}</li><li>${M_(`|S| = ${nf(Sm)} VA, pf = ${nf(pf)}`)} ${lag?"ล้าหลัง":"นำหน้า"}</li><li>${M_(`|I| = |S|/V = ${nf(I)} A`)}</li></ol>`};
  }};
 /* ---------------- ข้อ 4 three-phase ---------------- */
+/* every answer field carries a step group (s) so exam mode can give step marks */
+const G_=(s,f)=>(f.s=s,f);
+const IL_OPTS=["เท่ากับกระแสเฟสของเฟสนั้น","√3 เท่าของกระแสเฟส มุม −30°","กระแสเฟสหารด้วย √3"];
+function f4(Vp,VL,zs,I,In,o={}){
+  const L=[];
+  if(o.z){if(zs.length===1)L.push(G_("Z",F_("ZY ส่วนจริง (R)",zs[0].re,"Ω")),G_("Z",F_("ZY ส่วนจินตภาพ (X)",zs[0].im,"Ω")),G_("Z",F_("|ZY|",cmag(zs[0]),"Ω")),G_("Z",F_("มุม ZY",cang(zs[0]),"°","a")));
+    else zs.forEach((z,i)=>L.push(G_("Z",F_(`|Z${i+1}|`,cmag(z),"Ω")),G_("Z",F_(`มุม Z${i+1}`,cang(z),"°","a"))));}
+  ["AN","BN","CN"].forEach((n,i)=>L.push(G_("Vp",F_(`แรงดันเฟส |V${n}|`,Vp,"V")),G_("Vp",F_(`มุม V${n}`,[0,-120,120][i],"°","a"))));
+  ["AB","BC","CA"].forEach((n,i)=>L.push(G_("VL",F_(`แรงดันไลน์ |V${n}|`,VL,"V")),G_("VL",F_(`มุม V${n}`,[30,-90,150][i],"°","a"))));
+  ["AN","BN","CN"].forEach((n,i)=>L.push(G_("Ip",F_(`กระแสเฟส |I${n}|`,cmag(I[i]),"A")),G_("Ip",F_(`มุม I${n}`,cang(I[i]),"°","a"))));
+  L.push(G_("IL",F_("กระแสไลน์ IaA, IbB, IcC (ต่อแบบ Y)",0,"","s",IL_OPTS)));
+  if(In)L.push(G_("In",F_("กระแสนิวทรัล |InN|",cmag(In),"A")),G_("In",F_("มุม InN (ทิศ n → N)",cang(In),"°","a")));
+  return L;
+}
+
 const T4A={g:4,name:"สามเฟส Y–Y สมดุล (ตัวอย่างที่ 1)",
  note:"อาจารย์: น่าจะออก Y–Y ไม่น่าเกินตัวอย่างที่ 1 โจทย์บรรยายระบบมาแล้วให้วาดวงจรเอง (วาดรูปได้คะแนน) หาแรงดันเฟส แรงดันสาย กระแสเฟส กระแสสาย ต้องซ้อมกดเครื่องคิดเลขโหมด complex",
  gen(){const vl=pick([0,0,0,1]);return{vl,V:vl?pick([380,400,415]):pick([220,220,230,240]),f:50,R:pick([10,20,30,40,50,100]),xt:pick([1,1,2]),X:0}},
@@ -1922,7 +1928,7 @@ const T4A={g:4,name:"สามเฟส Y–Y สมดุล (ตัวอย�
   const zs=p.xt===1?`${p.R} Ω + ${p.X} H`:`${p.R} Ω + ${p.X} µF`;
   return{steps:t4aSteps(p,w,Vp,VL,Z,Ia,Ib,Ic),fig:yyFig(["Y"],["Y"],["Y"],Vp,`ZY = ${p.R} Ω ต่ออนุกรมกับ ${p.xt===1?p.X+" H":p.X+" µF"} (f = ${p.f} Hz)`),
   text:`แหล่งจ่ายสามเฟสสมดุล ความถี่ ${p.f} Hz ต่อแบบ Y ${p.vl?`แรงดันสาย (line-to-line) ${p.V} V (rms)`:`ขนาดแรงดันแต่ละเฟสเทียบกับนิวทรัลเท่ากับ ${p.V} V (rms)`} ต่อกับภาระสมดุลแบบ Y ภาระแต่ละเฟสเป็น${p.xt===1?`ตัวเหนี่ยวนำ ${p.X} H`:`ตัวเก็บประจุ ${p.X} µF`}ต่ออนุกรมกับตัวต้านทาน ${p.R} Ω ให้ Van เป็นมุมอ้างอิง 0° ลำดับเฟส abc จงวาดวงจร แล้วหาแรงดันเฟส แรงดันไลน์ กระแสเฟส และกระแสไลน์ของภาระ`,
-  f:[F_("|Z| ต่อเฟส",cmag(Z),"Ω"),F_("มุม Z",cang(Z),"°","a"),F_("แรงดันเฟส |VAN|",Vp,"V"),F_("แรงดันไลน์ |VAB|",VL,"V"),F_("มุม VAB",30,"°","a"),F_("มุม VBC",-90,"°","a"),F_("มุม VCA",150,"°","a"),F_("|IaA| (กระแสไลน์ = กระแสเฟส)",cmag(Ia),"A"),F_("มุม IaA",cang(Ia),"°","a"),F_("มุม IbB",cang(Ib),"°","a"),F_("มุม IcC",cang(Ic),"°","a")],
+  f:f4(Vp,VL,[Z],[Ia,Ib,Ic],null,{z:1}),
   sol:`<ol>
   <li>วาดวงจร Y–Y: ฝั่งแหล่งจ่าย Van, Vbn, Vcn ต่างเฟสกัน 120° ฝั่งภาระ ZY ต่อเป็นดาว จุด n ต่อกับ N</li>
   <li>${p.xt===1?M_(`XL = 2πfL = 2π·${p.f}·${p.X} = ${nf(w*p.X)} Ω`):M_(`XC = 1/(2πfC) = 1/(2π·${p.f}·${p.X}×10⁻⁶) = ${nf(1/(w*p.X*1e-6))} Ω`)} → <b>${M_(`ZY = ${fr(Z)} = ${fp(Z)} Ω`)}</b></li>
@@ -1947,8 +1953,8 @@ const T4B={g:4,name:"สามเฟส Y–Y โหลดไม่สมดุ�
   const I=zs.map((z,i)=>cdiv(Vs[i],z)), Isum=I.reduce(cadd,Cx(0)), In=cscl(Isum,-1), VL=p.Vp*Math.sqrt(3);
   const zl=z=>`${fr(z)} Ω`, L=["A","B","C"];
   return{steps:t4bSteps(p,zs,Vs,I,Isum,In,VL),fig:yyFig(["1"],["2"],["3"],p.Vp,`Z1 = ${zl(zs[0])},  Z2 = ${zl(zs[1])},  Z3 = ${zl(zs[2])}`),
-  text:`แหล่งจ่ายสามเฟส 50 Hz ต่อแบบ Y ขนาดแรงดันแต่ละเฟสเทียบกับนิวทรัล ${p.Vp} V (rms) ลำดับเฟส abc (Van = ${p.Vp}∠0°) ต่อกับภาระแบบ Y ที่ไม่สมดุล มีสายนิวทรัล: Z1 = ${zl(zs[0])} (เฟส a), Z2 = ${zl(zs[1])} (เฟส b), Z3 = ${zl(zs[2])} (เฟส c) จงหาแรงดันเฟส แรงดันไลน์ กระแสไลน์ทั้งสามเส้น และกระแสในสายนิวทรัล`,
-  f:[F_("แรงดันเฟส |VAN|",p.Vp,"V"),F_("แรงดันไลน์ |VAB|",VL,"V"),...I.flatMap((x,i)=>[F_(`|I${"abc"[i]}${L[i]}|`,cmag(x),"A"),F_(`มุม I${"abc"[i]}${L[i]}`,cang(x),"°","a")]),F_("|InN| ในสายนิวทรัล",cmag(In),"A"),F_("มุม InN (ทิศ n → N ตามรูป)",cang(In),"°","a")],
+  text:`แหล่งจ่ายสามเฟส 50 Hz ต่อแบบ Y ขนาดแรงดันแต่ละเฟสเทียบกับนิวทรัล ${p.Vp} V (rms) ลำดับเฟส abc (Van = ${p.Vp}∠0°) ต่อกับภาระแบบ Y ที่ไม่สมดุล มีสายนิวทรัล: Z1 = ${zl(zs[0])} (เฟส a), Z2 = ${zl(zs[1])} (เฟส b), Z3 = ${zl(zs[2])} (เฟส c) จงวาดวงจร แล้วหาแรงดันเฟส แรงดันไลน์ กระแสเฟส และกระแสไลน์ของภาระ รวมทั้งกระแสในสายนิวทรัล`,
+  f:f4(p.Vp,VL,zs,I,In),
   sol:`<ol>
   <li>มีสายนิวทรัล จุด N ของภาระต่อกับ n ของแหล่งจ่าย ภาระแต่ละเฟสจึงได้แรงดันเฟสเต็ม: ${M_(`VAN = ${p.Vp}∠0°, VBN = ${p.Vp}∠−120°, VCN = ${p.Vp}∠120° V`)}</li>
   <li>แรงดันไลน์ไม่ขึ้นกับภาระ: ${M_(`VAB = ${nf(VL)}∠30°, VBC = ${nf(VL)}∠−90°, VCA = ${nf(VL)}∠150° V`)}</li>
@@ -1956,6 +1962,33 @@ const T4B={g:4,name:"สามเฟส Y–Y โหลดไม่สมดุ�
   <li>KCL ที่โหนด N (ทิศ InN ตามรูปไหลจาก n เข้า N): ${M_("InN + IaA + IbB + IcC = 0")} → ${M_(`InN = −(IaA + IbB + IcC) = −[${I.map(frp).join(" + ")}]`)}</li>
   <li>${M_(`= −(${fr(Isum)})`)} → <b>${M_(`InN = ${fr(In)} = ${fp(In)} A`)}</b> ไม่เป็นศูนย์เพราะโหลดไม่สมดุล (มุมอาจเขียนแบบบวก ${na(cang(In)<0?cang(In)+360:cang(In))}° ก็ได้ เป็นมุมเดียวกัน)</li>
   <li>ทริกเครื่องคิดเลข: หาร complex ในรูปเชิงขั้ว (∠) จะพลาดน้อยกว่า ถ้าพิมพ์แบบ a + bi ต้องใส่วงเล็บที่ตัวหารเสมอ</li></ol>`};
+ }};
+
+const T4C={g:4,name:"สามเฟส Y–Y โหลดไม่สมดุล ให้ค่า R, L, C (ต้องแปลงเป็น Z เอง)",
+ note:"รวมสองเรื่องที่อาจารย์เตือน: โหลดอาจไม่สมดุล (Z1 ≠ Z2 ≠ Z3) และต้องแปลง L, C เป็นอิมพีแดนซ์ก่อน (ได้คะแนนแยก) แล้วคิดทีละเฟส I = V/Z",
+ gen(){const ph=()=>{const t=pick([1,1,2]);return{R:pick([10,20,30,40,50]),t,X:t===1?pick([0.05,0.1,0.2]):pick([100,150,200])}};
+   for(;;){const p={Vp:pick([220,220,230]),f:50,a:ph(),b:ph(),c:ph()};const k=x=>`${x.R}|${x.t}|${x.X}`;if(new Set([k(p.a),k(p.b),k(p.c)]).size===3)return p}},
+ edit:p=>[["Vp","แรงดันเฟส","V"],["f","ความถี่","Hz"],...["a","b","c"].flatMap((k,i)=>[[`${k}.R`,`เฟส ${k} (Z${i+1}): R`,"Ω"],[`${k}.t`,`เฟส ${k}: ชนิด (1 = L, 2 = C)`,""],[`${k}.X`,`เฟส ${k}: ค่า L (H) หรือ C (µF)`,""]])],
+ build(p){
+  const w=2*Math.PI*p.f, ks=["a","b","c"];
+  const zs=ks.map(k=>{const q=p[k];return q.t===1?Cx(q.R,w*q.X):Cx(q.R,-1/(w*q.X*1e-6))});
+  const Vs=[cpol(p.Vp,0),cpol(p.Vp,-120),cpol(p.Vp,120)];
+  const I=zs.map((z,i)=>cdiv(Vs[i],z)), Isum=I.reduce(cadd,Cx(0)), In=cscl(Isum,-1), VL=p.Vp*Math.sqrt(3);
+  const dsc=q=>`${q.R} Ω อนุกรม ${q.t===1?q.X+" H":q.X+" µF"}`;
+  const cv=(q,i)=>q.t===1?`XL${i+1} = 2πfL = 2π·${p.f}·${q.X} = ${nf(w*q.X)} Ω → Z${i+1} = ${fr(zs[i])} = ${fp(zs[i])} Ω`:`XC${i+1} = 1/(2πfC) = 1/(2π·${p.f}·${q.X}×10⁻⁶) = ${nf(1/(w*q.X*1e-6))} Ω → Z${i+1} = ${fr(zs[i])} = ${fp(zs[i])} Ω`;
+  const steps=t4bSteps(p,zs,Vs,I,Isum,In,VL);
+  stepPack(steps,yyFig(["1"],["2"],["3"],p.Vp,"",{}),"","",{short:"แปลง Z",title:"แปลง L, C เป็นอิมพีแดนซ์ทีละเฟส (ได้คะแนนแยก)",why:"XL = 2πfL ใส่ +j, XC = 1/(2πfC) ใส่ −j แล้วรวมกับ R ของเฟสนั้น",write:ks.map((k,i)=>cv(p[k],i)).join("<br>")});
+  steps.splice(1,0,steps.pop());
+  return{steps,fig:yyFig(["1"],["2"],["3"],p.Vp,`Z1: ${dsc(p.a)},  Z2: ${dsc(p.b)},  Z3: ${dsc(p.c)}  (f = ${p.f} Hz)`),
+  text:`แหล่งจ่ายสามเฟส ${p.f} Hz ต่อแบบ Y ขนาดแรงดันแต่ละเฟสเทียบกับนิวทรัล ${p.Vp} V (rms) ลำดับเฟส abc (Van = ${p.Vp}∠0°) ต่อกับภาระแบบ Y ที่ไม่สมดุล มีสายนิวทรัล ภาระแต่ละเฟสเป็นตัวต้านทานต่ออนุกรมกับตัวเหนี่ยวนำหรือตัวเก็บประจุ ดังนี้ เฟส a (Z1): ${dsc(p.a)}, เฟส b (Z2): ${dsc(p.b)}, เฟส c (Z3): ${dsc(p.c)} จงวาดวงจร แล้วหาแรงดันเฟส แรงดันไลน์ กระแสเฟส และกระแสไลน์ของภาระ รวมทั้งกระแสในสายนิวทรัล`,
+  f:f4(p.Vp,VL,zs,I,In,{z:1}),
+  sol:`<ol>
+  <li>วาดวงจร Y–Y: แหล่งจ่าย Van, Vbn, Vcn ห่างกัน 120° จุด n ต่อกับ N ของภาระ</li>
+  ${ks.map((k,i)=>`<li>${M_(cv(p[k],i))}</li>`).join("")}
+  <li>แรงดันเฟสที่ภาระ (มีสายนิวทรัล): ${M_(`VAN = ${p.Vp}∠0°, VBN = ${p.Vp}∠−120°, VCN = ${p.Vp}∠120° V`)}</li>
+  <li>แรงดันไลน์: ${M_(`VAB = ${nf(VL)}∠30°, VBC = ${nf(VL)}∠−90°, VCA = ${nf(VL)}∠150° V`)}</li>
+  ${I.map((x,i)=>`<li>${M_(`I${"ABC"[i]}N = I${"abc"[i]}${"ABC"[i]} = ${fp(Vs[i])} / ${fp(zs[i])} = ${fp(x)} = ${fr(x)} A`)} (Y: กระแสไลน์ = กระแสเฟส)</li>`).join("")}
+  <li>KCL ที่โหนด N: ${M_(`InN = −(IaA + IbB + IcC) = −(${fr(Isum)}) = ${fp(In)} A`)}</li></ol>`};
  }};
 
 /* ---------- step-by-step for ข้อ 4 ---------- */
@@ -1980,7 +2013,7 @@ function phPlot(items,o={}){
   return `<svg viewBox="0 0 ${Wd} ${Hd}" width="${Wd}" fill="none" stroke="currentColor" stroke-width="2">${b}</svg>`;
 }
 const vStar=(Vs,lab,op=[1,1,1])=>Vs.map((v,i)=>({b:v,c:P3[i],l:lab?lab[i]:"",op:op[i]}));
-function stepPack(out,hlFig,right,cap,o){out.push({...o,fig:`<div class="q3fig"><div class="circ wide"><p class="q3cap">วงจร</p>${hlFig.replace(/style="max-width:920px;min-width:640px"/,'style="width:100%"')}</div><div><p class="q3cap">${cap}</p>${right}</div></div>`})}
+function stepPack(out,hlFig,right,cap,o){out.push({...o,fig:`<div class="fig">${hlFig}</div>${right?`<div class="q4ph"><p class="q3cap">${cap}</p>${right}</div>`:""}`})}
 function t4aSteps(p,w,Vp,VL,Z,Ia,Ib,Ic){
   const out=[], fig=hl=>yyFig(["Y"],["Y"],["Y"],Vp,"",hl), Vs=[cpol(Vp,0),cpol(Vp,-120),cpol(Vp,120)], Is=[Ia,Ib,Ic];
   const X=p.xt===1?w*p.X:-1/(w*p.X*1e-6);
@@ -2029,16 +2062,17 @@ function t4bSteps(p,zs,Vs,I,Isum,In,VL){
   return out;
 }
 /* ================= calc UI ================= */
-const TPL=[T1E,T1A,T1C,T1B,T1D,T2A,T2C,T2B,T3,T3E1,T3E3,T3D,T3C,T3B,T4A,T4B];
+const TPL=[T1E,T1A,T1C,T1B,T1D,T2A,T2C,T2B,T3,T3E1,T3E3,T3D,T3C,T3B,T4A,T4B,T4C];
 window.__TPL=TPL;
+function fieldH(f,i,uid){return`<div class="field"><label for="${uid}_${i}">${f.l}</label><div class="row">${f.t==="s"?`<select id="${uid}_${i}"><option value="">เลือก</option>${f.o.map((o,j)=>`<option value="${j}">${o}</option>`).join("")}</select>`:`<input id="${uid}_${i}" inputmode="decimal" autocomplete="off">`}<span class="u">${f.u}</span></div></div>`}
 function card(tp){
   const d=document.createElement("article"); d.className="prob"; d.dataset.g=tp.g;
   let p=tp.gen(); if(tp.fix)p=tp.fix(p);
   const render=()=>{
     let b; try{b=tp.build(p);if(b.f.some(f=>f.t!=="s"&&!isFinite(f.v)))throw 0}catch(e){d.querySelector(".body").innerHTML=`<p class="hint">${e&&e.userMsg||"ค่าที่ใส่คำนวณไม่ได้ (เช่น หารด้วยศูนย์) ลองตรวจตัวเลขอีกครั้ง"}</p>`;return}
     const uid="q"+Math.random().toString(36).slice(2,8);
-    d.querySelector(".body").innerHTML=`${b.fig?`<div class="fig">${b.fig}</div>`:""}<p>${b.text}</p>
-    <div class="fields">${b.f.map((f,i)=>`<div class="field"><label for="${uid}_${i}">${f.l}</label><div class="row">${f.t==="s"?`<select id="${uid}_${i}"><option value="">เลือก</option>${f.o.map((o,j)=>`<option value="${j}">${o}</option>`).join("")}</select>`:`<input id="${uid}_${i}" inputmode="decimal" autocomplete="off">`}<span class="u">${f.u}</span></div></div>`).join("")}</div>
+    d.querySelector(".body").innerHTML=`${b.fig&&tp.g!==4?`<div class="fig">${b.fig}</div>`:""}<p>${b.text}</p>
+    <div class="fields">${b.f.map((f,i)=>fieldH(f,i,uid)).join("")}</div>
     <div class="bar"><button class="btn primary" data-a="check">ตรวจ</button><button class="btn" data-a="sol">ดูวิธีทำ</button>${b.steps?`<button class="btn" data-a="steps">วิธีทำทีละขั้น</button>`:""}<span class="score"></span></div>
     ${b.steps?`<div class="stepbox" hidden><div class="sdots"></div><div class="bar"><span class="stepn grow"></span><button class="btn small" data-a="sreset">เริ่มใหม่</button><button class="btn small" data-a="sprev">◀ ย้อนกลับ</button><button class="btn small primary" data-a="snext">ถัดไป ▶</button></div><div class="fig"></div><div class="stepmsg"></div></div>`:""}
     <div class="sol"><div class="key"><b>คำตอบ:</b> ${b.f.map(f=>`${f.l} = ${f.t==="s"?f.o[f.v]:(f.t==="a"?na(f.v):nf(f.v))} ${f.u}`).join(" · ")}</div>${b.sol}</div>`;
