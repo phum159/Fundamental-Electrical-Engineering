@@ -1150,6 +1150,41 @@ function brLab(b){const L=b.lab;if(L.h){const right=(b.d>0)===L.aLeft;return CT(
 const dirEdit=(n,list)=>list.map((s,i)=>[`dr.${i}`,`ทิศ ${s}`,""]);
 function curLines(brs){return brs.map(b=>`${M_(`${ohmSub(b)} = ${nf(brVal(b))} A`)}`).join(", ")+(brs.some(b=>brVal(b)<0)?" (ค่าติดลบแปลว่ากระแสไหลจริงสวนทิศที่กำหนด)":"")}
 
+/* ---------------- ข้อ 1: exam-style step-by-step for the nodal problems ---------------- */
+/* o: fig, at {node:[x,y]} to ring the node being solved, nodes, kcl (branches for KCL), G, B, sym (equation lines), V (solved node voltages),
+      cur {txt,warn} for a current-source branch, vt {name,write,key,val} for the voltage across it, src [[label,expr,val]], PR [values] */
+function dcSteps(o){
+  const out=[], ring=n=>{const q=o.at[n];return q?o.fig.replace(/<\/g><\/svg>$/,`<circle cx="${q[0]}" cy="${q[1]}" r="17" fill="none" stroke="var(--hl)" stroke-width="3.5"/></g></svg>`):o.fig};
+  const pk=(fig,x)=>out.push({...x,fig:`<div class="fig">${fig}</div>`});
+  const N=o.nodes, two=N.length===2, nm=n=>n.replace(/^V/,"");
+  pk(o.fig,{short:"ตั้งโหนด",title:"ตั้งกราวด์ ชื่อโหนด และทิศกระแส",why:"เลือกเส้นล่างเป็นกราวด์ (0 V) ตั้งชื่อแรงดันโหนดที่ยังไม่รู้ แล้วใช้ทิศกระแสตามที่โจทย์กำหนด (ตั้งทิศผิดก็ไม่เป็นไร คำตอบจะติดลบเอง)",
+    write:`โหนดที่ต้องหา: ${N.join(", ")} (${two?"2 สมการ":"1 สมการ"})<br>${o.brs.map(dirTxt).join("<br>")}`,warn:"วาดรูปวงจรพร้อมทิศกระแสลงกระดาษด้วย ได้คะแนน"});
+  if(o.cur) pk(o.fig,{short:"แหล่ง I",title:"กิ่งที่มีแหล่งจ่ายกระแส",why:"กระแสในกิ่งนี้ถูกบังคับโดยแหล่งจ่ายกระแส รู้ค่าเลยไม่ต้องใช้กฎของโอห์ม",write:o.cur.txt,warn:o.cur.warn||""});
+  N.forEach(n=>{const bs=o.kcl.filter(b=>b.a===n||b.b===n);
+    pk(ring(n),{short:`KCL ${nm(n)}`,title:`KCL ที่โหนด ${nm(n)}`,why:"ผลรวมกระแสเข้า = ผลรวมกระแสออก ตามทิศที่โจทย์กำหนด แล้วแทนแต่ละกระแสด้วยกฎของโอห์ม (ศักย์ต้นทาง − ปลายทาง)/R",
+      write:`${kclSym(n,o.kcl)}<br>${bs.map(b=>ohmSub(b)).join("<br>")}`})});
+  const num=o.G.map((r,i)=>r.map((g,j)=>`${j?(g<0?" − ":" + "):(g<0?"−":"")}${nf(Math.abs(g))}·${N[j]}`).join("")+` = ${nf(o.B[i])}`);
+  pk(o.fig,{short:"จัดรูป",title:"จัดรูปสมการ",why:"แทนกฎของโอห์มลง KCL แล้วรวมพจน์ของแรงดันโหนดแต่ละตัว (คูณ/หารให้อยู่ในรูป G·V = I)",
+    write:o.sym.map((l,i)=>`${l}<br>→ ${num[i]}`).join("<br>")});
+  if(two){const [a,b,c,d]=[o.G[0][0],o.G[0][1],o.G[1][0],o.G[1][1]],det=a*d-b*c;
+    pk(o.fig,{short:"แก้สมการ",title:"แก้สมการ 2 ตัวแปร",why:"ใช้ Cramer หรือให้เครื่องคิดเลขแก้ระบบสมการ",
+      write:`Δ = (${nf(a)})(${nf(d)}) − (${nf(b)})(${nf(c)}) = ${nf(det)}<br>${N[0]} = [(${nf(o.B[0])})(${nf(d)}) − (${nf(b)})(${nf(o.B[1])})]/Δ<br>${ansS(`${N[0]} = ${nf(o.V[0])} V`)}<br>${N[1]} = [(${nf(a)})(${nf(o.B[1])}) − (${nf(o.B[0])})(${nf(c)})]/Δ<br>${ansS(`${N[1]} = ${nf(o.V[1])} V`)}`,
+      keys:kl(TL(`simult([[${tn(a)},${tn(b)}][${tn(c)},${tn(d)}]],[[${tn(o.B[0])}][${tn(o.B[1])}]])`,`${N[0]} = ${tn(o.V[0])}, ${N[1]} = ${tn(o.V[1])}`),note("simult( อยู่ใน [menu] → Matrix & Vector หรือพิมพ์เอง · ใช้เศษส่วนตรง ๆ ก็ได้ เช่น 1/15+1/5")),
+      warn:"เครื่องหมายลบของพจน์ข้ามโหนดหายบ่อย เช็คว่าเมทริกซ์สมมาตร"});}
+  else pk(o.fig,{short:"แก้สมการ",title:`แก้หา ${N[0]}`,why:"สมการเดียว หารตรง ๆ",
+    write:ansS(`${N[0]} = ${nf(o.B[0])} / ${nf(o.G[0][0])} = ${nf(o.V[0])} V`),keys:TL(`(${tn(o.B[0])})/(${tn(o.G[0][0])})`,tn(o.V[0]))});
+  pk(o.fig,{short:"กระแส",title:"กระแสแต่ละกิ่งตามทิศที่กำหนด",why:"แทนแรงดันโหนดกลับเข้ากฎของโอห์ม",
+    write:o.brs.map(b=>ansS(`${ohmSub(b)} = ${nf(brVal(b))} A`)).join("<br>"),
+    keys:kl(...o.brs.filter(b=>b.src===undefined).map(b=>TL(`${b.d<0?"-":""}(${tn(b.va)}-(${tn(b.vb)}))/${b.R}`,`${b.n} = ${tn(brVal(b))}`))),
+    warn:o.brs.some(b=>brVal(b)<0)?"ค่าติดลบ = กระแสจริงไหลสวนทิศที่โจทย์กำหนด ตอบเป็นค่าติดลบได้เลย":""});
+  pk(o.fig,{short:"เช็ค KCL",title:"เช็ค KCL",why:"แทนตัวเลขกลับดูว่ากระแสเข้า = ออกจริงทุกโหนด",write:N.map(n=>`โหนด ${nm(n)}: ${kclNum(n,o.kcl)} ✓`).join("<br>")});
+  if(o.vt) pk(o.fig,{short:o.vt.name,title:"แรงดันคร่อมแหล่งจ่ายกระแส",why:"แหล่งจ่ายกระแสไม่ได้บอกแรงดัน ต้องหาจากกฎของโอห์มของตัวต้านทานที่อนุกรมอยู่",write:ansS(o.vt.write),keys:TL(o.vt.key,tn(o.vt.val))});
+  const tot=o.src.reduce((a,x)=>a+x[2],0), totR=o.PR.reduce((a,x)=>a+x,0);
+  pk(o.fig,{short:"กำลัง",title:"กำลังของแหล่งจ่ายและตัวต้านทาน",why:"แหล่งจ่าย: P = V × กระแสที่ไหลออกขั้วบวก (ติดลบ = ดูดกลืน) · ตัวต้านทาน: P = I²R = V²/R",
+    write:`${o.src.map(x=>ansS(`${x[0]} = ${x[1]} = ${nf(x[2])} W`)).join(" ")}<br>${o.PR.map((x,i)=>ansS(`P(R${i+1}) = ${nf(x)} W`)).join(" ")}<br>เช็ค: จ่ายรวม ${nf(tot)} W = ใช้รวม ${nf(totR)} W ✓`,
+    keys:TL(o.PR.map(x=>tn(x)).join("+"),tn(totR))});
+  return out;
+}
 /* ---------------- ข้อ 1A ---------------- */
 const T1A={g:1,name:"แหล่งจ่ายแรงดัน 2 ตัว ตัวต้านทาน 3 ตัว (แบบ Ex1)",
  note:"แบบ Ex1: VS1 – R1 – VB – R3 – VS2 และ R2 ลงกราวด์ ทิศกระแสที่โจทย์กำหนดสุ่มใหม่ทุกข้อ วิธีทำได้ทั้ง nodal (KCL) และ mesh (KVL) ตามตัวอย่าง EX2",
@@ -1167,7 +1202,8 @@ const T1A={g:1,name:"แหล่งจ่ายแรงดัน 2 ตัว �
   const body=Vsrc(70,40,190,`VS1 = ${Vs1} V`)+Rh(70,240,40,`R1 = ${R1} Ω`)+dot(240,40)+NT(240,28,"VB")+NT(70,28,"VA")+NT(410,28,"VC")
    +Rv(240,40,190,`R2 = ${R2} Ω`)+Rh(240,410,40,`R3 = ${R3} Ω`)+W(70,190,410,190)+dot(240,190)+brs.map(brLab).join("")
    +W(410,40,410,98)+`<circle cx="410" cy="115" r="17"/>`+W(410,132,410,190)+T(410,112,"+")+T(410,127,"−")+T(436,120,`VS2 = ${Vs2} V`,"start");
-  return{fig:svg(540,215,body,90),
+  const fig=svg(540,215,body,90);
+  return{fig,steps:dcSteps({fig,at:{VB:[240,40]},nodes:["VB"],brs,kcl:brs,G:[[G]],B:[rhs],V:[VB],sym:[`VB(1/${R1} + 1/${R2} + 1/${R3}) = ${Vs1}/${R1} + ${Vs2}/${R3}`],src:[["P(VS1)",`${Vs1} × ${nf(i1)}`,P1],["P(VS2)",`${Vs2} × ${nf(i3)}`,P2]],PR}),
   text:`จากวงจร กำหนดทิศกระแสดังนี้: ${brs.map(dirTxt).join(", ")} (VA คือขั้วบวกของ VS1, VC คือขั้วบวกของ VS2) จงหาแรงดัน VB กระแส I1 I2 I3 ตามทิศที่กำหนด และกำลังที่แหล่งจ่ายแต่ละตัวจ่ายออก`,
   f:[F_("VB",VB,"V"),F_("I1",I1,"A"),F_("I2",I2,"A"),F_("I3",I3,"A"),F_("P ที่ VS1 จ่ายออก",P1,"W"),F_("P ที่ VS2 จ่ายออก",P2,"W"),...PR.map((x,i)=>F_(`P ที่ R${i+1} ใช้`,x,"W"))],
   sol:`<p><b>วิธีที่ 1: Nodal (KCL ที่โหนด VB)</b></p><ol>
@@ -1201,7 +1237,10 @@ const T1C={g:1,name:"ฝึกเพิ่ม: เปลี่ยนแหล่
   const [I1,I2,I3]=brs.map(brVal), PVs=Vs*iv, PIs=Vterm*ic, PR=[((L?ic:iv))**2*R1,VB*VB/R2,((L?iv:ic))**2*R3];
   let body=Rh(70,240,40,`R1 = ${R1} Ω`)+dot(240,40)+NT(240,28,"VB")+Rv(240,40,190,`R2 = ${R2} Ω`)+Rh(240,410,40,`R3 = ${R3} Ω`)+W(70,190,410,190)+NT(70,28,"VA")+NT(410,28,"VC")+brs.map(brLab).join("");
   body+=L?Isrc(70,40,190,"",d>0)+T(46,120,`${Is} A`,"end")+Vsrc(410,40,190,"",0)+T(436,120,`${Vs} V`,"start"):Vsrc(70,40,190,`${Vs} V`)+Isrc(410,40,190,`${Is} A`,d>0);
-  return{fig:svg(480,215,body,50),
+  const fig=svg(480,215,body,50);
+  return{fig,steps:dcSteps({fig,at:{VB:[240,40]},nodes:["VB"],brs,kcl:brs,G:[[G]],B:[rhs],V:[VB],sym:[`VB(1/${Rvs} + 1/${R2}) = ${Vs}/${Rvs} ${d>0?"+":"−"} ${Is}`],
+    cur:{txt:`แหล่งจ่าย${d>0?"ดัน":"ดึง"}กระแส ${Is} A ${d>0?"เข้าหา":"ออกจาก"}โหนด VB ผ่าน R${L?1:3}<br>${ansS(ohmSub(L?b1:b3))}`,warn:`R${L?1:3} อนุกรมกับแหล่งจ่ายกระแส จึงไม่อยู่ในสมการโหนด`},
+    vt:{name:vn,write:`${vn} = VB + (${nf(ic)})(${Rc}) = ${nf(Vterm)} V`,key:`${tn(VB)}+(${tn(ic)})*${Rc}`,val:Vterm},src:[["P(Vs)",`${Vs} × ${nf(iv)}`,PVs],["P(Is)",`${vn} × ${nf(ic)}`,PIs]],PR}),
   text:`จากวงจร กำหนดทิศกระแสดังนี้: ${brs.map(dirTxt).join(", ")} จงหาแรงดัน VB กระแส I1 I2 I3 ตามทิศที่กำหนด แรงดันคร่อมแหล่งจ่ายกระแส (${vn}) และกำลังที่แหล่งจ่ายแต่ละตัวจ่ายออก`,
   f:[F_("VB",VB,"V"),F_("I1",I1,"A"),F_("I2",I2,"A"),F_("I3",I3,"A"),F_(`แรงดันคร่อมแหล่งจ่ายกระแส ${vn}`,Vterm,"V"),F_(`P ที่แหล่งจ่าย ${Vs} V จ่ายออก`,PVs,"W"),F_(`P ที่แหล่งจ่าย ${Is} A จ่ายออก`,PIs,"W"),...PR.map((x,i)=>F_(`P ที่ R${i+1} ใช้`,x,"W"))],
   sol:`<ol>
@@ -1238,7 +1277,11 @@ const T1B={g:1,name:"ฝึกเพิ่ม: สองโหนด ตัว�
   body+=Rh(xa2,xb,40,`R3 = ${R3} Ω`)+dot(xb,40)+NT(xb,28,"B")+Rv(xb,40,180,`R4 = ${R4} Ω`);
   if(pos===2) body+=W(xb,40,xb+100,40)+Isrc(xb+100,40,180,`${Is} A`,d>0);
   body+=W(50,180,xend,180)+brs.map(brLab).join("");
-  return{fig:svg(xend+80,210,body,40),
+  const fig=svg(xend+80,210,body,40);
+  return{fig,steps:dcSteps({fig,at:{VA:[180,40],VB:[xb,40]},nodes:["VA","VB"],brs,kcl:all,G:[[g11,-g12],[-g12,g22]],B:[b1,b2],V:[VA,VB],
+    sym:[`(1/${R1} + 1/${R2} + 1/${R3})VA − (1/${R3})VB = ${Vs}/${R1}${pos===1?` ${d>0?"+":"−"} ${Is}`:""}`,`−(1/${R3})VA + (1/${R3} + 1/${R4})VB = ${pos===2?`${d>0?"":"−"}${Is}`:"0"}`],
+    cur:{txt:`แหล่งจ่าย${d>0?"ดัน":"ดึง"}กระแส ${Is} A ${d>0?"เข้า":"ออกจาก"}โหนด ${pos===1?"A":"B"} ใส่ในสมการ KCL เป็นค่าที่รู้แล้ว`},
+    src:[["P(Vs)",`${Vs} × ${nf(i1)}`,PVs],["P(Is)",`${d>0?"":"−"}${node} × ${Is}`,PIs]],PR}),
   text:`กำหนดทิศกระแสดังนี้: ${brs.map(dirTxt).join(", ")} (VS คือขั้วบวกของแหล่งจ่าย ${Vs} V, VA และ VB คือแรงดันที่โหนด A และ B เทียบกับกราวด์) จงหา VA, VB, กระแส I1–I4 ตามทิศที่กำหนด, กำลังที่แหล่งจ่ายแต่ละตัวจ่ายออก และกำลังที่ R4 ใช้`,
   f:[F_("VA",VA,"V"),F_("VB",VB,"V"),...I.map((x,i)=>F_(`I${i+1}`,x,"A")),F_(`P ที่แหล่งจ่าย ${Vs} V จ่ายออก`,PVs,"W"),F_(`P ที่แหล่งจ่าย ${Is} A จ่ายออก`,PIs,"W"),...PR.map((x,i)=>F_(`P ที่ R${i+1} ใช้`,x,"W"))],
   sol:`<ol>
@@ -1271,7 +1314,11 @@ const T1E={g:1,name:"แหล่งจ่ายแรงดัน Va + แห�
    +Rv(180,40,190,`R2 = ${R2} Ω`)+Rh(180,310,40,`R3 = ${R3} Ω`)+dot(310,40)+NT(310,28,"2")
    +Rv(310,40,190,`R4 = ${R4} Ω`)+Rh(310,440,40,`R5 = ${R5} Ω`)+NT(440,28,"3")
    +Isrc(440,40,190,`Ia = ${Ia} A`,d>0)+W(50,190,440,190)+dot(180,190)+dot(310,190)+brs.map(brLab).join("");
-  return{fig:svg(560,215,body,90),
+  const fig=svg(560,215,body,90);
+  return{fig,steps:dcSteps({fig,at:{V1:[180,40],V2:[310,40]},nodes:["V1","V2"],brs,kcl:brs,G:[[g11,-g12],[-g12,g22]],B:[b1,b2],V:[V1,V2],
+    sym:[`(1/${R1} + 1/${R2} + 1/${R3})V1 − (1/${R3})V2 = ${Va}/${R1}`,`−(1/${R3})V1 + (1/${R3} + 1/${R4})V2 = ${nf(ic)}`],
+    cur:{txt:`กระแสผ่าน R5 = กระแสของ Ia<br>${ansS(ohmSub(brs[4]))}`,warn:"R5 อนุกรมกับแหล่งจ่ายกระแส ไม่ต้องใส่ R5 ในสมการโหนด (แต่ใช้ตอนหาแรงดันคร่อม Ia)"},
+    vt:{name:"V3",write:`V3 = V2 + (${nf(ic)})(${R5}) = ${nf(V3)} V`,key:`${tn(V2)}+(${tn(ic)})*${R5}`,val:V3},src:[["P(Va)",`${Va} × ${nf(i1)}`,PVa],["P(Ia)",`V3 × ${nf(ic)}`,PIa]],PR}),
   text:`กำหนดทิศกระแสดังนี้: ${brs.map(dirTxt).join(", ")} (Va คือขั้วบวกของแหล่งจ่ายแรงดัน, แหล่งจ่ายกระแส Ia ${d>0?"ดันกระแสขึ้นไปที่โหนด 3":"ดึงกระแสลงจากโหนด 3"}, V1 V2 V3 คือแรงดันที่โหนด 1, 2, 3 เทียบกับกราวด์) จงหา V1, V2, กระแส I1–I5 ตามทิศที่กำหนด, แรงดันคร่อมแหล่งจ่ายกระแส (V3), กำลังที่แหล่งจ่ายแต่ละตัวจ่ายออก และกำลังที่ตัวต้านทานแต่ละตัวใช้`,
   f:[F_("V1",V1,"V"),F_("V2",V2,"V"),...I.map((x,i)=>F_(`I${i+1}`,x,"A")),F_("แรงดันคร่อม Ia (V3)",V3,"V"),F_("P ที่ Va จ่ายออก",PVa,"W"),F_("P ที่ Ia จ่ายออก",PIa,"W"),...PR.map((x,i)=>F_(`P ที่ R${i+1} ใช้`,x,"W"))],
   sol:`<ol>
@@ -1307,7 +1354,9 @@ const T1D={g:1,name:"ฝึกเพิ่ม: สองโหนด แหล�
    +Rv(310,40,190,`R4 = ${R4} Ω`)+Rh(310,440,40,`R5 = ${R5} Ω`)
    +W(440,40,440,98)+`<circle cx="440" cy="115" r="17"/>`+W(440,132,440,190)+T(440,112,"+")+T(440,127,"−")+T(466,120,`VS2 = ${Vs2} V`,"start")
    +W(50,190,440,190)+dot(180,190)+dot(310,190)+brs.map(brLab).join("");
-  return{fig:svg(550,215,body,90),
+  const fig=svg(550,215,body,90);
+  return{fig,steps:dcSteps({fig,at:{VA:[180,40],VB:[310,40]},nodes:["VA","VB"],brs,kcl:brs,G:[[g11,-g12],[-g12,g22]],B:[b1,b2],V:[VA,VB],
+    sym:[`(1/${R1} + 1/${R2} + 1/${R3})VA − (1/${R3})VB = ${Vs1}/${R1}`,`−(1/${R3})VA + (1/${R3} + 1/${R4} + 1/${R5})VB = ${Vs2}/${R5}`],src:[["P(VS1)",`${Vs1} × ${nf(i1)}`,P1],["P(VS2)",`${Vs2} × ${nf(i5)}`,P2]],PR}),
   text:`กำหนดทิศกระแสดังนี้: ${brs.map(dirTxt).join(", ")} (VS1, VS2 คือขั้วบวกของแหล่งจ่าย, VA และ VB คือแรงดันที่โหนด A และ B เทียบกับกราวด์) จงหา VA, VB, กระแส I1–I5 ตามทิศที่กำหนด, กำลังที่แหล่งจ่ายแต่ละตัวจ่ายออก และกำลังที่ R4 ใช้`,
   f:[F_("VA",VA,"V"),F_("VB",VB,"V"),...I.map((x,i)=>F_(`I${i+1}`,x,"A")),F_("P ที่ VS1 จ่ายออก",P1,"W"),F_("P ที่ VS2 จ่ายออก",P2,"W"),...PR.map((x,i)=>F_(`P ที่ R${i+1} ใช้`,x,"W"))],
   sol:`<ol>
