@@ -165,7 +165,6 @@ select,.btn{font:inherit;font-size:15px;padding:8px 14px;border-radius:8px;borde
 .q3fig.solo{justify-content:center}
 .q3fig{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:flex-start}
 .q3fig svg{max-width:100%}
-.q4ph{max-width:420px;margin:10px auto 0}
 .q3cap{font-size:13px;color:var(--muted);font-weight:600;margin:0 0 2px}
 .stepbox.modern{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px 18px;box-shadow:0 6px 24px rgba(20,30,40,.08)}
 .stepbox.modern .stepn{visibility:hidden}
@@ -2013,7 +2012,7 @@ function phPlot(items,o={}){
   return `<svg viewBox="0 0 ${Wd} ${Hd}" width="${Wd}" fill="none" stroke="currentColor" stroke-width="2">${b}</svg>`;
 }
 const vStar=(Vs,lab,op=[1,1,1])=>Vs.map((v,i)=>({b:v,c:P3[i],l:lab?lab[i]:"",op:op[i]}));
-function stepPack(out,hlFig,right,cap,o){out.push({...o,fig:`<div class="fig">${hlFig}</div>${right?`<div class="q4ph"><p class="q3cap">${cap}</p>${right}</div>`:""}`})}
+function stepPack(out,hlFig,right,cap,o){out.push({...o,fig:`<div class="fig">${hlFig}</div>`})}
 function t4aSteps(p,w,Vp,VL,Z,Ia,Ib,Ic){
   const out=[], fig=hl=>yyFig(["Y"],["Y"],["Y"],Vp,"",hl), Vs=[cpol(Vp,0),cpol(Vp,-120),cpol(Vp,120)], Is=[Ia,Ib,Ic];
   const X=p.xt===1?w*p.X:-1/(w*p.X*1e-6);
@@ -2037,7 +2036,7 @@ function t4aSteps(p,w,Vp,VL,Z,Ia,Ib,Ic){
     write:`IbB = ${nf(cmag(Ia))}∠(${na(cang(Ia))}° − 120°)<br>${ansS(`IbB = ${fp(Ib)} A`)}<br>IcC = ${nf(cmag(Ia))}∠(${na(cang(Ia))}° + 120°)<br>${ansS(`IcC = ${fp(Ic)} A`)}`,
     keys:kl(TL(`${tn(cang(Ia))}-120`,tn(cang(Ib))),TL(`${tn(cang(Ia))}+120`,tn(cang(Ia)+120)))});
   const p1=Ia,p2=cadd(Ia,Ib);
-  stepPack(out,fig({n:"snw"}),phPlot([{b:Ia,c:P3[0],l:"Ia",mid:1},{a:p1,b:p2,c:P3[1],l:"Ib",mid:1},{a:p2,b:cadd(p2,Ic),c:P3[2],l:"Ic",mid:1}]),"ต่อหัวต่อหาง Ia + Ib + Ic",{short:"InN",title:"กระแสในสายนิวทรัล",why:"ต่อหัวต่อหางปิดสนิท → หักล้างกันหมด",
+  stepPack(out,fig({n:"snw"}),phPlot([{b:Ia,c:P3[0],l:"Ia",mid:1},{a:p1,b:p2,c:P3[1],l:"Ib",mid:1},{a:p2,b:cadd(p2,Ic),c:P3[2],l:"Ic",mid:1}]),"ต่อหัวต่อหาง Ia + Ib + Ic",{short:"InN",title:"กระแสในสายนิวทรัล",why:"สมดุล → กระแส 3 เฟสขนาดเท่ากัน ห่างกัน 120° บวกกันได้ 0 พอดี",
     write:ansS("InN = −(IaA + IbB + IcC) = 0 A")});
   return out;
 }
