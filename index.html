@@ -72,6 +72,7 @@ select,.btn{font:inherit;font-size:15px;padding:8px 14px;border-radius:8px;borde
 .score{font-weight:600;color:var(--muted)}
 .hint{color:var(--muted);font-size:15px;margin:0 0 14px}
 /* notes */
+#tab-notes:not(.show-x) .x{display:none}
 .notes details{background:var(--panel);border:1px solid var(--line);border-radius:12px;margin-bottom:12px;padding:0 18px}
 .notes summary{cursor:pointer;font-weight:700;font-size:19px;padding:14px 0}
 .notes h4{margin:16px 0 4px;font-size:16.5px}
@@ -455,23 +456,24 @@ body.hide-nd .fig .nd, body.hide-cur .fig .cur{display:none}
 
 <section id="tab-notes" class="notes" hidden>
 <p class="hint">กดหัวข้อเพื่อเปิด/ปิด กรอบสีฟ้าคือสิ่งที่อาจารย์พูดไว้ในคลิป กรอบสีแดงคือจุดที่มักสับสน</p>
+<p class="bar"><label class="sw-l"><input type="checkbox" class="xtoggle"> รวมเนื้อหาเสริมจากสไลด์ (อาจารย์ไม่ได้บอกว่าออก)</label></p>
 <div class="said"><b>ข้อ 5 และ 6 เป็นแบบเติมคำ ไม่มีคำนวณ รวม 50 คะแนน</b> มีกล่องคำตอบใหญ่ ๆ อยู่ด้านบน ให้เลือกข้อความมาเขียนลงช่อง คำตอบใช้ซ้ำได้ (ป้องกันการเดา) ไม่ใช่ตัวเลือก ก ข ค ต้องเขียนข้อความเต็ม เช่น “แอโนด” หรือ “ทรานซิสเตอร์แบบไบโพลาร์” และเขียนลายมือให้อ่านออก ไม่งั้นไม่ได้คะแนน สัญลักษณ์ที่ใช้ในข้อสอบอาจารย์ปรับให้ตรงกับที่เรียนในห้องแล้ว</div>
 
 <div class="said"><b>แนวข้อสอบข้อ 5:</b> ถามชนิด การระบุขา การทำงาน การใช้งาน และทิศทางการไหลของกระแส ของอุปกรณ์ 3 ชนิด คือ ไดโอด (ซีเนอร์ไดโอด), BJT, MOS<br><b>อาจารย์ถามตัวอย่างในห้อง:</b> ใช้ธาตุอะไรทำ (Si, Ge) อยู่หมู่ไหน · สาร N และสาร P ใช้อะไรเป็นพาหะหลัก · ไดโอดมีกี่ขา ชื่ออะไร (แอโนด แคโทด) · ต้องมีแรงดัน 0.7 V ถึงจะมีกระแสไหล · LED ถือเป็นไดโอดไหม · สัญลักษณ์นี้คืออะไร (ซีเนอร์ไดโอด) · วงจรนี้คืออะไร (half-wave / full-wave rectifier) · อุปกรณ์นี้คือทรานซิสเตอร์ชนิดอะไร มีขาอะไร (E, B, C) · สมการ IC = IS·e<sup>VBE/VT</sup> เป็นของอะไร · FET มีขา D, G, S, B</div>
 <details open><summary>ข้อ 5.1 สารกึ่งตัวนำ</summary>
 <ul>
 <li>สารกึ่งตัวนำที่ใช้ทำไดโอดและทรานซิสเตอร์คือ <b>ซิลิคอน (Si)</b> และ <b>เจอร์เมเนียม (Ge)</b> อยู่ <b>หมู่ 4</b> มีวาเลนซ์อิเล็กตรอน 4 ตัว</li>
-<li>สารบริสุทธิ์เรียก intrinsic สารที่เจือแล้วเรียก extrinsic <span class="extra-tag">เสริม</span></li>
+<li class="x">สารบริสุทธิ์เรียก intrinsic สารที่เจือแล้วเรียก extrinsic <span class="extra-tag">เสริม</span></li>
 </ul>
 <div class="tw"><table>
 <tr><th></th><th>N-type</th><th>P-type</th></tr>
-<tr><td>เจือด้วยธาตุ</td><td>หมู่ 5 เช่น P, As, Sb (donor ผู้ให้)</td><td>หมู่ 3 เช่น B, Ga, In (acceptor ผู้รับ)</td></tr>
+<tr class="x"><td>เจือด้วยธาตุ</td><td>หมู่ 5 เช่น P, As, Sb (donor ผู้ให้)</td><td>หมู่ 3 เช่น B, Ga, In (acceptor ผู้รับ)</td></tr>
 <tr><td>พาหะส่วนใหญ่ (majority)</td><td>อิเล็กตรอน</td><td>โฮล</td></tr>
-<tr><td>พาหะส่วนน้อย (minority)</td><td>โฮล</td><td>อิเล็กตรอน</td></tr>
+<tr class="x"><td>พาหะส่วนน้อย (minority)</td><td>โฮล</td><td>อิเล็กตรอน</td></tr>
 </table></div>
 <ul>
 <li>เอา P ต่อกับ N เกิด <b>รอยต่อ P-N</b> นี่คือโครงสร้างของไดโอด (ตรงรอยต่อมี depletion region <span class="extra-tag">เสริม</span>)</li>
-<li>VLSI, ห้องสะอาด ISO 14644, HEPA filter <span class="extra-tag">เสริม</span> อยู่ในสไลด์ แต่อาจารย์ไม่ได้พูดถึงตอนบอกแนว</li>
+<li class="x">VLSI, ห้องสะอาด ISO 14644, HEPA filter <span class="extra-tag">เสริม</span> อยู่ในสไลด์ แต่อาจารย์ไม่ได้พูดถึงตอนบอกแนว</li>
 </ul>
 </details>
 
@@ -482,11 +484,11 @@ body.hide-nd .fig .nd, body.hide-cur .fig .cur{display:none}
 <li>ลูกศรในสัญลักษณ์ชี้ทิศกระแสที่ไหลได้: <b>แอโนด → แคโทด</b></li>
 <li><b>Forward bias</b> คือแอโนดศักย์สูงกว่าแคโทด ไดโอดนำกระแส แรงดันตกคร่อม Si ≈ <b>0.7 V</b>, Ge ≈ 0.3 V</li>
 <li><b>Reverse bias</b> คือแคโทดศักย์สูงกว่า มีกระแสไหลน้อยมาก ถ้าเพิ่มแรงดันย้อนกลับมากจนถึงย่าน <b>reverse breakdown</b> กระแสจะไหลมาก</li>
-<li>ไดโอดอุดมคติ (ideal): นำกระแสเหมือนสวิตช์ปิด (vD = 0) และไม่นำเหมือนสวิตช์เปิด (iD = 0)</li>
+<li class="x">ไดโอดอุดมคติ (ideal): นำกระแสเหมือนสวิตช์ปิด (vD = 0) และไม่นำเหมือนสวิตช์เปิด (iD = 0)</li>
 <li><b>ซีเนอร์ไดโอด</b> ตั้งใจใช้งานในย่าน reverse breakdown เพื่อ <b>รักษาแรงดันให้คงที่</b> (voltage regulator)</li>
 <li><b>LED</b> = Light Emitting Diode <b>เป็นไดโอดชนิดหนึ่ง</b> (อาจารย์ถามในห้อง) ต้องต่อ forward bias ถึงจะสว่าง และควรมีตัวต้านทานจำกัดกระแส</li>
 <li><b>วงจรเรียงกระแส</b> (rectifier) แปลง AC เป็น DC: แบบครึ่งคลื่น (half-wave) ใช้ไดโอด 1 ตัว, แบบเต็มคลื่นบริดจ์ (bridge) ใช้ 4 ตัว </li>
-<li>ไดโอดในรถยนต์ให้ไดชาร์จประจุแบตและกันไหลย้อน, ตัวต้านทานจำกัดกระแส, วงจรขยาย v<sub>o</sub> = A<sub>v</sub>v<sub>i</sub> <span class="extra-tag">เสริม</span></li>
+<li class="x">ไดโอดในรถยนต์ให้ไดชาร์จประจุแบตและกันไหลย้อน, ตัวต้านทานจำกัดกระแส, วงจรขยาย v<sub>o</sub> = A<sub>v</sub>v<sub>i</sub> <span class="extra-tag">เสริม</span></li>
 </ul>
 </details>
 
@@ -494,7 +496,7 @@ body.hide-nd .fig .nd, body.hide-cur .fig .cur{display:none}
 <div class="sym" id="symBJT"></div>
 <ul>
 <li>3 ขา: <b>Emitter (E), Base (B), Collector (C)</b> โครงสร้าง NPN หรือ PNP ชั้นกลางคือเบส มี 2 รอยต่อ คือ base-emitter และ base-collector</li>
-<li>คำว่า bipolar หมายถึงใช้พาหะทั้งอิเล็กตรอนและโฮล <span class="extra-tag">เสริม</span></li>
+<li class="x">คำว่า bipolar หมายถึงใช้พาหะทั้งอิเล็กตรอนและโฮล <span class="extra-tag">เสริม</span></li>
 <li><b>ลูกศรอยู่ที่ขาอิมิตเตอร์เสมอ</b> และชี้ทิศกระแส: NPN ลูกศร<b>ชี้ออก</b>, PNP ลูกศร<b>ชี้เข้า</b></li>
 <li>ทิศกระแส NPN: เข้าที่ C และ B แล้วออกที่ E ส่วน PNP: เข้าที่ E แล้วออกที่ C และ B</li>
 <li>สมการ: <b>i<sub>E</sub> = i<sub>C</sub> + i<sub>B</sub></b>, <b>β = i<sub>C</sub>/i<sub>B</sub></b>, <b>α = i<sub>C</sub>/i<sub>E</sub></b>, <b>i<sub>C</sub> ≈ I<sub>S</sub>·exp(v<sub>BE</sub>/V<sub>T</sub>)</b> โดย V<sub>T</sub> ≈ 25–26 mV ที่อุณหภูมิห้อง</li>
@@ -517,7 +519,7 @@ body.hide-nd .fig .nd, body.hide-cur .fig .cur{display:none}
 <li>ใต้เกตมีฉนวน <b>ซิลิคอนไดออกไซด์ (SiO₂)</b> กระแสเกตจึงเกือบเป็นศูนย์ MOSFET <b>ควบคุมด้วยแรงดัน V<sub>GS</sub></b></li>
 <li>NMOS สร้างบน substrate ชนิด P พาหะในช่องนำคืออิเล็กตรอน กระแสไหล <b>D → S</b> นำเมื่อ V<sub>GS</sub> &gt; V<sub>t</sub> (threshold)</li>
 <li>PMOS พาหะคือโฮล กระแสไหล <b>S → D</b> นำเมื่อ V<sub>GS</sub> &lt; V<sub>t</sub> (ค่าลบ)</li>
-<li>CMOS, power MOSFET, สมการกระแสในตาราง <span class="extra-tag">เสริม</span></li>
+<li class="x">CMOS, power MOSFET, สมการกระแสในตาราง <span class="extra-tag">เสริม</span></li>
 </ul>
 <div class="tw"><table>
 <tr><th>ย่านทำงาน (NMOS)</th><th>เงื่อนไข</th><th>กระแส</th><th>ใช้เป็น</th></tr>
@@ -535,9 +537,9 @@ body.hide-nd .fig .nd, body.hide-cur .fig .cur{display:none}
 <tr><th>มาตรฐาน / หน่วยงาน</th><th>คุมเรื่อง</th></tr>
 <tr><td>มอก. 11-2553</td><td>สายทองแดงหุ้มฉนวน PVC (สีสายแบบใหม่)</td></tr>
 <tr><td>มอก. 11-2531</td><td>มาตรฐานเก่า (สีสายแบบเก่า)</td></tr>
-<tr><td>มอก. 293-2541 <span class="extra-tag">เสริม</span></td><td>สายอะลูมิเนียมหุ้มฉนวน PVC</td></tr>
-<tr><td>มอก. 982-2556 <span class="extra-tag">เสริม</span></td><td>ท่อร้อยสายไฟ HDPE</td></tr>
-<tr><td>วสท. 2556</td><td>มาตรฐานสายไฟฟ้าและการติดตั้งทางไฟฟ้า</td></tr>
+<tr class="x"><td>มอก. 293-2541 <span class="extra-tag">เสริม</span></td><td>สายอะลูมิเนียมหุ้มฉนวน PVC</td></tr>
+<tr class="x"><td>มอก. 982-2556 <span class="extra-tag">เสริม</span></td><td>ท่อร้อยสายไฟ HDPE</td></tr>
+<tr class="x"><td>วสท. 2556</td><td>มาตรฐานสายไฟฟ้าและการติดตั้งทางไฟฟ้า</td></tr>
 <tr><td>กฟน.</td><td>ห้ามใช้สายอะลูมิเนียมเดินภายในระบบไฟฟ้าแรงต่ำ</td></tr>
 <tr><td>กฟภ.</td><td>ยอมให้อะลูมิเนียมเป็นสายเมน เฉพาะเดินลอยในอากาศนอกอาคาร</td></tr>
 </table></div>
@@ -554,7 +556,7 @@ body.hide-nd .fig .nd, body.hide-cur .fig .cur{display:none}
 <tr><td>นิวทรัล N</td><td><span class="sw" style="background:var(--N)"></span>ฟ้า</td><td>เทา <b>(ระวัง: ใหม่เทาคือ L3)</b></td></tr>
 <tr><td>สายดิน G (PE)</td><td><span class="sw" style="background:repeating-linear-gradient(90deg,var(--G) 0 8px,var(--Gy) 8px 12px)"></span>เขียวแถบเหลือง</td><td>เขียวแถบเหลือง</td></tr>
 </table></div>
-<p>ตัว <b>-G</b> ท้ายชื่อ (VAF-G, VCT-G, NYY-G) คือมีสายดินอยู่ในสายเส้นนั้น</p>
+<p class="x">ตัว <b>-G</b> ท้ายชื่อ (VAF-G, VCT-G, NYY-G) คือมีสายดินอยู่ในสายเส้นนั้น</p>
 <p>บ้านที่ใช้ไฟเฟสเดียวจะมีสายเฟส (น้ำตาล) + นิวทรัล (ฟ้า) + สายดิน (เขียวแถบเหลือง)</p>
 <h4>ชนิดสายที่ใช้ในบ้านและอาคาร</h4>
 <div class="tw"><table>
@@ -563,8 +565,8 @@ body.hide-nd .fig .nd, body.hide-cur .fig .cur{display:none}
 <tr><td>VAF / VAF-G</td><td>สายแข็งแบน 300/500 V</td><td><b>เกาะผนังตีกิ๊บ</b></td><td>ห้ามร้อยท่อ ห้ามฝังดิน</td></tr>
 <tr><td>VCT / VCT-G</td><td>สายอ่อน ฉนวน 2 ชั้น</td><td>อุปกรณ์ที่ต้อง<b>เคลื่อนย้าย</b> ทำปลั๊กพ่วง</td><td></td></tr>
 <tr><td>NYY / NYY-G</td><td>เปลือกหนา</td><td><b>ฝังดินโดยตรง</b>หรือร้อยท่อ ภายนอกอาคาร เดินบนราง</td><td></td></tr>
-<tr><td>VFF <span class="extra-tag">เสริม</span></td><td>สายอ่อนคู่ 300 V</td><td>เครื่องใช้ไฟฟ้าตามบ้าน ปลั๊กพ่วงทำเองในบ้าน</td><td></td></tr>
-<tr><td>VSF <span class="extra-tag">เสริม</span></td><td>สายอ่อนเดี่ยว 300 V</td><td>เดินลอย หรือใช้ในตู้คอนโทรล</td><td></td></tr>
+<tr class="x"><td>VFF <span class="extra-tag">เสริม</span></td><td>สายอ่อนคู่ 300 V</td><td>เครื่องใช้ไฟฟ้าตามบ้าน ปลั๊กพ่วงทำเองในบ้าน</td><td></td></tr>
+<tr class="x"><td>VSF <span class="extra-tag">เสริม</span></td><td>สายอ่อนเดี่ยว 300 V</td><td>เดินลอย หรือใช้ในตู้คอนโทรล</td><td></td></tr>
 </table></div>
 <h4>ทองแดง vs อะลูมิเนียม</h4>
 <ul>
@@ -573,8 +575,8 @@ body.hide-nd .fig .nd, body.hide-cur .fig .cur{display:none}
 <li><b>กฟน.</b> ห้ามใช้สายอะลูมิเนียมเดินภายในระบบแรงต่ำ, <b>กฟภ.</b> อนุญาตเฉพาะเป็นสายเมนเดินลอยในอากาศบนวัสดุฉนวน ภายนอกอาคาร ถ้าเดินผิดเงื่อนไข การไฟฟ้าอาจไม่จ่ายไฟให้</li>
 <li>ต่อเติมเองด้วยสายอะลูมิเนียมในบ้าน (เช่น งานโซลาร์เซลล์) จุดหักงอจะร้อนสะสมเรื่อย ๆ จนไหม้ได้</li>
 </ul>
-<h4>ขนาดสายและเบรกเกอร์ (ร้อยท่อ)</h4>
-<div class="tw"><table>
+<h4 class="x">ขนาดสายและเบรกเกอร์ (ร้อยท่อ)</h4>
+<div class="tw x"><table>
 <tr><th>วงจร</th><th>สาย</th><th>เบรกเกอร์</th></tr>
 <tr><td>แสงสว่าง</td><td>THW 1.5 ตร.มม. (L + N)</td><td>MCB 10 A</td></tr>
 <tr><td>ปลั๊กไฟ</td><td>THW 2.5 ตร.มม. + ดิน 2.5</td><td>MCB 16 A</td></tr>
@@ -585,14 +587,14 @@ body.hide-nd .fig .nd, body.hide-cur .fig .cur{display:none}
 <tr><td>แอร์ 30,000–36,000 BTU</td><td>THW 6 ตร.มม. + ดิน 4</td><td>MCB 32 A</td></tr>
 </table></div>
 <ul>
-<li>ขนาดสายบอกเป็น<b>ตารางมิลลิเมตร (sq.mm.)</b> ของพื้นที่หน้าตัด ขนาดท่อบอกเป็น<b>นิ้ว หรือ หุน</b>: <b>4 หุน = 1/2 นิ้ว (≈ 13 มม.)</b>, <b>8 หุน = 1 นิ้ว (≈ 25 มม.)</b> <span class="extra-tag">เสริม</span></li>
-<li>กระแสไหลผ่านตัวนำทำให้เกิด<b>ความร้อน</b>และ<b>สนามแม่เหล็ก</b> จึงต้องเลือกขนาดสายให้พอ และต้องแยกสายสัญญาณ RG6/CAT6 ออกจากสายไฟ (ถูกรบกวนจากสนาม 50 Hz)</li>
-<li>ต้องจำกัดจำนวนสายในท่อเดียวกัน เพราะท่อปิดระบายความร้อนไม่ได้ ฉนวนอาจละลายจนทองแดงแตะกัน</li>
+<li class="x">ขนาดสายบอกเป็น<b>ตารางมิลลิเมตร (sq.mm.)</b> ของพื้นที่หน้าตัด ขนาดท่อบอกเป็น<b>นิ้ว หรือ หุน</b>: <b>4 หุน = 1/2 นิ้ว (≈ 13 มม.)</b>, <b>8 หุน = 1 นิ้ว (≈ 25 มม.)</b> <span class="extra-tag">เสริม</span></li>
+<li class="x">กระแสไหลผ่านตัวนำทำให้เกิด<b>ความร้อน</b>และ<b>สนามแม่เหล็ก</b> จึงต้องเลือกขนาดสายให้พอ และต้องแยกสายสัญญาณ RG6/CAT6 ออกจากสายไฟ (ถูกรบกวนจากสนาม 50 Hz)</li>
+<li class="x">ต้องจำกัดจำนวนสายในท่อเดียวกัน เพราะท่อปิดระบายความร้อนไม่ได้ ฉนวนอาจละลายจนทองแดงแตะกัน</li>
 <li>เครื่องใช้กินไฟมาก กระแสมาก ต้องใช้สายใหญ่ขึ้น ถ้าสายเล็กเกิน สายจะร้อน ฉนวนเสื่อม และเกิดไฟไหม้ได้</li>
 </ul>
 </details>
 
-<details><summary>ข้อ 6.2 ท่อร้อยสาย และแนวคิดการเดินระบบสายไฟ</summary>
+<details class="x"><summary>ข้อ 6.2 ท่อร้อยสาย และแนวคิดการเดินระบบสายไฟ</summary>
 <div class="tw"><table>
 <tr><th>ท่อ</th><th>ลักษณะ</th></tr>
 <tr><td>EMT</td><td>ท่อโลหะบาง (Electrical Metallic Tubing)</td></tr>
@@ -616,7 +618,7 @@ body.hide-nd .fig .nd, body.hide-cur .fig .cur{display:none}
 </ul>
 </details>
 
-<details><summary>ข้อ 6.3 อุปกรณ์ป้องกัน</summary>
+<details class="x"><summary>ข้อ 6.3 อุปกรณ์ป้องกัน</summary>
 <div class="tw"><table>
 <tr><th>อุปกรณ์</th><th>ป้องกันอะไร</th><th>จุดที่ต้องจำ</th></tr>
 <tr><td>Circuit Breaker (CB)</td><td>กระแสเกินพิกัด</td><td><b>ไม่ได้กันไฟดูด</b> ถ้าเลือก CB ใหญ่กว่าสาย สายอาจไหม้ก่อน CB ตัด</td></tr>
@@ -648,11 +650,12 @@ body.hide-nd .fig .nd, body.hide-cur .fig .cur{display:none}
 <details><summary>ข้อ 6.4 อันตรายจากไฟฟ้าและความปลอดภัย</summary>
 <ul>
 <li>อันตรายหลัก 3 อย่าง: <b>ไฟดูด (electric shock), แผลไหม้ (burns), ไฟไหม้และระเบิด</b> ไฟดูดยังทำให้บาดเจ็บทางอ้อมได้ เช่นตกจากที่สูง</li>
+<li><b>เบรกเกอร์ (CB)</b> ตัดเมื่อกระแสเกิน <b>ไม่ได้กันไฟดูด</b> และต้องเลือกให้เข้ากับขนาดสาย ถ้า CB ใหญ่กว่าสาย สายจะไหม้ก่อน CB ตัด</li>
 <li>สาเหตุการตายหลักจากไฟดูดคือ <b>หัวใจเต้นผิดจังหวะ (ventricular fibrillation)</b></li>
 <li>สาเหตุของอุบัติเหตุ: ใช้ไฟเกินพิกัด (overload), ฉนวนเสื่อมหรือลัดวงจร, จุดต่อหลวม, ไม่บำรุงรักษาเครื่องใช้, เดินสายผิดวิธี, ระบายอากาศไม่ดีจนความร้อนสะสม, และร่างกายเป็นทางไหลของกระแสลงดิน</li>
-<li><b>Let-go threshold</b> คือกระแสระดับต่ำสุดที่กล้ามเนื้อหดตัวจนปล่อยตัวเองออกจากแหล่งไฟไม่ได้</li>
+<li class="x"><b>Let-go threshold</b> คือกระแสระดับต่ำสุดที่กล้ามเนื้อหดตัวจนปล่อยตัวเองออกจากแหล่งไฟไม่ได้</li>
 </ul>
-<div class="tw"><table>
+<div class="tw x"><table>
 <tr><th>กระแส AC</th><th>ผลต่อร่างกาย</th></tr>
 <tr><td>≈ 1 mA</td><td>รู้สึกเสียวซ่าเล็กน้อย</td></tr>
 <tr><td>2–9 mA</td><td>ช็อกเล็กน้อย</td></tr>
@@ -668,7 +671,7 @@ body.hide-nd .fig .nd, body.hide-cur .fig .cur{display:none}
 <li>การต่อ<b>สายนิวทรัลลงดิน</b>ที่หม้อแปลง ช่วยให้กระแสจากฟ้าผ่าไหลลงดิน</li>
 <li>การต่อ<b>สายดินที่โครงโลหะ</b>ของเครื่องใช้ ช่วยให้กระแสรั่วไหลลงดินแทนที่จะผ่านตัวคน (สายดินทั้งสองเส้นลงดินเหมือนกัน แต่ต่อคนละจุด)</li>
 <li>ยืนบนพื้นเปียก ความต้านทานระหว่างเท้ากับดินลดลง กระแสไหลมากขึ้น ส่วนรองเท้านิรภัยที่เป็นฉนวนช่วยเพิ่มความต้านทาน</li>
-<li>PPE = Personal Protective Equipment (อุปกรณ์ป้องกันส่วนบุคคล)</li>
+<li class="x">PPE = Personal Protective Equipment (อุปกรณ์ป้องกันส่วนบุคคล)</li>
 </ul>
 </details>
 </section>
@@ -921,7 +924,9 @@ const RAW = [
 ["6f","ติดตั้งอุปกรณ์ไฟฟ้าในที่อับ ไม่มีการระบายอากาศ ทำให้","ความร้อนสะสม","Poor ventilation"]
 ];
 const EXTRA=new Set(["มาตรฐานสายอะลูมิเนียมหุ้มฉนวน PVC", "มอก. 293-2541 เป็นมาตรฐานของ", "มอก. 982-2556 เป็นมาตรฐานของ", "มาตรฐานท่อ HDPE", "สายอ่อนคู่ 300 V ใช้กับเครื่องใช้ไฟฟ้าในบ้าน ทำปลั๊กพ่วงในบ้าน", "สายอ่อนเดี่ยว 300 V เดินลอย หรือใช้ในตู้คอนโทรล", "ขนาดท่อ 4 หุน เท่ากับ", "ขนาดท่อ 8 หุน เท่ากับ", "let-go threshold ของเด็ก", "กระแสที่ทำให้ผู้ใหญ่ 90% ปล่อยตัวเองไม่ได้", "ตัวต้านทานต่ออนุกรมกับไดโอดในวงจรชาร์จแบตเตอรี่เรียกว่า", "ไดโอดในระบบไฟรถยนต์มีไว้เพื่อ", "วงจรขยายสัญญาณ (amplifier) ให้เอาต์พุต", "อุปกรณ์ที่ต่อหลังวงจรเรียงกระแสเพื่อทำให้แรงดันเรียบ", "สารกึ่งตัวนำบริสุทธิ์ที่ยังไม่เจือเรียกว่า", "สารกึ่งตัวนำที่เจือสารแล้วเรียกว่า", "ธาตุหมู่ 5 ที่เจือลงไปเรียกว่า", "ธาตุหมู่ 3 ที่เจือลงไปเรียกว่า", "พาหะส่วนน้อย (minority carrier) ในสาร N-type", "บริเวณรอยต่อ P-N ที่ไม่มีพาหะอิสระเรียกว่า", "VLSI ย่อมาจาก", "ขั้นตอนหลักของการทำ IC เรียงตามลำดับ", "มาตรฐานห้องสะอาด (cleanroom) ของโรงงานผลิตชิป", "ระดับห้องสะอาดที่โรงงานชิปต้องการ", "HEPA Filter ย่อมาจาก", "คำว่า Bipolar ใน BJT หมายถึง", "ชั้นกลางของโครงสร้าง NPN คือ", "รอยต่อ 2 รอยต่อใน BJT คือ", "α ของ BJT =", "ค่า VT (thermal voltage) ที่อุณหภูมิห้อง", "เงื่อนไขย่าน cutoff ของ NPN", "ในย่าน saturation แรงดัน vCE ประมาณ", "ฉนวนใต้ขาเกตของ MOSFET คือ", "กระแสที่ไหลเข้าขาเกตของ MOSFET", "NMOS สร้างบนแผ่นฐาน (substrate) ชนิด", "กระแสเดรนของ NMOS ในย่าน saturation", "การใช้ NMOS คู่กับ PMOS เรียกว่า", "Power MOSFET ใช้งานมากใน", "ท่อพีวีซีสำหรับร้อยสายไฟฟ้ามีสี", "ค่า PN ของท่อ HDPE บอก", "รางเดินสายไฟเรียกว่า", "อุปกรณ์ต่อสายไฟ แล้วพันเทปทับ", "เหตุที่แยกวงจรไฟนอกบ้านออกจากในบ้าน", "ข้อดีของการแบ่งวงจรเป็นโซน", "ข้อดีของการแบ่งวงจรตามห้อง", "ตำแหน่งตอกหลักดินที่เหมาะสม", "การเชื่อมหัวหลักดินกับสายดิน ใช้วิธี", "แอร์ควรมี safety breaker ติดตั้งที่", "GFCI ย่อมาจาก", "เครื่องใช้ที่มีฉนวนสองชั้น (Double Insulation) จัดเป็น"]);
-const BANK = RAW.map(([c,q,a,e,s],i)=>({id:q+"|"+a,t:+c[0],c,q,a,e,s,x:EXTRA.has(q)}));
+/* CORE = items the instructor named in class or in the exam guideline; everything else is slide-only extra */
+const CORE=new Set([0,1,4,5,6,7,13,14,15,16,18,19,20,21,22,30,31,38,39,47,48,49,50,51,53,57,58,59,60,64,67,68,69,72,73,74,75,76,79,80,84,85,87,88,92,93,94,95,96,97,100,101,102,103,104,105,106,107,108,109,110,111,112,113,123,124,125,126,127,128,129,130,169,170,192,193,203,205,206,207,209,210,211,212,213]);
+const BANK = RAW.map(([c,q,a,e,s],i)=>({id:q+"|"+a,t:+c[0],c,q,a,e,s,x:EXTRA.has(q)||!CORE.has(i)}));
 
 /* ================= helpers ================= */
 const $=s=>document.querySelector(s);
@@ -948,7 +953,7 @@ function topicOptions(sel,def){
    Object.entries(CAT).filter(([k])=>k[0]==="6").map(([k,v])=>`<option value="${k}">— 6: ${v}</option>`).join("")+
    `<option value="miss">ข้อที่เคยตอบผิด (${n})</option>`;
   sel.value=def;
-  [...sel.options].forEach(o=>{const n=new Set(pool(o.value).map(x=>x.a)).size;o.textContent=o.textContent.replace(/ \[\d+\]$/,"")+` [${n}]`});
+  [...sel.options].forEach(o=>{const n=new Set(pool(o.value).map(x=>x.a)).size;o.textContent=o.textContent.replace(/ \[\d+\]$/,"")+` [${n}]`;o.hidden=!n&&o.value.length===2});
 }
 /* weighted pick: items missed more often come first; answers unique within a set */
 function pickSet(list,n){
@@ -1048,7 +1053,7 @@ $("#fCheck").onclick=()=>{
 $("#fNew").onclick=newFill; $("#fCount").onchange=newFill; $("#fTopic").onchange=newFill;
 $("#fReset").onclick=()=>{if(confirm("ล้างสถิติข้อที่เคยตอบผิดทั้งหมด?")){MISS={};saveMiss();topicOptions($("#mTopic"),"all");topicOptions($("#fTopic"),"5");newFill()}};
 topicOptions($("#mTopic"),"all"); topicOptions($("#fTopic"),"5");
-document.querySelectorAll(".xtoggle").forEach(cb=>cb.onchange=()=>{WITH_EXTRA=cb.checked;document.querySelectorAll(".xtoggle").forEach(o=>o.checked=cb.checked);topicOptions($("#mTopic"),$("#mTopic").value);topicOptions($("#fTopic"),$("#fTopic").value);newMatch();newFill()});
+document.querySelectorAll(".xtoggle").forEach(cb=>cb.onchange=()=>{WITH_EXTRA=cb.checked;$("#tab-notes").classList.toggle("show-x",cb.checked);document.querySelectorAll(".xtoggle").forEach(o=>o.checked=cb.checked);topicOptions($("#mTopic"),$("#mTopic").value);topicOptions($("#fTopic"),$("#fTopic").value);newMatch();newFill()});
 newMatch(); newFill();
 
 /* ================= complex math & formatting ================= */
