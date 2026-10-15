@@ -62,7 +62,7 @@ nav button[data-tab="notes"][aria-selected="true"]{border-color:#1B1B1B}
 nav button[data-tab="match"][aria-selected="true"]{border-color:var(--L1)}
 nav button[data-tab="fill"][aria-selected="true"]{border-color:var(--N)}
 nav button[data-tab="calc"][aria-selected="true"]{border-color:var(--G)}
-button:focus-visible,.chip:focus-visible,.blank:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--sel);outline-offset:2px}
+button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--sel);outline-offset:2px}
 .bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
 .bar .grow{flex:1}
 select,.btn{font:inherit;font-size:15px;padding:8px 14px;border-radius:8px;border:1.5px solid var(--line);
@@ -89,41 +89,14 @@ select,.btn{font:inherit;font-size:15px;padding:8px 14px;border-radius:8px;borde
 .trap{border-left:4px solid var(--bad);background:var(--badbg);padding:8px 12px;border-radius:4px;margin:10px 0;max-width:75ch}
 .sw{display:inline-block;width:34px;height:12px;border-radius:3px;vertical-align:middle;margin-right:6px}
 /* matching */
-.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.col{display:flex;flex-direction:column;gap:8px}
-.chip{background:var(--panel);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;
   cursor:pointer;text-align:left;font:inherit;font-size:15.5px;color:var(--ink);min-height:52px;
   display:flex;align-items:center;gap:10px}
-.chip svg{flex:none}
-.chip.sel{border-color:var(--sel);background:var(--selbg)}
-.chip.done{border-color:var(--ok);background:var(--okbg);cursor:default;opacity:.8}
-.chip.wrong{border-color:var(--bad);background:var(--badbg);animation:shake .3s}
 @keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
-@media (prefers-reduced-motion:reduce){.chip.wrong{animation:none}}
-.log{margin-top:16px;display:flex;flex-direction:column;gap:6px}
-.log div{font-size:14.5px;border-left:4px solid var(--ok);padding:4px 10px;background:var(--panel);border-radius:4px}
-.log b{font-weight:600}
-.done-msg{margin-top:14px;padding:12px 14px;border-left:5px solid var(--ok);background:var(--okbg);border-radius:6px}
 /* fill-in */
-.bank{background:var(--panel);border:2px solid var(--ink);border-radius:10px;padding:10px 12px;margin-bottom:16px;
   position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
-.bank h3{margin:0 0 6px;font-size:15px}
-.bank .words{display:flex;flex-wrap:wrap;gap:6px;max-height:30vh;overflow:auto}
-.word{font:inherit;font-size:14.5px;padding:4px 10px;border-radius:6px;border:1.5px solid var(--line);
   background:var(--bg);color:var(--ink);cursor:pointer}
-.qlist{counter-reset:q;display:flex;flex-direction:column;gap:10px;padding:0;margin:0;list-style:none}
-.qlist li{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;gap:12px}
-.qlist li::before{counter-increment:q;content:counter(q) ".";font-weight:700;min-width:1.6em}
-.qbody{flex:1}
-.qbody svg{display:block;margin:4px 0 6px}
-.blank{display:inline-block;min-width:150px;border:0;border-bottom:2px dashed var(--muted);background:none;
   font:inherit;color:var(--ink);padding:0 6px;cursor:pointer;text-align:left}
-.blank.active{border-bottom-color:var(--sel);background:var(--selbg)}
-.blank.ok{border-bottom:2px solid var(--ok);color:var(--ok);font-weight:600}
-.blank.bad{border-bottom:2px solid var(--bad);color:var(--bad);text-decoration:line-through}
 .perr{color:var(--bad);font-size:14.5px;font-weight:600}
-.why{display:block;font-size:14.5px;color:var(--muted);margin-top:4px}
-.why b{color:var(--ok)}
 /* calc */
 .prob{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:18px}
 .prob h3{margin:0 0 4px;font-size:19px}
@@ -330,22 +303,8 @@ select,.btn{border-radius:10px;border:1px solid var(--line2);padding:8px 14px;tr
 .calc .ans,.ans{border-radius:999px}
 .warn{border-left:0;border-radius:12px}
 /* fill-in */
-.bank{border:1px solid var(--line2);border-radius:16px;box-shadow:var(--shadow);padding:12px 14px;top:calc(env(safe-area-inset-top,0px) + 74px)}
-.bank h3{font-size:14px;letter-spacing:.04em;color:var(--muted)}
-.word{border-radius:999px;border:1px solid var(--line2);background:var(--panel2);padding:5px 12px;transition:background .15s,border-color .15s}
-.word:hover{border-color:var(--accent);background:var(--accentbg)}
-.qlist{gap:12px}
-.qlist li{border-radius:14px;padding:14px 16px;box-shadow:var(--shadow)}
-.qlist li::before{font-family:var(--f-head);color:var(--accent)}
-.blank{border-bottom-width:2px;border-radius:6px 6px 0 0;min-width:160px}
-.blank.active{background:var(--accentbg)}
 /* matching */
-.mgrid{gap:16px}
-.chip{border:1px solid var(--line2);border-radius:14px;padding:12px 14px;transition:border-color .15s,background .15s,transform .1s}
-.chip:hover:not(.done){border-color:var(--accent);transform:translateY(-1px)}
-.chip.sel{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
-.log div{border-left:0;border-radius:10px;background:var(--okbg)}
-.done-msg{border-left:0;border-radius:12px}
+.done-msg{margin-top:14px;padding:12px 14px;background:var(--okbg);border-radius:12px}
 /* notes */
 .notes details{border-radius:16px;box-shadow:var(--shadow);padding:0 20px;margin-bottom:14px}
 .notes summary{font-size:19px;padding:16px 0;list-style:none;display:flex;align-items:center;gap:10px}
@@ -370,14 +329,46 @@ select,.btn{border-radius:10px;border:1px solid var(--line2);padding:8px 14px;tr
   nav.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:5px;overflow:visible}
   nav.tabs button{flex-direction:column;gap:3px;padding:7px 2px;font-size:13px;border-radius:10px;white-space:normal;text-align:center;line-height:1.2}
   nav.tabs button svg{width:20px;height:20px}
-  .bank{top:calc(env(safe-area-inset-top,0px) + 76px)}
   .prob{padding:16px 14px;border-radius:16px}
   .prob h3{font-size:19px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 [hidden]{display:none!important}
 body.hide-nd .fig .nd, body.hide-cur .fig .cur{display:none}
-@media (max-width:640px){.mgrid{gap:8px}.chip{font-size:14px;padding:8px}header h1{font-size:25px}}
+@media (max-width:640px){header h1{font-size:25px}}
+
+/* quiz (เติมคำ) and dropdown matching */
+.quiz{max-width:720px}
+.qhead{display:flex;justify-content:space-between;align-items:center;font-weight:700;margin-bottom:6px}
+.qprog{height:8px;border-radius:99px;background:var(--line);overflow:hidden;margin-bottom:12px}
+.qprog i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .25s}
+.qcard{background:var(--panel);border:1px solid var(--line2);border-radius:16px;box-shadow:var(--shadow);padding:18px}
+.qtext{font-size:19px;line-height:1.6;margin-bottom:14px}
+.qtext svg{display:block;margin:0 auto 8px;max-width:100%}
+.qgap{color:var(--muted);letter-spacing:2px}
+.opts{display:grid;gap:10px}
+.opt{font:inherit;font-size:17px;text-align:left;padding:14px 16px;min-height:52px;border-radius:12px;border:2px solid var(--line2);background:var(--panel2);color:var(--ink);cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--accent);background:var(--accentbg)}
+.opt:disabled{cursor:default;opacity:.65}
+.opt.ok{border-color:var(--ok);background:var(--okbg);opacity:1;font-weight:700}
+.opt.bad{border-color:var(--bad);background:var(--badbg);opacity:1;text-decoration:line-through}
+.qfb{margin-top:14px;padding:12px 14px;border-radius:12px;font-size:16px}
+.qfb.ok{background:var(--okbg)}.qfb.bad{background:var(--badbg)}
+.btn.big{font-size:17px;padding:12px 22px;margin-top:14px;width:100%}
+.qend .qbig{font-size:34px;font-weight:800;text-align:center;margin:6px 0 10px}
+.qbtns{display:grid;gap:4px}
+.mlist{display:grid;gap:12px;max-width:720px}
+.mrow{background:var(--panel);border:2px solid var(--line2);border-radius:14px;padding:14px;box-shadow:var(--shadow)}
+.mrow.ok{border-color:var(--ok);background:var(--okbg)}
+.mrow.bad{border-color:var(--bad)}
+.mrow.shake{animation:shake .3s}
+@media (prefers-reduced-motion:reduce){.mrow.shake{animation:none}}
+.mq{display:flex;gap:10px;font-size:17px;margin-bottom:10px}
+.mq svg{display:block;margin-bottom:6px}
+.mn{flex:none;width:28px;height:28px;border-radius:50%;background:var(--accentbg);color:var(--accent);font-weight:800;display:grid;place-items:center}
+.msel{width:100%;font:inherit;font-size:16px;padding:12px;border-radius:10px;border:1.5px solid var(--line2);background:var(--panel2);color:var(--ink)}
+.mfb{font-size:15px;margin-top:6px;color:var(--muted)}
+.mrow.ok .mfb{color:var(--ink)}.mrow.bad .mfb{color:var(--bad)}
 </style>
 </head>
 <body>
@@ -428,30 +419,25 @@ body.hide-nd .fig .nd, body.hide-cur .fig .cur{display:none}
 <section id="tab-fill" hidden>
   <div class="bar">
     <select id="fTopic" aria-label="เลือกหัวข้อ"></select>
-    <select id="fCount" aria-label="จำนวนข้อ"><option value="5">5 ข้อ</option><option value="6">6 ข้อ</option><option value="10">10 ข้อ</option><option value="12" selected>12 ข้อ</option><option value="15">15 ข้อ</option><option value="20">20 ข้อ</option><option value="30">30 ข้อ</option><option value="all">ทั้งหมด</option></select>
-    <button class="btn primary" id="fNew">สุ่มข้อสอบชุดใหม่</button>
-    <button class="btn" id="fCheck">ตรวจคำตอบ</button><label class="sw-l"><input type="checkbox" class="xtoggle"> รวมเนื้อหาเสริมจากสไลด์</label>
-    <span class="grow"></span>
-    <span class="score" id="fScore"></span>
+    <select id="fCount" aria-label="จำนวนข้อ"><option value="5">ชุดละ 5 ข้อ</option><option value="10" selected>ชุดละ 10 ข้อ</option><option value="20">ชุดละ 20 ข้อ</option><option value="all">ทุกข้อ</option></select>
+    <button class="btn primary" id="fNew">เริ่มชุดใหม่</button><label class="sw-l"><input type="checkbox" class="xtoggle"> รวมเนื้อหาเสริมจากสไลด์</label>
   </div>
-  <p class="hint">แตะช่องว่างให้เป็นสีฟ้า แล้วแตะคำในกล่อง คำในกล่องใช้ซ้ำได้ และมีคำหลอกปน ถ้าจะล้างช่องให้แตะช่องที่เติมแล้วซ้ำ</p>
-  <div class="bank"><h3>กล่องคำตอบ</h3><div class="words" id="fBank"></div></div>
-  <ol class="qlist" id="fList"></ol>
+  <p class="hint">อ่านคำถาม แล้วแตะคำตอบที่ถูก ตอบแล้วเฉลยทันที กด “ข้อต่อไป” เพื่อไปต่อ</p>
+  <div id="fQuiz" class="quiz"></div>
   <div class="bar" style="margin-top:14px"><span class="grow"></span><button class="btn" id="fReset">ล้างสถิติข้อที่เคยผิด</button></div>
 </section>
 
 <section id="tab-match" hidden>
   <div class="bar">
     <select id="mTopic" aria-label="เลือกหัวข้อ"></select>
-    <select id="mCount" aria-label="จำนวนข้อ"><option value="5">5 ข้อ</option><option value="6" selected>6 ข้อ</option><option value="10">10 ข้อ</option><option value="12">12 ข้อ</option><option value="15">15 ข้อ</option><option value="20">20 ข้อ</option><option value="30">30 ข้อ</option><option value="all">ทั้งหมด</option></select>
+    <select id="mCount" aria-label="จำนวนข้อ"><option value="5">ชุดละ 5 ข้อ</option><option value="6" selected>ชุดละ 6 ข้อ</option><option value="10">ชุดละ 10 ข้อ</option></select>
     <button class="btn primary" id="mNew">สุ่มชุดใหม่</button><label class="sw-l"><input type="checkbox" class="xtoggle"> รวมเนื้อหาเสริมจากสไลด์</label>
     <span class="grow"></span>
     <span class="score" id="mScore"></span>
   </div>
-  <p class="hint">แตะคำถามทางซ้าย แล้วแตะคำตอบทางขวาที่คู่กัน จับคู่ถูกแล้วจะมีเหตุผลขึ้นด้านล่าง</p>
-  <div class="mgrid"><div class="col" id="mLeft"></div><div class="col" id="mRight"></div></div>
+  <p class="hint">แตะช่อง “เลือกคำตอบ” ใต้แต่ละคำถาม แล้วเลือกคำที่คู่กัน ถูกจะเป็นสีเขียว ผิดเลือกใหม่ได้ คำตอบแต่ละคำใช้ได้ครั้งเดียว</p>
+  <div id="mList" class="mlist"></div>
   <div id="mDone"></div>
-  <div class="log" id="mLog"></div>
 </section>
 
 <section id="tab-notes" class="notes" hidden>
@@ -973,84 +959,84 @@ $("#symDiode").innerHTML=[["diodeAK","ไดโอด"],["zener","ซีเน�
 $("#symBJT").innerHTML=[["npnL","NPN (ลูกศรชี้ออก)"],["pnp","PNP (ลูกศรชี้เข้า)"]].map(([k,n])=>`<figure>${S[k]}<figcaption>${n}</figcaption></figure>`).join("");
 $("#symMOS").innerHTML=[["nmosL","NMOS"],["pmos","PMOS (วงกลมที่เกต)"]].map(([k,n])=>`<figure>${S[k]}<figcaption>${n}</figcaption></figure>`).join("");
 
-/* ================= matching ================= */
+/* ================= matching: one dropdown per question ================= */
 let M={};
+const symSmall=k=>k?S[k].replace(/width="\d+" height="\d+"/,'width="110" height="74"'):"";
 function newMatch(){
   const list=pool($("#mTopic").value);
-  M={pairs:pickSet(list,getN("#mCount")),sel:null,ok:0,miss:0};
-  const L=$("#mLeft"),R=$("#mRight"); L.innerHTML="";R.innerHTML="";$("#mDone").innerHTML="";$("#mLog").innerHTML="";
+  M={pairs:pickSet(list,getN("#mCount")),ok:0,miss:0,missed:new Set()};
+  const L=$("#mList"); L.innerHTML=""; $("#mDone").innerHTML="";
   if(!M.pairs.length){L.innerHTML=`<p class="hint">ยังไม่มีข้อที่เคยตอบผิด เลือกหัวข้ออื่นก่อน</p>`;$("#mScore").textContent="";return}
+  const opts=shuffle(M.pairs.map(p=>p.a));
   M.pairs.forEach((p,i)=>{
-    const b=document.createElement("button");b.className="chip";b.dataset.i=i;
-    b.innerHTML=(p.s?S[p.s].replace(/width="\d+" height="\d+"/,'width="96" height="66"'):"")+`<span>${esc(p.q)}</span>`;
-    b.onclick=()=>{if(b.classList.contains("done"))return;L.querySelectorAll(".chip").forEach(c=>c.classList.remove("sel"));b.classList.add("sel");M.sel=i};
-    L.appendChild(b);
-  });
-  shuffle(M.pairs.map((_,i)=>i)).forEach(i=>{
-    const b=document.createElement("button");b.className="chip";b.textContent=M.pairs[i].a;
-    b.onclick=()=>{
-      if(b.classList.contains("done")||M.sel===null)return;
-      const lb=L.querySelector(`[data-i="${M.sel}"]`), p=M.pairs[M.sel];
-      if(M.sel===i){
-        b.classList.add("done");lb.classList.remove("sel");lb.classList.add("done");M.ok++;M.sel=null;bumpMiss(p,-1);
-        $("#mLog").insertAdjacentHTML("afterbegin",`<div><b>${esc(p.q)}</b> → ${esc(p.a)}${p.e?`<br>${esc(p.e)}`:""}</div>`);
-        if(M.ok===M.pairs.length)$("#mDone").innerHTML=`<div class="done-msg">ครบชุดแล้ว พลาด ${M.miss} ครั้ง กด “สุ่มชุดใหม่” เพื่อเล่นต่อ</div>`;
+    const row=document.createElement("div");row.className="mrow";row.dataset.i=i;
+    row.innerHTML=`<div class="mq"><span class="mn">${i+1}</span><div>${symSmall(p.s)}${esc(p.q)}</div></div>
+      <select class="msel" aria-label="คำตอบข้อ ${i+1}"><option value="">— เลือกคำตอบ —</option>${opts.map(a=>`<option>${esc(a)}</option>`).join("")}</select><div class="mfb"></div>`;
+    const sel=row.querySelector("select"), fb=row.querySelector(".mfb");
+    sel.onchange=()=>{
+      if(!sel.value)return;
+      if(sel.value===p.a){
+        row.className="mrow ok";sel.disabled=true;M.ok++;if(!M.missed.has(i))bumpMiss(p,-1);
+        fb.innerHTML=`✓ ถูก${p.e?` — ${esc(p.e)}`:""}`;
+        L.querySelectorAll("select:not(:disabled)").forEach(o=>[...o.options].forEach(op=>{if(op.value===p.a)op.disabled=true}));
+        if(M.ok===M.pairs.length)$("#mDone").innerHTML=`<div class="done-msg">ครบชุดแล้ว เลือกผิด ${M.miss} ครั้ง กด “สุ่มชุดใหม่” เพื่อเล่นต่อ</div>`;
       }else{
-        M.miss++;bumpMiss(p,1);b.classList.remove("wrong");void b.offsetWidth;b.classList.add("wrong");setTimeout(()=>b.classList.remove("wrong"),500);
+        M.miss++;if(!M.missed.has(i)){M.missed.add(i);bumpMiss(p,1)}
+        row.className="mrow bad";void row.offsetWidth;row.classList.add("shake");fb.textContent="✗ ยังไม่ถูก ลองเลือกใหม่";
       }
-      $("#mScore").textContent=`ถูก ${M.ok}/${M.pairs.length} · พลาด ${M.miss}`;
+      $("#mScore").textContent=`ถูก ${M.ok}/${M.pairs.length} · ผิด ${M.miss}`;
     };
-    R.appendChild(b);
+    L.appendChild(row);
   });
-  $("#mScore").textContent=`ถูก 0/${M.pairs.length} · พลาด 0`;
+  $("#mScore").textContent=`ถูก 0/${M.pairs.length} · ผิด 0`;
 }
 $("#mCount").onchange=()=>newMatch();
 $("#mNew").onclick=()=>{topicOptions($("#mTopic"),$("#mTopic").value);newMatch()}; $("#mTopic").onchange=newMatch;
 
-/* ================= fill-in ================= */
-let F={items:[],active:null,counted:new Set()};
+/* ================= quiz: one question at a time, 4 choices ================= */
+let F={items:[],i:0,ok:0,wrong:[]};
+function choicesFor(x){
+  const base=WITH_EXTRA?BANK:BANK.filter(y=>!y.x), seen=new Set([x.a]), out=[];
+  for(const g of [base.filter(y=>y.c===x.c),base.filter(y=>y.t===x.t),BANK])
+    for(const y of shuffle(g)){if(out.length===3)break;if(!seen.has(y.a)){seen.add(y.a);out.push(y.a)}}
+  return shuffle([x.a,...out]);
+}
 function newFill(){
-  const t=$("#fTopic").value, list=pool(t);
-  F={items:pickSet(list,getN("#fCount")),active:null,counted:new Set()};
-  const ol=$("#fList"); ol.innerHTML=""; $("#fBank").innerHTML=""; $("#fScore").textContent="";
-  if(!F.items.length){ol.innerHTML=`<li><div class="qbody">ยังไม่มีข้อที่เคยตอบผิด เลือกหัวข้ออื่นก่อน</div></li>`;return}
-  const answers=new Set(F.items.map(x=>x.a));
-  const cats=new Set(F.items.map(x=>x.c));
-  const near=shuffle(pool("all").filter(x=>cats.has(x.c)&&!answers.has(x.a)));
-  const extra=[...new Set(near.map(x=>x.a))].slice(0,6);
-  shuffle([...answers,...extra]).forEach(w=>{const b=document.createElement("button");b.className="word";b.textContent=w;b.onclick=()=>putWord(w);$("#fBank").appendChild(b)});
-  F.items.forEach((x,i)=>{
-    const li=document.createElement("li");
-    li.innerHTML=`<div class="qbody">${x.s?S[x.s]:""}${esc(x.q)} <button class="blank" data-i="${i}">&nbsp;</button><span class="why"></span></div>`;
-    ol.appendChild(li);
-  });
-  ol.querySelectorAll(".blank").forEach(b=>b.onclick=()=>{
-    if(b.dataset.v&&F.active===+b.dataset.i){b.dataset.v="";b.innerHTML="&nbsp;"}
-    ol.querySelectorAll(".blank").forEach(x=>x.classList.remove("active","ok","bad"));
-    ol.querySelectorAll(".why").forEach(x=>x.innerHTML="");
-    b.classList.add("active");F.active=+b.dataset.i;$("#fScore").textContent="";
-  });
-  const first=ol.querySelector(".blank"); first.classList.add("active"); F.active=0;
+  const list=pool($("#fTopic").value);
+  F={items:pickSet(list,getN("#fCount")),i:0,ok:0,wrong:[]};
+  showQ();
 }
-function putWord(w){
-  if(F.active===null)return;
-  const b=document.querySelector(`.blank[data-i="${F.active}"]`);b.dataset.v=w;b.textContent=w;b.classList.remove("active");
-  const next=[...document.querySelectorAll(".blank")].find(x=>!x.dataset.v);
-  if(next){next.classList.add("active");F.active=+next.dataset.i}else F.active=null;
-}
-$("#fCheck").onclick=()=>{
-  let ok=0;
-  document.querySelectorAll(".blank").forEach(b=>{
-    const x=F.items[+b.dataset.i];b.classList.remove("active");
-    const why=b.nextElementSibling, first=!F.counted.has(x.id); F.counted.add(x.id);
-    if(b.dataset.v===x.a){b.classList.add("ok");ok++;if(first)bumpMiss(x,-1);why.innerHTML=x.e?esc(x.e):""}
-    else{b.classList.add("bad");if(first)bumpMiss(x,1);why.innerHTML=`<b>เฉลย: ${esc(x.a)}</b>${x.e?" — "+esc(x.e):""}`}
+function showQ(){
+  const Q=$("#fQuiz"), n=F.items.length;
+  if(!n){Q.innerHTML=`<p class="hint">ยังไม่มีข้อที่เคยตอบผิด เลือกหัวข้ออื่นก่อน</p>`;return}
+  if(F.i>=n){
+    Q.innerHTML=`<div class="qcard qend"><div class="qbig">ได้ ${F.ok}/${n}</div>
+      ${F.wrong.length?`<p><b>ข้อที่ตอบผิด จำคำตอบนี้ไว้:</b></p><ul>${F.wrong.map(x=>`<li>${esc(x.q)} → <b>${esc(x.a)}</b></li>`).join("")}</ul>`:`<p>ถูกหมดทุกข้อ เก่งมาก</p>`}
+      <div class="qbtns"><button class="btn primary big" id="fAgain">เล่นอีกชุด</button>${F.wrong.length?`<button class="btn big" id="fMiss">ฝึกเฉพาะข้อที่ผิด</button>`:""}</div></div>`;
+    $("#fAgain").onclick=()=>{topicOptions($("#fTopic"),$("#fTopic").value);newFill()};
+    if($("#fMiss"))$("#fMiss").onclick=()=>{topicOptions($("#fTopic"),"miss");newFill()};
+    topicOptions($("#mTopic"),$("#mTopic").value);
+    return;
+  }
+  const x=F.items[F.i];
+  Q.innerHTML=`<div class="qhead"><span>ข้อ ${F.i+1} / ${n}</span><span class="score" id="fScore">ถูก ${F.ok}</span></div>
+    <div class="qprog"><i style="width:${100*F.i/n}%"></i></div>
+    <div class="qcard"><div class="qtext">${x.s?S[x.s]:""}<div>${esc(x.q)} <span class="qgap">……</span></div></div>
+    <div class="opts">${choicesFor(x).map(a=>`<button class="opt">${esc(a)}</button>`).join("")}</div>
+    <div class="qfb" hidden></div>
+    <button class="btn primary big" id="fNext" hidden>${F.i+1<n?"ข้อต่อไป ▶":"ดูคะแนน ▶"}</button></div>`;
+  Q.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+    const right=b.textContent===x.a;
+    Q.querySelectorAll(".opt").forEach(o=>{o.disabled=true;if(o.textContent===x.a)o.classList.add("ok")});
+    if(right){F.ok++;bumpMiss(x,-1)}else{b.classList.add("bad");F.wrong.push(x);bumpMiss(x,1)}
+    const fb=Q.querySelector(".qfb");fb.hidden=false;fb.className="qfb "+(right?"ok":"bad");
+    fb.innerHTML=(right?"✓ ถูก":`✗ คำตอบคือ <b>${esc(x.a)}</b>`)+(x.e?`<br>${esc(x.e)}`:"");
+    $("#fScore").textContent=`ถูก ${F.ok}`;
+    const nx=$("#fNext");nx.hidden=false;nx.focus();
   });
-  F.active=null;
-  $("#fScore").textContent=`ได้ ${ok}/${F.items.length}`;
-  topicOptions($("#mTopic"),$("#mTopic").value); topicOptions($("#fTopic"),$("#fTopic").value);
-};
-$("#fNew").onclick=newFill; $("#fCount").onchange=newFill; $("#fTopic").onchange=newFill;
+  $("#fNext").onclick=()=>{F.i++;showQ();$("#fQuiz").scrollIntoView({block:"nearest"})};
+}
+$("#fNew").onclick=()=>{topicOptions($("#fTopic"),$("#fTopic").value);newFill()}; $("#fCount").onchange=newFill; $("#fTopic").onchange=newFill;
 $("#fReset").onclick=()=>{if(confirm("ล้างสถิติข้อที่เคยตอบผิดทั้งหมด?")){MISS={};saveMiss();topicOptions($("#mTopic"),"all");topicOptions($("#fTopic"),"5");newFill()}};
 topicOptions($("#mTopic"),"all"); topicOptions($("#fTopic"),"5");
 document.querySelectorAll(".xtoggle").forEach(cb=>cb.onchange=()=>{WITH_EXTRA=cb.checked;$("#tab-notes").classList.toggle("show-x",cb.checked);document.querySelectorAll(".xtoggle").forEach(o=>o.checked=cb.checked);topicOptions($("#mTopic"),$("#mTopic").value);topicOptions($("#fTopic"),$("#fTopic").value);newMatch();newFill()});
