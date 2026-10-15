@@ -369,6 +369,25 @@ body.hide-nd .fig .nd, body.hide-cur .fig .cur{display:none}
 .msel{width:100%;font:inherit;font-size:16px;padding:12px;border-radius:10px;border:1.5px solid var(--line2);background:var(--panel2);color:var(--ink)}
 .mfb{font-size:15px;margin-top:6px;color:var(--muted)}
 .mrow.ok .mfb{color:var(--ink)}.mrow.bad .mfb{color:var(--bad)}
+
+/* current-flow picture in answers */
+.ff{margin:12px 0 0;padding:10px 12px 12px;background:var(--panel);border:1px solid var(--line2);border-radius:12px;color:var(--ink)}
+.ff svg{display:block;width:100%;height:auto;max-width:320px;margin:0 auto}
+.ff-cap{font-weight:700;text-align:center;color:var(--accent)}
+.ff-note{margin:6px 0 0;font-size:14.5px;color:var(--muted)}
+.ff text{font-family:inherit;fill:var(--ink);stroke:none}
+.ff-n{font-size:18px;font-weight:700}.ff .ff-h{font-size:15px;fill:var(--muted)}
+.ff-s{stroke:var(--ink);stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.ff-st{stroke:var(--ink);stroke-width:5;fill:none;stroke-linecap:round}
+.ff-r{stroke:var(--muted);stroke-width:1.5;fill:none}
+.ff-a{fill:var(--ink)}
+.ff-ch{stroke:var(--accent);stroke-width:6;stroke-linecap:round}
+.ff-glow{stroke:color-mix(in srgb,var(--accent) 25%,transparent);stroke-width:10;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.ff-flow{stroke:var(--accent);stroke-width:4;fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:2 11;animation:ffflow .7s linear infinite}
+.ff-flow.ff-thin{stroke-width:3;stroke-dasharray:2 9}
+.ff-c{fill:var(--accent)}
+@keyframes ffflow{to{stroke-dashoffset:-13}}
+@media (prefers-reduced-motion:reduce){.ff-flow{animation:none}}
 </style>
 </head>
 <body>
@@ -967,6 +986,57 @@ $("#symDiode").innerHTML=[["diodeAK","ไดโอด"],["zener","ซีเน�
 $("#symBJT").innerHTML=[["npnL","NPN (ลูกศรชี้ออก)"],["pnp","PNP (ลูกศรชี้เข้า)"]].map(([k,n])=>`<figure>${S[k]}<figcaption>${n}</figcaption></figure>`).join("");
 $("#symMOS").innerHTML=[["nmosL","NMOS (ลูกศรชี้เข้าหาช่อง)"],["pmos","PMOS (ลูกศรชี้ออกจากช่อง)"]].map(([k,n])=>`<figure>${S[k]}<figcaption>${n}</figcaption></figure>`).join("");
 
+/* ================= current-flow picture shown with the answer (diode, BJT, MOSFET) ================= */
+const ffHead=(x,y,dx,dy,len=15,w=7)=>{const l=Math.hypot(dx,dy),ux=dx/l,uy=dy/l,bx=x-ux*len,by=y-uy*len,nx=-uy,ny=ux;
+  return `${x},${y} ${bx+nx*w},${by+ny*w} ${bx-nx*w},${by-ny*w}`};
+const ffLab=(x,y,name,hint,anchor="start")=>`<text class="ff-n" x="${x}" y="${y}" text-anchor="${anchor}">${name}</text>${hint?`<text class="ff-h" x="${x}" y="${y+16}" text-anchor="${anchor}">${hint}</text>`:""}`;
+const ffFlow=d=>`<path class="ff-glow" d="${d}"/><path class="ff-flow" d="${d}"/>`;
+const FLOW={
+  diode:{cap:"กระแสไหล แอโนด → แคโทด",note:"ต่อ forward bias (แอโนดสูงกว่าแคโทด ≈ 0.7 V) ไดโอดจึงนำกระแส ลูกศรในสัญลักษณ์ชี้ทิศกระแส",
+    svg:()=>`<svg viewBox="0 0 360 170"><path class="ff-s" d="M20,90 L140,90 M200,90 L340,90"/><polygon class="ff-a" points="140,55 140,125 200,90"/><path class="ff-st" d="M200,55 L200,125"/>
+      ${ffFlow("M20,90 L340,90")}<polygon class="ff-c" points="${ffHead(80,90,1,0,14,8)}"/><polygon class="ff-c" points="${ffHead(290,90,1,0,14,8)}"/>
+      ${ffLab(20,40,"แอโนด (A)","ศักย์สูงกว่า · สาร P")}${ffLab(340,40,"แคโทด (K)","ศักย์ต่ำกว่า · สาร N","end")}</svg>`},
+  nmos:{cap:"กระแสหลัก Drain → Source",note:"NMOS: เกตสูงกว่า Source (V<sub>GS</sub> &gt; V<sub>t</sub>) เกิดช่อง N กระแสไหลลง D → S · เกตไม่มีกระแส (I<sub>G</sub> = 0) · ลูกศรชี้เข้าหาช่อง บอกว่าเป็นช่อง N ไม่ใช่ทิศกระแส"},
+  pmos:{cap:"กระแสหลัก Source → Drain",note:"PMOS: เกตต่ำกว่า Source (V<sub>GS</sub> &lt; V<sub>t</sub> ติดลบ) เกิดช่อง P กระแสไหลขึ้น S → D · เกตไม่มีกระแส (I<sub>G</sub> = 0) · ลูกศรชี้ออกจากช่อง บอกว่าเป็นช่อง P ไม่ใช่ทิศกระแส"},
+  npn:{cap:"กระแสหลัก Collector → Emitter",note:"NPN: I<sub>B</sub> ไหลเข้าเบส รวมกับ I<sub>C</sub> ออกที่ Emitter (I<sub>E</sub> = I<sub>C</sub> + I<sub>B</sub>) · ลูกศรที่ Emitter ชี้ออก = ทิศกระแสจริง"},
+  pnp:{cap:"กระแสหลัก Emitter → Collector",note:"PNP: กระแสเข้าทาง Emitter แยกออกทาง Collector และ I<sub>B</sub> ไหลออกจากเบส · ลูกศรที่ Emitter ชี้เข้า = ทิศกระแสจริง"},
+};
+function ffMos(pm){
+  const p=pm?"M215,300 L215,205 L145,205 L145,115 L215,115 L215,30":"M215,30 L215,115 L145,115 L145,205 L215,205 L215,300";
+  return `<svg viewBox="0 0 380 330"><circle class="ff-r" cx="170" cy="160" r="88"/><line class="ff-ch" x1="145" y1="115" x2="145" y2="205"/>
+    <path class="ff-s" d="M20,160 L120,160"/><path class="ff-st" d="M120,108 L120,212 M145,100 L145,220"/>
+    <path class="ff-s" d="M145,115 L215,115 M145,205 L215,205 M145,160 L215,160 M215,160 L215,205 M215,30 L215,115 M215,205 L215,300"/>
+    <polygon class="ff-a" points="${pm?ffHead(207,160,1,0,18,8):ffHead(149,160,-1,0,18,8)}"/>${ffFlow(p)}
+    ${pm?`<polygon class="ff-c" points="${ffHead(215,62,0,-1,14,8)}"/><polygon class="ff-c" points="${ffHead(215,262,0,-1,14,8)}"/>`:`<polygon class="ff-c" points="${ffHead(215,78,0,1,14,8)}"/><polygon class="ff-c" points="${ffHead(215,262,0,1,14,8)}"/>`}
+    ${ffLab(14,112,"Gate (G)",pm?"ต่ำกว่า S":"สูงกว่า S")}<text class="ff-h" x="14" y="192">I_G = 0</text>
+    ${ffLab(228,44,"Drain (D)",pm?"กระแสออก":"กระแสเข้า")}${ffLab(228,268,"Source (S)",pm?"กระแสเข้า":"กระแสออก")}</svg>`;
+}
+function ffBjt(npn){
+  const a=npn?"M215,30 L215,95 L150,135":"M150,135 L215,95 L215,30", b=npn?"M150,185 L215,225 L215,300":"M215,300 L215,225 L150,185", bp=npn?"M30,160 L150,160":"M150,160 L30,160";
+  return `<svg viewBox="0 0 380 330"><circle class="ff-r" cx="175" cy="160" r="88"/><path class="ff-s" d="M30,160 L150,160"/><path class="ff-st" d="M150,105 L150,215"/>
+    <path class="ff-s" d="M150,135 L215,95 L215,30 M150,185 L215,225 L215,300"/><polygon class="ff-a" points="${npn?ffHead(202,217,65,40,18,8):ffHead(170,197,-65,-40,18,8)}"/>
+    ${ffFlow(a)}${ffFlow(b)}<path class="ff-flow ff-thin" d="${bp}"/>
+    ${npn?`<polygon class="ff-c" points="${ffHead(215,64,0,1,14,8)}"/><polygon class="ff-c" points="${ffHead(215,270,0,1,14,8)}"/>`:`<polygon class="ff-c" points="${ffHead(215,60,0,-1,14,8)}"/><polygon class="ff-c" points="${ffHead(215,262,0,-1,14,8)}"/>`}
+    <polygon class="ff-c" points="${npn?ffHead(112,160,1,0,12,6):ffHead(62,160,-1,0,12,6)}"/>
+    ${ffLab(14,122,"Base (B)",npn?"I_B ไหลเข้า":"I_B ไหลออก")}${ffLab(228,44,"Collector (C)",npn?"กระแสเข้า":"กระแสออก")}${ffLab(228,268,"Emitter (E)",npn?"กระแสออก":"กระแสเข้า")}</svg>`;
+}
+/* which picture (if any) explains this question */
+function flowKind(x){
+  const sym={nmos:"nmos",nmosL:"nmos",pmos:"pmos",pmosQ:"pmos",npn:"npn",npnL:"npn",pnp:"pnp",diode:"diode",diodeAK:"diode"}[x.s];
+  const t=x.q+" "+x.a;
+  if(/cutoff|CMOS/.test(t))return null;  // no current flows in cutoff; CMOS is about pairing, not flow
+  if(sym)return sym;
+  if(/NMOS/.test(t))return "nmos"; if(/PMOS/.test(t))return "pmos";
+  if(/NPN/.test(t))return "npn"; if(/PNP/.test(t))return "pnp";
+  if(/ทิศกระแสที่ไหลผ่านไดโอด|Forward bias|ไบอัสตรง|แอโนดของไดโอด|แคโทดของไดโอด/.test(t))return "diode";
+  return null;
+}
+function flowFig(x){
+  const k=flowKind(x); if(!k)return "";
+  const f=FLOW[k], svg=k==="diode"?f.svg():k==="nmos"||k==="pmos"?ffMos(k==="pmos"):ffBjt(k==="npn");
+  return `<figure class="ff"><figcaption class="ff-cap">${f.cap}</figcaption>${svg}<p class="ff-note">${f.note}</p></figure>`;
+}
+
 /* ================= matching: one dropdown per question ================= */
 let M={};
 const symSmall=k=>k?S[k].replace(/width="\d+" height="\d+"/,'width="110" height="74"'):"";
@@ -985,7 +1055,7 @@ function newMatch(){
       if(!sel.value)return;
       if(sel.value===p.a){
         row.className="mrow ok";sel.disabled=true;M.ok++;if(!M.missed.has(i))bumpMiss(p,-1);
-        fb.innerHTML=`✓ ถูก${p.e?` — ${esc(p.e)}`:""}`;
+        fb.innerHTML=`✓ ถูก${p.e?` — ${esc(p.e)}`:""}${flowFig(p)}`;
         L.querySelectorAll("select:not(:disabled)").forEach(o=>[...o.options].forEach(op=>{if(op.value===p.a)op.disabled=true}));
         if(M.ok===M.pairs.length)$("#mDone").innerHTML=`<div class="done-msg">ครบชุดแล้ว เลือกผิด ${M.miss} ครั้ง กด “สุ่มชุดใหม่” เพื่อเล่นต่อ</div>`;
       }else{
@@ -1038,7 +1108,7 @@ function showQ(){
     Q.querySelectorAll(".opt").forEach(o=>{o.disabled=true;if(o.textContent===x.a)o.classList.add("ok")});
     if(right){F.ok++;bumpMiss(x,-1)}else{b.classList.add("bad");F.wrong.push(x);bumpMiss(x,1)}
     const fb=Q.querySelector(".qfb");fb.hidden=false;fb.className="qfb "+(right?"ok":"bad");
-    fb.innerHTML=(right?"✓ ถูก":`✗ คำตอบคือ <b>${esc(x.a)}</b>`)+(x.e?`<br>${esc(x.e)}`:"");
+    fb.innerHTML=(right?"✓ ถูก":`✗ คำตอบคือ <b>${esc(x.a)}</b>`)+(x.e?`<br>${esc(x.e)}`:"")+flowFig(x);
     $("#fScore").textContent=`ถูก ${F.ok}`;
     const nx=$("#fNext");nx.hidden=false;nx.focus();
   });
